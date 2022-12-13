@@ -1,0 +1,166 @@
+<div class="modal-header">
+  <h4 class="modal-title" *ngIf="!cliente">Registrar Cliente</h4>
+  <h4 class="modal-title" *ngIf="cliente">Editar Información</h4>
+  <button
+    type="button"
+    class="btn-close"
+    aria-label="Close"
+    (click)="modal.dismissAll('Cross click')"
+  ></button>
+</div>
+<div class="modal-body">
+  <form autocomplete="off" [formGroup]="clienteForm" (ngSubmit)="guardar()">
+    <!-- Nombre -->
+    <span class="text-danger" *ngIf="validarCampos('nombre')">
+      El nombre es obligatorio
+    </span>
+    <div class="input-group mb-3">
+      <div class="input-group-prepend">
+        <span class="input-group-text" id="inputGroup-sizing-default"
+          >Nombre</span
+        >
+      </div>
+      <input
+        type="text"
+        class="form-control"
+        id="nombre"
+        formControlName="nombre"
+      />
+    </div>
+
+    <!-- Apellido -->
+    <span class="text-danger" *ngIf="validarCampos('apellido')">
+      El apellido es obligatorio
+    </span>
+    <div class="input-group mb-3">
+      <div class="input-group-prepend">
+        <span class="input-group-text" id="inputGroup-sizing-default"
+          >Apellido</span
+        >
+      </div>
+      <input
+        type="text"
+        class="form-control"
+        id="apellido"
+        formControlName="apellido"
+      />
+    </div>
+
+    <!-- Email -->
+    <span class="text-danger" *ngIf="validarCampos('email')">
+      El email es obligatorio
+    </span>
+    <div class="input-group mb-3">
+      <div class="input-group-prepend">
+        <span class="input-group-text" id="inputGroup-sizing-default"
+          >Email</span
+        >
+      </div>
+      <input
+        type="email"
+        class="form-control"
+        id="email"
+        formControlName="email"
+      />
+    </div>
+
+    <!-- Teléfono -->
+    <span class="text-danger" *ngIf="validarCampos('telefono')">
+      El teléfono es obligatorio
+    </span>
+    <div class="input-group mb-3">
+      <div class="input-group-prepend">
+        <span class="input-group-text" id="inputGroup-sizing-default"
+          >Telefono</span
+        >
+      </div>
+      <input
+        type="text"
+        class="form-control"
+        id="telefono"
+        formControlName="telefono"
+      />
+    </div>
+
+    <!-- Dirección -->
+    <span class="text-danger" *ngIf="validarCampos('direccion')">
+      La dirección es obligatoria
+    </span>
+    <div class="input-group mb-3">
+      <div class="input-group-prepend">
+        <span class="input-group-text" id="inputGroup-sizing-default"
+          >Dirección</span
+        >
+      </div>
+      <input
+        type="text"
+        class="form-control"
+        id="direccion"
+        formControlName="direccion"
+      />
+    </div>
+
+    <!-- Ciudades -->
+    <span class="text-danger" *ngIf="validarCampos('ciudades')">
+      Seleccione una opción
+    </span>
+    <div class="input-group mb-3">
+      <div class="input-group-prepend">
+        <label class="input-group-text" for="inputGroupSelect01">Ciudad</label>
+      </div>
+      <select
+        class="form-control custom-select"
+        (change)="onChangeCiudad($event)"
+        formControlName="ciudades"
+      >
+        <option value="">Seleccionar...</option>
+        <option *ngFor="let ciudad of ciudades" [ngValue]="ciudad">
+          {{ ciudad }}
+        </option>
+      </select>
+    </div>
+
+    <!-- Cursos -->
+    <span class="text-danger" *ngIf="validarCampos('cursos')">
+      Seleccione una opción
+    </span>
+    <div class="input-group mb-3">
+      <div class="input-group-prepend">
+        <label class="input-group-text" for="inputGroupSelect01">Curso</label>
+      </div>
+      <select
+        class="form-control custom-select"
+        (change)="onChangeCurso($event)"
+        formControlName="cursos"
+      >
+        <option value="">Seleccionar...</option>
+        <option *ngFor="let curso of cursos" [ngValue]="curso">
+          {{ curso }}
+        </option>
+      </select>
+    </div>
+  </form>
+</div>
+
+<div class="modal-footer">
+  <button
+    type="button"
+    class="btn btn-success"
+    (click)="guardar()"
+    [disabled]="cargando"
+  >
+    <span
+      class="spinner-border spinner-border-sm"
+      role="status"
+      aria-hidden="true"
+      *ngIf="cargando"
+    ></span>
+    {{ cargando ? "Guardando..." : "Guardar" }}
+  </button>
+  <button type="button" class="btn btn-light" (click)="modal.dismissAll()">
+    Cerrar
+  </button>
+  <ngb-alert [type]="alert.type" (closed)="cerrar()" *ngIf="!cargando && finalizado">
+    {{ alert.msj }}
+  </ngb-alert>
+</div>

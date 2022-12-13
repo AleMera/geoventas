@@ -1,0 +1,40 @@
+<div class="container-fluid">
+  <button type="button" class="btn btn-outline-success" (click)="nuevo()">Nuevo</button>
+  <table datatable [dtOptions]="dtOptions" class="row-border hover">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Nombre</th>
+        <th>Apellido</th>
+        <th>Correo</th>
+        <th>Curso</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let cliente of clientes">
+        <th>{{ cliente.id }}</th>
+        <td>{{ cliente.nombre }}</td>
+        <td>{{ cliente.apellido }}</td>
+        <td>{{ cliente.email }}</td>
+        <td>{{ cliente.curso }}</td>
+        <td>
+          <button
+            type="button"
+            class="btn btn-primary btn-sm"
+            (click)="editar(cliente)"
+          >
+            <i class="material-icons">edit</i>
+          </button>
+          <button
+            type="button"
+            class="btn btn-danger btn-sm"
+            (click)="eliminar(cliente.id)"
+          >
+            <i class="material-icons">delete</i>
+          </button>
+      </td>
+  </tr>
+  </tbody>
+  </table>
+</div>
