@@ -1,7 +1,10 @@
 export interface Cliente {
     id?: number;
+    cedula: string;
     nombre: string;
     apellido: string;
+    f_nacimiento: string;
+    genero: string;
     email: string;
     telefono: string;
     direccion: string;
