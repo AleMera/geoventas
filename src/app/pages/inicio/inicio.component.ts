@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalFormCursoComponent } from '../../components/modal-form-curso/modal-form-curso.component';
 import { FirestoreService } from '../../services/firestore.service';
@@ -8,7 +8,7 @@ import { FirestoreService } from '../../services/firestore.service';
   templateUrl: './inicio.component.html',
   styleUrls: ['./inicio.component.scss']
 })
-export class InicioComponent implements OnInit {
+export class InicioComponent implements OnInit, OnDestroy {
 
   cursos: any[] = [];
   cursosMostrar: any[] = [];
@@ -18,12 +18,11 @@ export class InicioComponent implements OnInit {
   constructor(private modal: NgbModal, private firestoreSvc: FirestoreService) { }
 
   ngOnInit(): void {
-    this.cargando = !this.cargando;
+    this.cargando = true;
     this.firestoreSvc.getDocs('Cursos').subscribe((res) => {
       console.log(res);
       this.cursos = res;
       this.cargarMas();
-      this.cargando = !this.cargando;
     });
   }
 
@@ -32,10 +31,10 @@ export class InicioComponent implements OnInit {
    */
   cargarMas() {
     setTimeout(() => {
-      this.cargando = !this.cargando;
+      this.cargando = false;
       this.cursosMostrar.push(...this.cursos.splice(0, this.limite));
     }, 1000);
-    this.cargando = !this.cargando;
+    this.cargando = true;
   }
 
   agregarCurso() {
@@ -44,6 +43,11 @@ export class InicioComponent implements OnInit {
       size: 'lg',
       centered: true
     })
+  }
 
+  ngOnDestroy(): void {
+    this.cursos = [];
+    this.cursosMostrar = [];
+    this.cargando = false;
   }
 }
