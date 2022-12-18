@@ -8,9 +8,9 @@
 <div class="contenido" *ngIf="!cargando">
   <div class="portada">
     <img
-      [src]="'assets/img/cursos/1.jpg'"
+      [src]="curso.imgsUrl.length != 0 ? url : 'assets/img/cursos/1.jpg'"
       alt=""
-      *ngFor="let img of [1, 1, 1, 1, 1]"
+      *ngFor="let url of curso.imgsUrl"
     />
   </div>
   <div class="detalles">

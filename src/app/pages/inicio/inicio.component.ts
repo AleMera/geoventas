@@ -38,10 +38,6 @@ export class InicioComponent implements OnInit {
     this.cargando = !this.cargando;
   }
 
-  cursosCompletos(): boolean {
-    return this.cursos.length != this.cursosMostrar.length;
-  }
-
   agregarCurso() {
     this.modal.open(ModalFormCursoComponent, {
       scrollable: true,

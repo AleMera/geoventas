@@ -14,6 +14,7 @@ export class CursoCardComponent implements OnInit {
 
   ngOnInit(): void {
     console.log(this.curso);
+    console.log(this.curso.imgsUrl);
     
   }
 

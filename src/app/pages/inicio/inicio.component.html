@@ -23,7 +23,7 @@
         </div>
       </div>
     </div>
-    <div class="text-center btnCargar" *ngIf="cursosCompletos()">
+    <div class="text-center btnCargar" *ngIf="cursos.length == cursosMostrar.length">
       <button type="button" class="btn btn-outline-primary" (click)="cargarMas()" *ngIf="!cargando">
         Cargar más
       </button>
