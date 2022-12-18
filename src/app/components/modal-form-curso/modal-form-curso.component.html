@@ -1,0 +1,194 @@
+<div class="modal-header">
+    <h4 class="modal-title">Registrar Curso</h4>
+    <button
+      type="button"
+      class="btn-close"
+      aria-label="Close"
+      (click)="modal.dismissAll('Cross click')"
+    ></button>
+  </div>
+  <div class="modal-body">
+    <form autocomplete="off" [formGroup]="cursoForm" (ngSubmit)="guardar()">
+      <!-- Nombre -->
+      <span class="text-danger" *ngIf="validarCampos('nombre')">
+        El nombre es obligatorio
+      </span>
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="inputGroup-sizing-default"
+            >Nombre</span
+          >
+        </div>
+        <input
+          type="text"
+          class="form-control"
+          id="nombre"
+          formControlName="nombre"
+        />
+      </div>
+  
+      <!-- Certificacion -->
+      <span class="text-danger" *ngIf="validarCampos('certif')">
+        El tipo de certificación es obligatorio
+      </span>
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="inputGroup-sizing-default"
+            >Certificación</span
+          >
+        </div>
+        <input
+          type="text"
+          class="form-control"
+          id="certif"
+          formControlName="certif"
+        />
+      </div>
+  
+      <!-- Duracion -->
+      <span class="text-danger" *ngIf="validarCampos('duracion')">
+        La duración es obligatoria
+      </span>
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="inputGroup-sizing-default"
+            >Duración</span >
+        </div>
+        <input
+          type="number"
+          class="form-control"
+          id="duracion"
+          formControlName="duracion"
+        />
+        <div class="input-group-append">
+          <span class="input-group-text">Horas</span>
+        </div>
+      </div>
+  
+      <!-- Horario -->
+      <span class="text-danger" *ngIf="validarCampos('horario')">
+        El horario es obligatorio
+      </span>
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="inputGroup-sizing-default"
+            >Horario</span
+          >
+        </div>
+        <input
+          type="text"
+          class="form-control"
+          id="horario"
+          formControlName="horario"
+        />
+      </div>
+  
+      <!-- Modalidad -->
+      <span class="text-danger" *ngIf="validarCampos('modalidad')">
+        Seleccione una opción.
+      </span>
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <label class="input-group-text" for="inputGroupSelect01">Modalidad</label>
+        </div>
+        <select
+          class="form-control custom-select"
+          (change)="onChangeModalidad($event)"
+          formControlName="modalidad"
+        >
+          <option value="">Seleccionar...</option>
+          <option *ngFor="let modalidad of modalidades" [ngValue]="modalidad">
+            {{ modalidad }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Fecha -->
+      <span class="text-danger" *ngIf="validarCampos('fecha')">
+        La fecha es obligatoria
+      </span>
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="inputGroup-sizing-default"
+            >Fecha</span
+          >
+        </div>
+        <input
+          type="date"
+          class="form-control"
+          id="fecha"
+          formControlName="fecha"
+        />
+      </div>
+  
+      <!-- Precio -->
+      <span class="text-danger" *ngIf="validarCampos('precio')">
+        El precio es obligatoria
+      </span>
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="inputGroup-sizing-default"
+            >Precio ($)</span
+          >
+        </div>
+        <input
+          type="number"
+          class="form-control"
+          id="precio"
+          formControlName="precio"
+        />
+        <div class="input-group-append">
+          <span class="input-group-text">$</span>
+        </div>
+      </div>
+      
+      <!-- Imagenes -->
+      <span class="text-danger" *ngIf="validarCampos('precio')">
+        Seleccione al menos 3 imágenes.
+      </span>
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text">Imágenes</span>
+        </div>
+        <div class="custom-file">
+          <input type="file" class="custom-file-input" multiple accept="image/*" formControlName="imgs" id="imgs" (change)="onChangeImgs($event)">
+          <label class="custom-file-label" for="inputGroupFile01"></label>
+        </div>
+      </div>
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-4" *ngFor="let img of imgs">
+            <img [src]="img" class="img-fluid" alt="Responsive image">
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  
+  <div class="modal-footer">
+    <button
+      type="button"
+      class="btn btn-success"
+      (click)="guardar()"
+      [disabled]="cargando"
+    >
+      <span
+        class="spinner-border spinner-border-sm"
+        role="status"
+        aria-hidden="true"
+        *ngIf="cargando"
+      ></span>
+      {{ cargando ? "Guardando..." : "Guardar" }}
+    </button>
+    <button type="button" class="btn btn-primary" (click)="asignarDatos()">TEST</button>
+    <button type="button" class="btn btn-light" (click)="modal.dismissAll()">
+      Cerrar
+    </button>
+    <div>
+        <ngb-alert [type]="alert.type" (closed)="cerrar()" *ngIf="!cargando && finalizado">
+          {{ alert.msj }}
+        </ngb-alert>
+    </div>
+  </div>
+  

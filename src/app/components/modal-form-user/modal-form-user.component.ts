@@ -1,7 +1,7 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
-import { NgbModal, NgbAlert } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { Cliente } from 'src/app/app.interfaces';
 import { FirestoreService } from '../../services/firestore.service';
@@ -63,8 +63,6 @@ export class ModalFormUserComponent implements OnInit {
   }
 
   guardar() {
-    console.log(this.clienteForm.controls['ciudades']);
-    
     if (this.clienteForm.invalid) {
       this.clienteForm.markAllAsTouched();
       return;

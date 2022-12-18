@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ModalFormCursoComponent } from '../../components/modal-form-curso/modal-form-curso.component';
 
 @Component({
   selector: 'app-inicio',
@@ -12,7 +14,7 @@ export class InicioComponent implements OnInit {
   limite: number = 4;
   cargando: boolean = false;
 
-  constructor() { }
+  constructor(private modal: NgbModal) { }
 
   ngOnInit(): void {
     this.cursos = [
@@ -91,8 +93,12 @@ export class InicioComponent implements OnInit {
     this.cargando = !this.cargando;
   }
 
-  eliminarCursos() {
-    this.cursosMostrar = [];
-    this.cursos = [];
+  agregarCurso() {
+    this.modal.open(ModalFormCursoComponent, {
+      scrollable: true,
+      size: 'lg',
+      centered: true
+    })
+
   }
 }
