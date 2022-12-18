@@ -93,7 +93,6 @@
         </div>
         <select
           class="form-control custom-select"
-          (change)="onChangeModalidad($event)"
           formControlName="modalidad"
         >
           <option value="">Seleccionar...</option>
@@ -144,7 +143,7 @@
       
       <!-- Imagenes -->
       <span class="text-danger" *ngIf="validarCampos('precio')">
-        Seleccione al menos 3 imágenes.
+        Debe seleccionar al menos una imagen.
       </span>
       <div class="input-group mb-3">
         <div class="input-group-prepend">
@@ -164,7 +163,6 @@
       </div>
     </form>
   </div>
-
   
   <div class="modal-footer">
     <button

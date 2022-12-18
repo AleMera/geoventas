@@ -24,7 +24,7 @@ export class ModalFormCursoComponent implements OnInit {
     modalidad: ['', Validators.required],
     fecha: ['', Validators.required],
     precio: ['', Validators.required],
-    imgs: [null, [Validators.required, Validators.minLength(3)]],
+    imgs: [null, [Validators.required, Validators.minLength(1)]],
   });
 
   modalidades = ['Presencial', 'Virtual'];
@@ -71,9 +71,6 @@ export class ModalFormCursoComponent implements OnInit {
       });
   }
 
-  onChangeModalidad(event: any) {
-  }
-
   onChangeImgs(event: any) {
     this.imgsStorage.push(...event.target.files);
     this.imgsStorage.forEach(img => {
@@ -113,7 +110,7 @@ export class ModalFormCursoComponent implements OnInit {
           imgsUrl.push(url);
 
           this.firestoreSvc.getDoc('Cursos', this.curso.id).subscribe((doc) => {
-            this.curso = doc.data();
+            this.curso = doc;
             this.firestoreSvc.actualizarDoc('Cursos', this.curso.id, { imgsUrl });
             this.cargando = false;
             this.finalizado = true;

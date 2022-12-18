@@ -21,11 +21,17 @@ export class FirestoreService {
     return this.firestore.createId();
   }
 
-  actualizarDoc(col: string, id: string, data: any) {
-    return this.firestore.collection(col).doc(id).set(data, { merge: true });
+  getDocs(col: string) {
+    return this.firestore.collection(col).valueChanges();
   }
 
   getDoc(col: string, id: string) {
-    return this.firestore.collection(col).doc(id).get();
+    return this.firestore.collection(col).doc(id).valueChanges();
   }
+
+  actualizarDoc(col: string, id: string, data: any) {
+    return this.firestore.collection(col).doc(id).set(data, { merge: true });
+  }
+  
+
 }
