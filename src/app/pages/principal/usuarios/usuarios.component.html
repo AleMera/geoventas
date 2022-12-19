@@ -1,23 +1,25 @@
 <div class="container-fluid">
-  <button type="button" class="btn btn-outline-success" (click)="nuevo()">Nuevo</button>
-  <table datatable [dtOptions]="dtOptions" class="row-border hover">
+  <button type="button" class="btn btn-outline-success" (click)="nuevo()">
+    Nuevo
+  </button>
+  <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover">
     <thead>
       <tr>
         <th>#</th>
         <th>Nombre</th>
         <th>Apellido</th>
         <th>Correo</th>
-        <th>Curso</th>
+        <th>Ciudad</th>
         <th>Acciones</th>
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let cliente of clientes">
-        <th>{{ cliente.id }}</th>
+      <tr *ngFor="let cliente of clientes; index as i">
+        <th>{{ i + 1 }}</th>
         <td>{{ cliente.nombre }}</td>
         <td>{{ cliente.apellido }}</td>
         <td>{{ cliente.email }}</td>
-        <td>{{ cliente.curso }}</td>
+        <td>{{ cliente.ciudades }}</td>
         <td>
           <button
             type="button"
@@ -33,8 +35,8 @@
           >
             <i class="material-icons">delete</i>
           </button>
-      </td>
-  </tr>
-  </tbody>
+        </td>
+      </tr>
+    </tbody>
   </table>
 </div>

@@ -21,8 +21,8 @@ export class FirestoreService {
     return this.firestore.createId();
   }
 
-  getDocs(col: string) {
-    return this.firestore.collection(col).valueChanges();
+  getDocs<T>(col: string) {
+    return this.firestore.collection<T>(col).valueChanges();
   }
 
   getDoc(col: string, id: string) {
