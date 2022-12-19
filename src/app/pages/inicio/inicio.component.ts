@@ -20,7 +20,6 @@ export class InicioComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.cargando = true;
     this.firestoreSvc.getDocs('Cursos').subscribe((res) => {
-      console.log(res);
       this.cursos = res;
       this.cargarMas();
     });
