@@ -1,0 +1,88 @@
+<div class="wrapper fadeInDown">
+  <div id="formContent">
+    <div class="fadeIn first">
+      <img src="assets/img/logo-corfopym.png" id="icon" alt="LogoCorfo" />
+    </div>
+    <h2>Registro de información</h2>
+    <form [formGroup]="registroForm">
+      <!-- <span class="text-danger" *ngIf="validarCampos('nombre')">
+      {{ errorCorreo }}
+    </span> -->
+      <input
+        type="text"
+        id="login"
+        class="fadeIn second"
+        name="login"
+        placeholder="Nombre"
+        formControlName="correo"
+      />
+      <br />
+      <!-- <span class="text-danger" *ngIf="validarCampos('apellido')">
+      {{ errorCorreo }}
+    </span> -->
+      <input
+        type="text"
+        id="login"
+        class="fadeIn second"
+        name="login"
+        placeholder="Apellido"
+        formControlName="apellido"
+      />
+      <br />
+      <!-- <span class="text-danger" *ngIf="validarCampos('ciudades')">
+      Seleccione una opción
+    </span> -->
+      <select
+        class="fadeIn second"
+        (change)="onChangeTipo($event)"
+        formControlName="tipos"
+      >
+        <option value="">Seleccionar...</option>
+        <option *ngFor="let tipo of tipos" [ngValue]="tipo">
+          {{ tipo }}
+        </option>
+      </select>
+
+      <!-- <span class="text-danger" *ngIf="validarCampos('passwd')">
+      {{ errorPasswd }}
+    </span> -->
+      <input
+        passwd
+        type="password"
+        id="password"
+        class="fadeIn third"
+        name="login"
+        placeholder="Contraseña"
+        formControlName="passwd"
+      />
+      <br />
+      <!-- <span class="text-danger" *ngIf="validarCampos('passwd2')">
+      {{ errorPasswd2 }}
+    </span> -->
+      <input
+        passwd
+        type="password"
+        id="password2"
+        class="fadeIn third"
+        name="login"
+        placeholder="Confirmar Contraseña"
+        formControlName="passwd2"
+      />
+      <br />
+      <button
+        type="button"
+        class="fadeIn fourth btn btn-success"
+        (click)="guardar()"
+        [disabled]="cargando"
+      >
+        <span
+          class="spinner-border spinner-border-sm"
+          role="status"
+          aria-hidden="true"
+          *ngIf="cargando"
+        ></span>
+        {{ !cargando ? "Guardar datos" : "" }}
+      </button>
+    </form>
+  </div>
+</div>

@@ -1,6 +1,5 @@
 <div class="modal-header">
-  <h4 class="modal-title" *ngIf="!cliente">Registrar Cliente</h4>
-  <h4 class="modal-title" *ngIf="cliente">Editar Información</h4>
+  <h4 class="modal-title">{{ cliente ? 'Editar Información' : 'Registrar Cliente' }}</h4>
   <button
     type="button"
     class="btn-close"

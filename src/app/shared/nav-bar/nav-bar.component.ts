@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
+import { AuthService } from '../../services/auth.service';
+
 @Component({
   selector: 'app-nav-bar',
   templateUrl: './nav-bar.component.html',
@@ -8,13 +10,37 @@ import { Router } from '@angular/router';
 })
 export class NavBarComponent implements OnInit {
 
-  constructor(private router: Router) { }
+  logueado: boolean;
+  usuario: any;
+  cargando: boolean;
+  constructor(private router: Router, private authSvc: AuthService) {
+    this.logueado = false;
+    this.cargando = false;
+  }
 
   ngOnInit(): void {
+    this.usuarioLogueado();
+  }
+
+  usuarioLogueado() {
+    this.cargando = true;
+    return this.authSvc.getUserInfo().subscribe(user => {
+      if (user) {
+        console.log(user);
+        this.logueado = true;
+        console.log(this.logueado);
+        this.usuario = user;
+      }
+      this.cargando = false;
+    });
   }
 
   irALogin(){
-    this.router.navigate(['/login']);
+    this.router.navigate(['/auth/login']);
+  }
+
+  irAlRegistro() {
+    this.router.navigate(['/auth/registro']);
   }
 
   irAInicio() {
@@ -27,6 +53,12 @@ export class NavBarComponent implements OnInit {
 
   adminMenu() {
     this.router.navigate(['/admin/usuarios']);
+  }
+
+  cerrarSesion() {
+    this.authSvc.logout();
+    this.logueado = false;
+    this.router.navigate(['/']);
   }
 
 }

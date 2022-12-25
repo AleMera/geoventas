@@ -10,7 +10,6 @@ import { AngularFireStorageModule } from '@angular/fire/compat/storage';
 
 import { environment } from 'src/environments/environment';
 import { InicioComponent } from './pages/inicio/inicio.component';
-import { LoginComponent } from './pages/login/login.component';
 import { ComponentsModule } from './components/components.module';
 import { SharedModule } from './shared/shared.module';
 import { CursosComponent } from './pages/principal/cursos/cursos.component';
@@ -20,7 +19,6 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
   declarations: [
     AppComponent,
     InicioComponent,
-    LoginComponent,
     CursosComponent
   ],
   imports: [

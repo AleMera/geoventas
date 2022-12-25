@@ -1,0 +1,70 @@
+<div class="wrapper fadeInDown">
+  <div id="formContent">
+    <div class="fadeIn first">
+      <img src="assets/img/logo-corfopym.png" id="icon" alt="LogoCorfo" />
+    </div>
+
+    <form [formGroup]="loginForm">
+      <span class="text-danger" *ngIf="validarCampos('correo')">
+        {{ errorCorreo }}
+      </span>
+      <input
+        type="text"
+        id="correo"
+        class="fadeIn second"
+        name="login"
+        placeholder="Correo"
+        formControlName="correo"
+      />
+      <br />
+      <span class="text-danger" *ngIf="validarCampos('passwd')">
+        {{ errorPasswd }}
+      </span>
+      <input
+        passwd
+        type="password"
+        id="password"
+        class="fadeIn third"
+        name="login"
+        placeholder="Contraseña"
+        formControlName="passwd"
+      />
+      <br />
+      <ngb-alert
+        type="danger"
+        *ngIf="passwdIncorrecta"
+        (closed)="passwdIncorrecta = false"
+      >
+        <div class="alert-text">
+          <span>Contraseña incorrecta</span>
+        </div>
+      </ngb-alert>
+      <button
+        type="button"
+        class="fadeIn fourth btn btn-success"
+        (click)="login()"
+        [disabled]="cargando"
+      >
+        <span
+          class="spinner-border spinner-border-sm"
+          role="status"
+          aria-hidden="true"
+          *ngIf="cargando"
+        ></span>
+        {{ !cargando ? "Iniciar sesión" : "" }}
+      </button>
+      <!-- <button type="submit" class="fadeIn fourth btn btn-success">Iniciar Sesión</button> -->
+    </form>
+    <a href="inicio" class="underlineHover"> Recuperar contraseña </a>
+    <br />
+    <a href="/auth/registro" class="underlineHover">Registrarse</a>
+
+    <div id="formFooter">
+      <a class="underlineHover" href="inicio">
+        <i class="material-icons">arrow_back</i>
+        Volver al inicio
+      </a>
+      <br />
+    </div>
+  </div>
+</div>

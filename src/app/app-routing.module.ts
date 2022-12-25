@@ -1,9 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
-import { LoginComponent } from './pages/login/login.component';
 import { InicioComponent } from './pages/inicio/inicio.component';
-import { MapaComponent } from './pages/principal/mapa/mapa.component';
 
 const routes: Routes = [
   {
@@ -11,8 +9,8 @@ const routes: Routes = [
     component: InicioComponent,
   },
   {
-    path: 'login',
-    component: LoginComponent,
+    path: 'auth',
+    loadChildren: () => import('./pages/auth/auth.module').then(m => m.AuthModule),
   },
   {
     path: 'principal',
@@ -25,10 +23,6 @@ const routes: Routes = [
   {
     path: 'admin',
     loadChildren: () => import('./pages/admin/admin.module').then(m => m.AdminModule),
-  },
-  {
-    path: 'mapa',
-    component: MapaComponent,
   },
   {
     path: '**',
