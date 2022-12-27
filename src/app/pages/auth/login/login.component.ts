@@ -84,6 +84,7 @@ export class LoginComponent implements OnInit {
             this.abrirModal({ msj, code });
             break;
         }
+        return;
       }
       this.cargando = false;
       this.router.navigate(['/principal'])
@@ -93,6 +94,7 @@ export class LoginComponent implements OnInit {
 
   abrirModal(error: any) {
     this.modal.open(ModalErrorComponent, { centered: true, size: 'lg' })
-      .componentInstance.error = error;
+      .componentInstance.error = error
+      ,this.cargando = false;
   }
 }

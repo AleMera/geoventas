@@ -9,12 +9,22 @@ export class FirestoreService {
 
   constructor(private firestore: AngularFirestore) { }
 
-  crearDocumento(col: string, data: any) {
-    return this.firestore.collection(col).add(data);
+  async crearDocumento(col: string, data: any) {
+    try {
+      return await this.firestore.collection(col).add(data);
+    } catch (error: any) {
+      const code = error.code;
+      return { code };
+    }
   }
 
-  crearDocumentoConId(col: string, id: string, data: any) {
-    return this.firestore.collection(col).doc(id).set(data);
+  async crearDocumentoConId(col: string, id: string, data: any) {
+    try {
+      return await this.firestore.collection(col).doc(id).set(data);
+    } catch (error: any) {
+      const code = error.code
+      return code;
+    }
   }
 
   crearIdDoc() {
@@ -29,9 +39,14 @@ export class FirestoreService {
     return this.firestore.collection(col).doc(id).valueChanges();
   }
 
-  actualizarDoc(col: string, id: string, data: any) {
-    return this.firestore.collection(col).doc(id).set(data, { merge: true });
+  async actualizarDoc(col: string, id: string, data: any) {
+    try {
+      return await this.firestore.collection(col).doc(id).set(data, { merge: true });
+    } catch (error: any) {
+      const code = error.code
+      return code;
+    }
   }
-  
+
 
 }

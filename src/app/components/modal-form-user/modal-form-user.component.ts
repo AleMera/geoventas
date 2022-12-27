@@ -20,7 +20,7 @@ interface Alert {
 
 export class ModalFormUserComponent implements OnInit {
 
-  @Input() cliente!: Cliente;
+  @Input() cliente!: any;
   cargando: boolean = false;
   finalizado: boolean = false;
   alert!: Alert;
@@ -62,13 +62,8 @@ export class ModalFormUserComponent implements OnInit {
     return this.clienteForm.controls[campo].errors && this.clienteForm.controls[campo].touched;
   }
 
-  guardar() {
-    if (this.clienteForm.invalid) {
-      this.clienteForm.markAllAsTouched();
-      return;
-    }
-
-    const cliente: any = {
+  asignarValores() {
+    this.cliente = {
       nombre: this.clienteForm.value.nombre,
       apellido: this.clienteForm.value.apellido,
       email: this.clienteForm.value.email,
@@ -77,13 +72,21 @@ export class ModalFormUserComponent implements OnInit {
       ciudades: this.clienteForm.value.ciudades,
       cursos: this.clienteForm.value.cursos,
     }
+  }
+
+  guardar() {
+    if (this.clienteForm.invalid) {
+      this.clienteForm.markAllAsTouched();
+      return;
+    }
 
     if (this.cliente) {
       // Actualizar
     } else {
       // Crear
+      this.asignarValores();
       this.cargando = true;
-      this.firestoreSvc.crearDocumento('Clientes', cliente)
+      this.firestoreSvc.crearDocumento('Clientes', this.cliente)
         .then(() => {
           this.alert = {
             type: 'success',
@@ -110,9 +113,5 @@ export class ModalFormUserComponent implements OnInit {
   }
   onChangeCiudad(event: any) {
     console.log(event);
-  }
-
-  cerrar() {
-    this.finalizado = false;
   }
 }

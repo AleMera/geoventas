@@ -159,7 +159,7 @@
   <button type="button" class="btn btn-light" (click)="modal.dismissAll()">
     Cerrar
   </button>
-  <ngb-alert [type]="alert.type" (closed)="cerrar()" *ngIf="!cargando && finalizado">
+  <ngb-alert [type]="alert.type" (closed)="finalizado = false" *ngIf="!cargando && finalizado">
     {{ alert.msj }}
   </ngb-alert>
 </div>

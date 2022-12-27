@@ -5,21 +5,27 @@
     </div>
     <h2>Registro de información</h2>
     <form [formGroup]="registroForm">
-      <!-- <span class="text-danger" *ngIf="validarCampos('nombre')">
-      {{ errorCorreo }}
-    </span> -->
+      <!-- NOMBRE -->
+      <span class="text-danger" *ngIf="validarCampos('nombre')">
+        {{ errorNombre }}
+      </span>
       <input
         type="text"
         id="login"
         class="fadeIn second"
         name="login"
         placeholder="Nombre"
-        formControlName="correo"
+        formControlName="nombre"
       />
+      <i class="material-icons danger" *ngIf="validarCampos('nombre')">
+        error
+      </i>
       <br />
-      <!-- <span class="text-danger" *ngIf="validarCampos('apellido')">
-      {{ errorCorreo }}
-    </span> -->
+
+      <!-- APELLIDO -->
+      <span class="text-danger" *ngIf="validarCampos('apellido')">
+        {{ errorApellido }}
+      </span>
       <input
         type="text"
         id="login"
@@ -28,24 +34,50 @@
         placeholder="Apellido"
         formControlName="apellido"
       />
+      <i class="material-icons danger" *ngIf="validarCampos('apellido')">
+        error
+      </i>
       <br />
-      <!-- <span class="text-danger" *ngIf="validarCampos('ciudades')">
-      Seleccione una opción
-    </span> -->
+
+      <!-- CORREO -->
+      <span class="text-danger" *ngIf="validarCampos('correo')">
+        {{ errorCorreo }}
+      </span>
+      <input
+        type="text"
+        id="login"
+        class="fadeIn second"
+        name="login"
+        placeholder="Correo electrónico"
+        formControlName="correo"
+      />
+      <i class="material-icons danger" *ngIf="validarCampos('correo')">
+        error
+      </i>
+      <br />
+      <!-- TIPO -->
+      <span class="text-danger" *ngIf="validarCampos('tipos')">
+        {{ errorTipos }}
+      </span>
       <select
         class="fadeIn second"
         (change)="onChangeTipo($event)"
         formControlName="tipos"
       >
-        <option value="">Seleccionar...</option>
+        <option value="">Tipo</option>
         <option *ngFor="let tipo of tipos" [ngValue]="tipo">
           {{ tipo }}
         </option>
       </select>
+      <i class="material-icons danger" *ngIf="validarCampos('tipos')">
+        error
+      </i>
+      <br />
 
-      <!-- <span class="text-danger" *ngIf="validarCampos('passwd')">
-      {{ errorPasswd }}
-    </span> -->
+      <!-- PASSWD -->
+      <span class="text-danger" *ngIf="validarCampos('passwd')">
+        {{ errorPasswd }}
+      </span>
       <input
         passwd
         type="password"
@@ -55,10 +87,15 @@
         placeholder="Contraseña"
         formControlName="passwd"
       />
+      <i class="material-icons danger" *ngIf="validarCampos('passwd')">
+        error
+      </i>
       <br />
-      <!-- <span class="text-danger" *ngIf="validarCampos('passwd2')">
-      {{ errorPasswd2 }}
-    </span> -->
+
+      <!-- PASSWD2 -->
+      <span class="text-danger" *ngIf="validarCampos('passwd2')">
+        {{ errorPasswd2 }}
+      </span>
       <input
         passwd
         type="password"
@@ -68,9 +105,13 @@
         placeholder="Confirmar Contraseña"
         formControlName="passwd2"
       />
+      <i class="material-icons danger" *ngIf="validarCampos('passwd2')">
+        error
+      </i>
       <br />
+
       <button
-        type="button"
+        type="success"
         class="fadeIn fourth btn btn-success"
         (click)="guardar()"
         [disabled]="cargando"
@@ -84,5 +125,21 @@
         {{ !cargando ? "Guardar datos" : "" }}
       </button>
     </form>
+    <ngb-alert
+      type="success"
+      *ngIf="finalizado"
+      (closed)="finalizado = false"
+    >
+      <div class="alert-text">
+        <span>Datos guardados correctamente.</span>
+      </div>
+    </ngb-alert>
+    <div id="formFooter">
+      <a class="underlineHover" href="/auth/login">
+        <i class="material-icons">arrow_back</i>
+        Volver al login
+      </a>
+      <br />
+    </div>
   </div>
 </div>

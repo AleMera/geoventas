@@ -30,13 +30,14 @@ export class AuthService {
     }
   }
 
-  async registro(email: string, passwd: string) {
+  async registro(usuario: any) {
     try {
-      return await this.auth.createUserWithEmailAndPassword(email, passwd); 
-    } catch (error) {
-      const msj = 'No se ha podido registrar';
-      console.log(msj + ': ' + error);
-      return msj;
+      return await this.auth.createUserWithEmailAndPassword(usuario.correo, usuario.passwd);
+    } catch (error: any) {
+      // const msj = 'No se ha podido registrar';
+      // console.log(msj + ': ' + error);
+      const code = error.code;
+      return { code };
     }
   }
 
