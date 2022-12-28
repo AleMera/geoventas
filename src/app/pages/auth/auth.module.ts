@@ -18,6 +18,6 @@ import { NgbAlertModule } from '@ng-bootstrap/ng-bootstrap';
     ReactiveFormsModule,
     NgbAlertModule,
     AuthRoutingModule
-  ]
+  ],
 })
 export class AuthModule { }

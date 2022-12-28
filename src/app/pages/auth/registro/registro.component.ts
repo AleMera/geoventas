@@ -3,6 +3,15 @@ import { FormBuilder, Validators, FormGroup } from '@angular/forms';
 
 import { confirmPasswd } from '../../../validators/validators';
 import { AuthService } from '../../../services/auth.service';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ModalInfoComponent } from '../../../components/modal-info/modal-info.component';
+
+export interface Info {
+  tipo: string;
+  icono: string;
+  titulo: string;
+  mensaje: string;
+}
 
 @Component({
   selector: 'app-registro',
@@ -19,13 +28,13 @@ export class RegistroComponent implements OnInit {
     passwd: ['', [Validators.required, Validators.minLength(8)]],
     passwd2: ['', [Validators.required, Validators.minLength(8), confirmPasswd]],
   });
-  
+
   usuario: any;
   tipos: string[] = ['Administrador', 'Cliente'];
   cargando: boolean = false;
-  finalizado: boolean = false;
+  terminado: boolean = false;
 
-  constructor(private fBuilder: FormBuilder, private authSvc: AuthService) { }
+  constructor(private fBuilder: FormBuilder, private authSvc: AuthService, private modal: NgbModal) { }
 
   get errorNombre() {
     const error = this.registroForm.controls['nombre'].errors;
@@ -99,15 +108,42 @@ export class RegistroComponent implements OnInit {
     }
     this.cargando = true;
     this.asignarValores();
-    this.authSvc.registro(this.usuario).then(resp => {
-      console.log(resp);
+    this.authSvc.registro(this.usuario).then((resp: any) => {
+      console.log(resp)
+      let info: Info = {
+        tipo: '',
+        icono: '',
+        titulo: '',
+        mensaje: ''
+      };
+      if (resp.code) {
+        info.tipo = 'error';
+        info.icono = 'error';
+        info.titulo = 'Error al registrar usuario';
+        switch (resp.code) {
+          case 'auth/email-already-in-use':
+            info.mensaje = 'Ya existe un usuario con el correo ingresado.';
+            break;
+          case 'auth/operation-not-allowed':
+            info.mensaje = 'Operación no permitida';
+            break;
+          default:
+            info.mensaje = 'Error desconocido, por favor intente más tarde o contacte al administrador.';
+            break;
+        }
+      } else {
+        info.tipo = 'exito';
+        info.icono = 'done';
+        info.titulo = 'Registro exitoso';
+        info.mensaje = 'Se ha registrado correctamente, se iniciará sesión automáticamente.';
+      }
+      this.modal.open(ModalInfoComponent, { size: 'md', centered: true, backdrop: 'static' })
+        .componentInstance.info = info;
     })
-    .finally(() => {
-      this.cargando = false;
-      this.finalizado = true;
-      this.registroForm.reset();
-    });
-      
+      .finally(() => {
+        this.cargando = false;
+      });
+
   }
 
   onChangeTipo(e: any) {

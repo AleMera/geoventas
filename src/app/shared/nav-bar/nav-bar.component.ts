@@ -56,9 +56,14 @@ export class NavBarComponent implements OnInit {
   }
 
   cerrarSesion() {
-    this.authSvc.logout();
+    this.authSvc.logout().then(() => {
+
     this.logueado = false;
+    this.usuario = null;
+    })
+    .finally(() => {
     this.router.navigate(['/']);
+    });
   }
 
 }

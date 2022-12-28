@@ -5,6 +5,8 @@ import { AuthService } from '../../../services/auth.service';
 import { FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalErrorComponent } from '../../../components/modal-error/modal-error.component';
+import { Info } from '../registro/registro.component';
+import { ModalInfoComponent } from 'src/app/components/modal-info/modal-info.component';
 
 @Component({
   selector: 'app-login',
@@ -68,33 +70,43 @@ export class LoginComponent implements OnInit {
     const credenciales = this.asignarValores();
     this.cargando = true;
     this.authSvc.login(credenciales?.correo, credenciales?.passwd).then((res: any) => {
+      let info: Info = {
+        tipo: '',
+        icono: '',
+        titulo: '',
+        mensaje: '',
+      };
       if (res.code) {
-        let code: string = res.code;
-        let msj: string;
-        switch (code) {
+        info.tipo = 'error';
+        info.icono = 'error';
+        switch (res.code) {
           case 'auth/user-not-found':
-            msj = 'El usuario no existe';
-            this.abrirModal({ msj, code });
+            info.titulo = 'Usuario no encontrado';
+            info.mensaje = 'El usuario no existe';
             break;
           case 'auth/wrong-password':
             this.passwdIncorrecta = true;
-            break;
+            this.cargando = false;
+            return;
           default:
-            msj = 'Error desconocido';
-            this.abrirModal({ msj, code });
+            info.titulo = 'Error desconocido';
+            info.mensaje = 'Ocurrió un error inesperado, intente más tarde o contacte al administrador.';
             break;
         }
+        this.abrirModal(info);
         return;
       }
       this.cargando = false;
       this.router.navigate(['/principal'])
-
     });
   }
 
-  abrirModal(error: any) {
-    this.modal.open(ModalErrorComponent, { centered: true, size: 'lg' })
-      .componentInstance.error = error
-      ,this.cargando = false;
+  abrirModal(info: Info) {
+    this.modal.open(ModalInfoComponent, {
+      centered: true,
+      size: 'md',
+      backdrop: 'static',
+    }).componentInstance.info = info
+      , this.cargando = false;
   }
 }

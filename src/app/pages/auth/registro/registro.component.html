@@ -114,7 +114,7 @@
         type="success"
         class="fadeIn fourth btn btn-success"
         (click)="guardar()"
-        [disabled]="cargando"
+        *ngIf="!cargando && !terminado"
       >
         <span
           class="spinner-border spinner-border-sm"
@@ -125,15 +125,6 @@
         {{ !cargando ? "Guardar datos" : "" }}
       </button>
     </form>
-    <ngb-alert
-      type="success"
-      *ngIf="finalizado"
-      (closed)="finalizado = false"
-    >
-      <div class="alert-text">
-        <span>Datos guardados correctamente.</span>
-      </div>
-    </ngb-alert>
     <div id="formFooter">
       <a class="underlineHover" href="/auth/login">
         <i class="material-icons">arrow_back</i>

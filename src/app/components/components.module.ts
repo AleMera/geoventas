@@ -8,6 +8,7 @@ import { ModalEliminarUserComponent } from './modal-eliminar-user/modal-eliminar
 import { ModalFormUserComponent } from './modal-form-user/modal-form-user.component';
 import { ModalFormCursoComponent } from './modal-form-curso/modal-form-curso.component';
 import { ModalErrorComponent } from './modal-error/modal-error.component';
+import { ModalInfoComponent } from './modal-info/modal-info.component';
 
 
 @NgModule({
@@ -17,6 +18,7 @@ import { ModalErrorComponent } from './modal-error/modal-error.component';
     ModalFormUserComponent,
     ModalFormCursoComponent,
     ModalErrorComponent,
+    ModalInfoComponent,
   ],
   imports: [
     CommonModule,
