@@ -4,7 +4,6 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
 import { FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { ModalErrorComponent } from '../../../components/modal-error/modal-error.component';
 import { Info } from '../registro/registro.component';
 import { ModalInfoComponent } from 'src/app/components/modal-info/modal-info.component';
 

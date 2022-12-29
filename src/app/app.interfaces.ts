@@ -11,13 +11,23 @@ export interface Cliente {
     curso?: string;
 }
 
+// export interface Curso {
+//     id: number;
+//     nombre: string;
+//     descripcion: string;
+//     precio: number;
+//     duracion: number;
+// }
+
 export interface Curso {
-    id: number;
+    id?: string;
     nombre: string;
-    descripcion: string;
     precio: number;
+    modalidad: string;
     duracion: number;
+    horario: string;
 }
+
 
 export interface Ciudad {
     id: number;

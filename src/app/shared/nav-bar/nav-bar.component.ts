@@ -11,7 +11,12 @@ import { AuthService } from '../../services/auth.service';
 export class NavBarComponent implements OnInit {
 
   logueado: boolean;
-  usuario: any;
+  usuario: any = {
+    nombre: '',
+    email: '',
+    uid: '',
+    
+  };
   cargando: boolean;
   constructor(private router: Router, private authSvc: AuthService) {
     this.logueado = false;
@@ -26,9 +31,7 @@ export class NavBarComponent implements OnInit {
     this.cargando = true;
     return this.authSvc.getUserInfo().subscribe(user => {
       if (user) {
-        console.log(user);
         this.logueado = true;
-        console.log(this.logueado);
         this.usuario = user;
       }
       this.cargando = false;

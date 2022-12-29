@@ -4,8 +4,10 @@ import { RouterModule, Routes } from '@angular/router';
 import { MapaComponent } from './mapa/mapa.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { PrincipalComponent } from './principal.component';
-import { UsuariosComponent } from './usuarios/usuarios.component';
+import { ClientesComponent } from './clientes/clientes.component';
 import { CursosComponent } from './cursos/cursos.component';
+import { UsuariosComponent } from './usuarios/usuarios.component';
+import { AuthGuard } from '@angular/fire/auth-guard';
 
 const routes: Routes = [
   {
@@ -21,18 +23,20 @@ const routes: Routes = [
         component: DashboardComponent
       },
       {
-        path: 'usuarios',
-        component: UsuariosComponent
+        path: 'clientes',
+        component: ClientesComponent
       },
       {
         path: 'cursos',
-        component: CursosComponent
+        component: CursosComponent,
+        canActivateChild: [AuthGuard]
+      },
+      {
+        path: 'usuarios',
+        component: UsuariosComponent,
+        canActivateChild: [AuthGuard]
       }
     ],
-  },
-  {
-    path: '**',
-    redirectTo: 'mapa'
   }
 ];
 

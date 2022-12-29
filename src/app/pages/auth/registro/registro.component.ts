@@ -11,6 +11,7 @@ export interface Info {
   icono: string;
   titulo: string;
   mensaje: string;
+  id?: string;
 }
 
 @Component({

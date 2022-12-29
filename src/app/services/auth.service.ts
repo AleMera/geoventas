@@ -82,4 +82,12 @@ export class AuthService {
   getUserInfo() {
     return this.auth.authState;
   }
+
+  async getUid() {
+    try {
+      return await this.auth.currentUser;
+    } catch (error) {
+      return null;
+    }
+  }
 }

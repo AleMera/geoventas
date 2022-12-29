@@ -12,13 +12,13 @@ interface Alert {
 }
 
 @Component({
-  selector: 'app-modal-form-user',
-  templateUrl: './modal-form-user.component.html',
-  styleUrls: ['./modal-form-user.component.scss']
+  selector: 'app-modal-form-cliente',
+  templateUrl: './modal-form-cliente.component.html',
+  styleUrls: ['./modal-form-cliente.component.scss']
 })
 
 
-export class ModalFormUserComponent implements OnInit {
+export class ModalFormClienteComponent implements OnInit {
 
   @Input() cliente!: any;
   cargando: boolean = false;

@@ -9,16 +9,20 @@ import { PrincipalComponent } from './principal.component';
 import { SharedModule } from '../../shared/shared.module';
 import { ComponentsModule } from '../../components/components.module';
 import { DashboardComponent } from './dashboard/dashboard.component';
-import { UsuariosComponent } from './usuarios/usuarios.component';
+import { ClientesComponent } from './clientes/clientes.component';
 import { MapaComponent } from './mapa/mapa.component';
+import { UsuariosComponent } from './usuarios/usuarios.component';
+import { CursosComponent } from './cursos/cursos.component';
 
 
 @NgModule({
   declarations: [
     PrincipalComponent,
     DashboardComponent,
+    ClientesComponent,
+    MapaComponent,
     UsuariosComponent,
-    MapaComponent
+    CursosComponent
   ],
   imports: [
     CommonModule,

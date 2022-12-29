@@ -13,14 +13,12 @@ import { environment } from 'src/environments/environment';
 import { InicioComponent } from './pages/inicio/inicio.component';
 import { ComponentsModule } from './components/components.module';
 import { SharedModule } from './shared/shared.module';
-import { CursosComponent } from './pages/principal/cursos/cursos.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
   declarations: [
     AppComponent,
     InicioComponent,
-    CursosComponent
   ],
   imports: [
     BrowserModule,

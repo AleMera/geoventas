@@ -4,29 +4,30 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { NgbAlertModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { CursoCardComponent } from './curso-card/curso-card.component';
-import { ModalEliminarUserComponent } from './modal-eliminar-user/modal-eliminar-user.component';
-import { ModalFormUserComponent } from './modal-form-user/modal-form-user.component';
+import { ModalFormClienteComponent } from './modal-form-cliente/modal-form-cliente.component';
 import { ModalFormCursoComponent } from './modal-form-curso/modal-form-curso.component';
-import { ModalErrorComponent } from './modal-error/modal-error.component';
 import { ModalInfoComponent } from './modal-info/modal-info.component';
+import { DataTableComponent } from './data-table/data-table.component';
+import { DataTablesModule } from 'angular-datatables';
 
 
 @NgModule({
   declarations: [
     CursoCardComponent,
-    ModalEliminarUserComponent,
-    ModalFormUserComponent,
+    ModalFormClienteComponent,
     ModalFormCursoComponent,
-    ModalErrorComponent,
     ModalInfoComponent,
+    DataTableComponent,
   ],
   imports: [
     CommonModule,
     ReactiveFormsModule,
+    DataTablesModule,
     NgbAlertModule
   ],
   exports: [
     CursoCardComponent,
+    DataTableComponent
   ]
 })
 export class ComponentsModule { }
