@@ -53,8 +53,8 @@ export class ModalFormCursoComponent implements OnInit {
     this.cargando = true;
     this.asignarDatos();
     this.firestoreSvc.crearDocumentoConId('Cursos', this.curso.id, this.curso)
-      // this.firestoreSvc.crearDocumento('Cursos', curso)
       .then(() => {
+        this.subirImgs(this.imgsStorage);
         this.alert = {
           type: 'success',
           msj: 'Nuevo curso registrado exitosamente.'
@@ -67,9 +67,7 @@ export class ModalFormCursoComponent implements OnInit {
         }
       })
       .finally(() => {
-        this.subirImgs(this.imgsStorage);
         this.cargando = false;
-        this.finalizado = true;
         location.reload();
       });
   }

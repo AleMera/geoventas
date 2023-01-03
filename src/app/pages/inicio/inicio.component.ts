@@ -22,9 +22,13 @@ export class InicioComponent implements OnInit, OnDestroy {
     this.firestoreSvc.getDocs('Cursos').subscribe((res) => {
       this.cursos = res;
       console.log(res);
-      this.cargarMas();
+      if (this.cursos.length > 3) {
+        this.cargarMas();
+        return;
+      }
+      this.cursosMostrar = this.cursos
+      this.cargando = false;  
     })
-    .closed;
   }
 
   /**
