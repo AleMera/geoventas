@@ -68,6 +68,9 @@ export class ModalFormCursoComponent implements OnInit {
       })
       .finally(() => {
         this.subirImgs(this.imgsStorage);
+        this.cargando = false;
+        this.finalizado = true;
+        location.reload();
       });
   }
 
