@@ -27,7 +27,7 @@ export class InicioComponent implements OnInit, OnDestroy {
         return;
       }
       this.cursosMostrar = this.cursos
-      this.cargando = false;  
+      this.cargando = false;
     })
   }
 

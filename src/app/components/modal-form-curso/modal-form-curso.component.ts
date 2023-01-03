@@ -52,27 +52,32 @@ export class ModalFormCursoComponent implements OnInit {
     }
     this.cargando = true;
     this.asignarDatos();
-    this.firestoreSvc.crearDocumentoConId('Cursos', this.curso.id, this.curso)
-      .then(() => {
-        this.subirImgs(this.imgsStorage);
-        this.alert = {
-          type: 'success',
-          msj: 'Nuevo curso registrado exitosamente.'
-        }
-      })
-      .catch((error) => {
-        this.alert = {
-          type: 'danger',
-          msj: 'No se ha podido registrar el curso.'
-        }
-      })
-      .finally(() => {
-        this.cargando = false;
-        location.reload();
-      });
+    this.subirImgs(this.imgsStorage);
+    // this.firestoreSvc.crearDocumentoConId('Cursos', this.curso.id, this.curso)
+    //   .then(() => {
+    //     this.alert = {
+    //       type: 'success',
+    //       msj: 'Nuevo curso registrado exitosamente.'
+    //     }
+    //   })
+    //   .catch((error) => {
+    //     this.alert = {
+    //       type: 'danger',
+    //       msj: 'No se ha podido registrar el curso.'
+    //     }
+    //   })
+    //   .finally(() => {
+    //     this.subirImgs(this.imgsStorage);
+    //     this.cargando = false;
+    //     location.reload();
+    //   });
   }
 
   onChangeImgs(event: any) {
+    if (this.imgsStorage.length > 0) {
+      this.imgsStorage = [];
+      this.imgs = [];
+    }
     this.imgsStorage.push(...event.target.files);
     this.imgsStorage.forEach(img => {
       const reader = new FileReader();
@@ -100,22 +105,23 @@ export class ModalFormCursoComponent implements OnInit {
       estado: 'Activo',
       imgsUrl: []
     }
+    console.log(this.imgsStorage);
+
     // this.subirImgs(this.imgsStorage);
   }
 
-  subirImgs(imgs: any[]) {
-    let imgsUrl: any[] = [];
+  subirImgs(imgs: File[]) {
+    let imgsUrl: string[] = [];
+    console.log(imgs);
+    console.log(this.curso);
+
     imgs.forEach(img => {
       this.storageSc.subirImg('Cursos', this.curso.id, img.name, img)
         .then((url) => {
           imgsUrl.push(url);
-
-          this.firestoreSvc.getDoc('Cursos', this.curso.id).subscribe((doc) => {
-            this.curso = doc;
-            this.firestoreSvc.actualizarDoc('Cursos', this.curso.id, { imgsUrl });
-            this.cargando = false;
-            this.finalizado = true;
-          });
+          console.log(imgsUrl);
+          this.curso.imgsUrl = imgsUrl;
+          this.firestoreSvc.crearDocumentoConId('Cursos', this.curso.id, this.curso);
         });
     });
   }
