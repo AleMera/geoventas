@@ -20,7 +20,7 @@ export class SideMenuComponent implements OnInit {
       if (!resp) {
         return;
       }
-      if (resp.uid === '53gsb8hFfMNVND8hrHdj82uYGG22') {
+      if (resp.uid === 'sIjSGyg7Afa4TbIWdXxWMfYckVC2') {
         // Es admin
 
         return true;

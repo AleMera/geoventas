@@ -15,37 +15,6 @@ export class AuthService {
   // constructor(private auth: Auth) { }
   constructor(private auth: AngularFireAuth) { }
 
-  // async login({ email, passwd }: LoginData) {
-  //   try {
-  //     return await signInWithEmailAndPassword(this.auth, email, passwd);
-  //   } catch (error: any) {
-  //     const code = error.code;
-  //     return { code };
-  //   }
-  // }
-
-  // async registro(usuario: any) {
-  //   try {
-  //     return await createUserWithEmailAndPassword(this.auth, usuario.correo, usuario.passwd);
-  //   } catch (error: any) {
-  //     const code = error.code;
-  //     return { code };
-  //   }
-  // }
-
-  // async logOut() {
-  //   try {
-  //     return await signOut(this.auth);
-  //   } catch (error: any) {
-  //     const code = error.code;
-  //     return { code };
-  //   }
-  // }
-
-  // getUserInfo() {
-  //   return authState(this.auth);
-  // }
-
   async login(email: string, passwd: string) {
     try {
       return await this.auth.signInWithEmailAndPassword(email, passwd);
@@ -58,10 +27,8 @@ export class AuthService {
 
   async registro(usuario: any) {
     try {
-      return await this.auth.createUserWithEmailAndPassword(usuario.correo, usuario.passwd);
+      return await (await this.auth.createUserWithEmailAndPassword(usuario.email, usuario.passwd))
     } catch (error: any) {
-      // const msj = 'No se ha podido registrar';
-      // console.log(msj + ': ' + error);
       const code = error.code;
       return { code };
     }

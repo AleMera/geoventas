@@ -34,3 +34,12 @@ export interface Ciudad {
     nombre: string;
     provincia: string;
 }   
+
+export interface Info {
+    tipo: string;
+    icono: string;
+    titulo: string;
+    mensaje: string;
+    id?: string;
+    col?: string;
+}

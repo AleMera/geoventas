@@ -1,8 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+
 import { ModalInfoComponent } from '../modal-info/modal-info.component';
-import { Info } from 'src/app/pages/auth/registro/registro.component';
+import { AuthService } from '../../services/auth.service';
+import { FirestoreService } from '../../services/firestore.service';
+import { Info } from 'src/app/app.interfaces';
 
 @Component({
   selector: 'app-modal-form-usuario',
@@ -26,7 +29,7 @@ export class ModalFormUsuarioComponent implements OnInit {
   
   ciudades = ['Ambato', 'Cuenca', 'Guayaquil', 'Loja', 'Quito', 'Riobamba', 'Tulcán'];
 
-  constructor(protected modal: NgbModal, private fBuilder: FormBuilder) { }
+  constructor(protected modal: NgbModal, private fBuilder: FormBuilder, private authSvc: AuthService, private firestoreSvc: FirestoreService) { }
 
   get errorCedula() {
     const error = this.usuarioForm.controls['cedula'].errors;
@@ -105,13 +108,49 @@ export class ModalFormUsuarioComponent implements OnInit {
   validarCampos(campo: string) {
     return this.usuarioForm.controls[campo].errors && this.usuarioForm.controls[campo].touched;
   }
+  
+  asignarValores() {
+    this.usuario = {
+      id: this.firestoreSvc.crearIdDoc(),
+      cedula: this.usuarioForm.controls['cedula'].value,
+      nombre: this.usuarioForm.controls['nombre'].value,
+      apellido: this.usuarioForm.controls['apellido'].value,
+      email: this.usuarioForm.controls['email'].value,
+      telefono: this.usuarioForm.controls['telefono'].value,
+      ciudades: this.usuarioForm.controls['ciudades'].value,
+      passwd: this.usuarioForm.controls['passwd'].value,
+    }
+  }
 
   guardar() {
     if (this.usuarioForm.invalid) {
       this.usuarioForm.markAllAsTouched();
       return;
     }
-    console.log(this.usuarioForm.value);
+    this.cargando = true;
+    this.asignarValores();
+    this.firestoreSvc.crearDocumento('Usuarios', this.usuario).then(() => {
+    this.authSvc.registro(this.usuario).then(() => {
+      const info: Info = {
+        tipo: 'exito',
+        icono: 'check_circle',
+        titulo: 'Usuario registrado',
+        mensaje: 'El usuario se registró correctamente',
+      }
+      this.modal.open(ModalInfoComponent, { centered: true, size: 'sm' }).componentInstance.info = info;
+    }).catch((err) => {
+      const info: Info = {
+        tipo: 'error',
+        icono: 'error',
+        titulo: 'Error al registrar',
+        mensaje: err.message,
+      }
+      this.modal.open(ModalInfoComponent, { centered: true, size: 'sm' }).componentInstance.info = info;
+
+    }).finally(() => {
+      this.cargando = false;
+    });
+  });
   }
 
   eliminar() {
@@ -122,7 +161,7 @@ export class ModalFormUsuarioComponent implements OnInit {
       titulo: 'Eliminar Usuario',
       mensaje: '¿Está seguro que desea eliminar este usuario? \n Esta acción no se puede deshacer.',
       id: this.usuario.id,
-      col: 'Usuario'
+      col: 'Usuarios'
     }
     this.modal.open(ModalInfoComponent, { centered: true, size: 'sm' }).componentInstance.info = info;
   }

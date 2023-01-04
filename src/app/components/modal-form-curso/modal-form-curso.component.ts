@@ -4,7 +4,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { FirestoreService } from '../../services/firestore.service';
 import { StorageService } from '../../services/storage.service';
 import { ModalInfoComponent } from '../modal-info/modal-info.component';
-import { Info } from '../../pages/auth/registro/registro.component';
+import { Info } from 'src/app/app.interfaces';
 
 @Component({
   selector: 'app-modal-form-curso',

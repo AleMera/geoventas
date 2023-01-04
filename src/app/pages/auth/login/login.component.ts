@@ -4,8 +4,8 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
 import { FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { Info } from '../registro/registro.component';
 import { ModalInfoComponent } from 'src/app/components/modal-info/modal-info.component';
+import { Info } from 'src/app/app.interfaces';
 
 @Component({
   selector: 'app-login',

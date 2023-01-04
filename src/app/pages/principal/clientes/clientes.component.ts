@@ -7,7 +7,7 @@ import { Cliente } from 'src/app/app.interfaces';
 import { ModalFormClienteComponent } from '../../../components/modal-form-cliente/modal-form-cliente.component';
 import { FirestoreService } from '../../../services/firestore.service';
 import { ModalInfoComponent } from '../../../components/modal-info/modal-info.component';
-import { Info } from '../../auth/registro/registro.component';
+import { Info } from 'src/app/app.interfaces';
 
 @Component({
   selector: 'app-clientes',

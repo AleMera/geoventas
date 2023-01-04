@@ -60,15 +60,17 @@ export class DataTableComponent implements OnInit, OnDestroy {
 
           break;
         case 'Usuarios':
-          this.titulos = ['nombre', 'apellido', 'email', 'telefono', 'ciudad'];
+          this.titulos = ['nombre', 'apellido', 'email', 'telefono', 'ciudades'];
           resp.forEach((usuario: any) => {
             this.data.push({
               id: usuario.id,
+              cedula: usuario.cedula,
               nombre: usuario.nombre,
               apellido: usuario.apellido,
               email: usuario.email,
               telefono: usuario.telefono,
-              ciudad: usuario.ciudad
+              ciudades: usuario.ciudades,
+              passwd: ''
             });
           });
           break;
@@ -81,7 +83,7 @@ export class DataTableComponent implements OnInit, OnDestroy {
               apellido: cliente.apellido,
               email: cliente.email,
               telefono: cliente.telefono,
-              ciudad: cliente.ciudad
+              ciudades: cliente.ciudades
             });
           });
           break;
@@ -127,7 +129,7 @@ export class DataTableComponent implements OnInit, OnDestroy {
         }).componentInstance.curso = item;
         break;
       case 'Usuarios':
-        this.modal.open(ModalFormClienteComponent, {
+        this.modal.open(ModalFormUsuarioComponent, {
           scrollable: true,
           centered: true,
         }).componentInstance.usuario = item;

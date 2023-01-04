@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
-import { Info } from 'src/app/pages/auth/registro/registro.component';
+import { Info } from 'src/app/app.interfaces';
 import { Router } from '@angular/router';
 import { FirestoreService } from '../../services/firestore.service';
 import { StorageService } from '../../services/storage.service';

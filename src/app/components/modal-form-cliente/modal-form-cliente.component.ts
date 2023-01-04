@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { Cliente } from 'src/app/app.interfaces';
-import { Info } from 'src/app/pages/auth/registro/registro.component';
+import { Info } from 'src/app/app.interfaces';
 import { FirestoreService } from '../../services/firestore.service';
 import { ModalInfoComponent } from '../modal-info/modal-info.component';
 

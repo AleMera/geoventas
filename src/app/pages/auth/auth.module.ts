@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 
 import { AuthRoutingModule } from './auth-routing.module';
 import { LoginComponent } from './login/login.component';
-import { RegistroComponent } from './registro/registro.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { NgbAlertModule } from '@ng-bootstrap/ng-bootstrap';
 
@@ -11,7 +10,6 @@ import { NgbAlertModule } from '@ng-bootstrap/ng-bootstrap';
 @NgModule({
   declarations: [
     LoginComponent,
-    RegistroComponent
   ],
   imports: [
     CommonModule,
