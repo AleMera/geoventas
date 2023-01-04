@@ -9,6 +9,7 @@ import { ModalFormCursoComponent } from './modal-form-curso/modal-form-curso.com
 import { ModalInfoComponent } from './modal-info/modal-info.component';
 import { DataTableComponent } from './data-table/data-table.component';
 import { DataTablesModule } from 'angular-datatables';
+import { ModalFormUsuarioComponent } from './modal-form-usuario/modal-form-usuario.component';
 
 
 @NgModule({
@@ -18,6 +19,7 @@ import { DataTablesModule } from 'angular-datatables';
     ModalFormCursoComponent,
     ModalInfoComponent,
     DataTableComponent,
+    ModalFormUsuarioComponent,
   ],
   imports: [
     CommonModule,

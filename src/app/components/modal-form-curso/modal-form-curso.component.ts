@@ -1,13 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { FirestoreService } from '../../services/firestore.service';
 import { StorageService } from '../../services/storage.service';
-
-interface Alert {
-  type: string;
-  msj: string;
-}
+import { ModalInfoComponent } from '../modal-info/modal-info.component';
+import { Info } from '../../pages/auth/registro/registro.component';
 
 @Component({
   selector: 'app-modal-form-curso',
@@ -15,6 +12,8 @@ interface Alert {
   styleUrls: ['./modal-form-curso.component.scss']
 })
 export class ModalFormCursoComponent implements OnInit {
+
+  @Input() curso!: any;
 
   cursoForm: FormGroup = this.fBuilder.group({
     nombre: ['', Validators.required],
@@ -30,15 +29,29 @@ export class ModalFormCursoComponent implements OnInit {
   modalidades = ['Presencial', 'Virtual'];
   cargando: boolean = false;
   finalizado: boolean = false;
-  alert!: Alert;
-  curso: any;
   imgs: any[] = [];
   imgsStorage: any[] = [];
-
+  editar: boolean = false;
 
   constructor(protected modal: NgbModal, private fBuilder: FormBuilder, private firestoreSvc: FirestoreService, private storageSc: StorageService) { }
 
   ngOnInit(): void {
+    console.log(this.curso);
+    (this.curso) ? this.cargarDatos() : null;
+    (this.curso) ? this.editar = true : false;
+  }
+
+  cargarDatos() {
+    this.cursoForm.setValue({
+      nombre: this.curso.nombre,
+      duracion: this.curso.duracion,
+      horario: this.curso.horario,
+      modalidad: this.curso.modalidad,
+      certif: this.curso.certif,
+      fecha: this.curso.fecha,
+      precio: this.curso.precio,
+      imgs: this.curso.imgsUrl
+    });
   }
 
   validarCampos(campo: string) {
@@ -53,24 +66,19 @@ export class ModalFormCursoComponent implements OnInit {
     this.cargando = true;
     this.asignarDatos();
     this.subirImgs(this.imgsStorage);
-    // this.firestoreSvc.crearDocumentoConId('Cursos', this.curso.id, this.curso)
-    //   .then(() => {
-    //     this.alert = {
-    //       type: 'success',
-    //       msj: 'Nuevo curso registrado exitosamente.'
-    //     }
-    //   })
-    //   .catch((error) => {
-    //     this.alert = {
-    //       type: 'danger',
-    //       msj: 'No se ha podido registrar el curso.'
-    //     }
-    //   })
-    //   .finally(() => {
-    //     this.subirImgs(this.imgsStorage);
-    //     this.cargando = false;
-    //     location.reload();
-    //   });
+  }
+
+  eliminar() {
+    this.cargando = true;
+    const info: Info = {
+      tipo: 'Eliminar',
+      icono: 'warning',
+      titulo: 'Eliminar Curso',
+      mensaje: '¿Está seguro que desea eliminar el curso? \n Esta acción no se puede deshacer.',
+      id: this.curso.id,
+      col: 'Cursos'
+    }
+    this.modal.open(ModalInfoComponent, { centered: true, size: 'sm' }).componentInstance.info = info;
   }
 
   onChangeImgs(event: any) {
@@ -88,10 +96,6 @@ export class ModalFormCursoComponent implements OnInit {
     });
   }
 
-  cerrar() {
-    this.modal.dismissAll();
-  }
-
   asignarDatos() {
     this.curso = {
       id: this.firestoreSvc.crearIdDoc(),
@@ -107,7 +111,6 @@ export class ModalFormCursoComponent implements OnInit {
     }
     console.log(this.imgsStorage);
 
-    // this.subirImgs(this.imgsStorage);
   }
 
   subirImgs(imgs: File[]) {
@@ -121,8 +124,12 @@ export class ModalFormCursoComponent implements OnInit {
           imgsUrl.push(url);
           console.log(imgsUrl);
           this.curso.imgsUrl = imgsUrl;
-          this.firestoreSvc.crearDocumentoConId('Cursos', this.curso.id, this.curso);
+          this.firestoreSvc.crearDocumentoConId('Cursos', this.curso.id, this.curso).finally(() => {
+            this.cargando = false;
+            location.reload();
+          });
         });
+
     });
   }
 

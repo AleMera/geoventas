@@ -4,6 +4,8 @@ import { FirestoreService } from '../../services/firestore.service';
 import { Curso } from '../../app.interfaces';
 import { ModalFormClienteComponent } from '../modal-form-cliente/modal-form-cliente.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ModalFormCursoComponent } from '../modal-form-curso/modal-form-curso.component';
+import { ModalFormUsuarioComponent } from '../modal-form-usuario/modal-form-usuario.component';
 
 @Component({
   selector: 'app-data-table',
@@ -22,7 +24,6 @@ export class DataTableComponent implements OnInit, OnDestroy {
   constructor(private firestoreSvc: FirestoreService, private modal: NgbModal) { }
 
   ngOnInit(): void {
-    this.coleccion = 'Cursos';
     this.getData();
     this.dtOptions = {
       pagingType: 'full_numbers',
@@ -32,27 +33,31 @@ export class DataTableComponent implements OnInit, OnDestroy {
       pageLength: 10,
       lengthMenu: [5, 10, 25, 50, 100],
       responsive: true,
-      processing: true,
       scrollY: '400px',
     };
   }
 
   getData() {
-    this.firestoreSvc.getDocs<Curso>(this.coleccion).subscribe((resp) => {
+    this.firestoreSvc.getDocs<any>(this.coleccion).subscribe((resp) => {
+      console.log(resp);
+      this.data = [];
       switch (this.coleccion) {
         case 'Cursos':
           this.titulos = ['nombre', 'precio', 'modalidad', 'duracion', 'horario'];
-          resp.forEach((curso: Curso) => {
+          resp.forEach((curso: any) => {
             this.data.push({
               id: curso.id,
               nombre: curso.nombre,
               precio: curso.precio,
               modalidad: curso.modalidad,
               duracion: curso.duracion,
-              horario: curso.horario
+              horario: curso.horario,
+              certif: curso.certif,
+              fecha: curso.fecha,
+              imgsUrl: '',
             });
           });
-          
+
           break;
         case 'Usuarios':
           this.titulos = ['nombre', 'apellido', 'email', 'telefono', 'ciudad'];
@@ -88,14 +93,54 @@ export class DataTableComponent implements OnInit, OnDestroy {
   }
 
   nuevo() {
+    switch (this.coleccion) {
+      case 'Cursos':
+        this.modal.open(ModalFormCursoComponent, {
+          scrollable: true,
+          centered: true,
+        });
+        break;
+      case 'Usuarios':
+        this.modal.open(ModalFormUsuarioComponent, {
+          scrollable: true,
+          centered: true,
+        });
+        break;
+      case 'Clientes':
+        this.modal.open(ModalFormClienteComponent, {
+          scrollable: true,
+          centered: true,
+        });
+        break;
+      default:
+        break;
+    }
   }
 
   verInfo(item: any) {
-    console.log('Editar: ' + item);
-    this.modal.open(ModalFormClienteComponent, {
-      scrollable: true,
-      centered: true,
-    }).componentInstance.cliente = item;
+    console.log(item);
+    switch (this.coleccion) {
+      case 'Cursos':
+        this.modal.open(ModalFormCursoComponent, {
+          scrollable: true,
+          centered: true,
+        }).componentInstance.curso = item;
+        break;
+      case 'Usuarios':
+        this.modal.open(ModalFormClienteComponent, {
+          scrollable: true,
+          centered: true,
+        }).componentInstance.usuario = item;
+        break;
+      case 'Clientes':
+        this.modal.open(ModalFormClienteComponent, {
+          scrollable: true,
+          centered: true,
+        }).componentInstance.cliente = item;
+        break;
+      default:
+        break;
+    }
   }
 
   ngOnDestroy(): void {

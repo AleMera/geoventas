@@ -26,6 +26,24 @@ export class FirestoreService {
       return code;
     }
   }
+  
+  async actualizarDoc(col: string, id: string, data: any) {
+    try {
+      return await this.firestore.collection(col).doc(id).set(data, { merge: true });
+    } catch (error: any) {
+      const code = error.code
+      return code;
+    }
+  }
+
+  async eliminarDoc(col: string, id: string) {
+    try {
+      return this.firestore.collection(col).doc(id).delete();
+    } catch (error: any) {
+      const code = error.code
+      return code;
+    }
+  }
 
   crearIdDoc() {
     return this.firestore.createId();
@@ -39,14 +57,6 @@ export class FirestoreService {
     return this.firestore.collection(col).doc(id).valueChanges();
   }
 
-  async actualizarDoc(col: string, id: string, data: any) {
-    try {
-      return await this.firestore.collection(col).doc(id).set(data, { merge: true });
-    } catch (error: any) {
-      const code = error.code
-      return code;
-    }
-  }
 
 
 }

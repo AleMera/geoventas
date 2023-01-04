@@ -1,5 +1,7 @@
 <div class="modal-header">
-  <h4 class="modal-title">{{ cliente ? 'Editar Información' : 'Registrar Cliente' }}</h4>
+  <h4 class="modal-title">
+    {{ usuario ? "Editar Información" : "Registrar Usuario" }}
+  </h4>
   <button
     type="button"
     class="btn-close"
@@ -8,10 +10,28 @@
   ></button>
 </div>
 <div class="modal-body">
-  <form autocomplete="off" [formGroup]="clienteForm" (ngSubmit)="guardar()">
+  <form autocomplete="off" [formGroup]="usuarioForm" (ngSubmit)="guardar()">
+    <!-- Cedula -->
+    <span class="text-danger" *ngIf="validarCampos('cedula')">
+      {{ errorCedula }}
+    </span>
+    <div class="input-group mb-3">
+      <div class="input-group-prepend">
+        <span class="input-group-text" id="inputGroup-sizing-default"
+          >Cedula</span
+        >
+      </div>
+      <input
+        type="text"
+        class="form-control"
+        id="cedula"
+        formControlName="cedula"
+      />
+    </div>
+
     <!-- Nombre -->
     <span class="text-danger" *ngIf="validarCampos('nombre')">
-      El nombre es obligatorio
+      {{ errorNombre }}
     </span>
     <div class="input-group mb-3">
       <div class="input-group-prepend">
@@ -29,7 +49,7 @@
 
     <!-- Apellido -->
     <span class="text-danger" *ngIf="validarCampos('apellido')">
-      El apellido es obligatorio
+      {{ errorApellido }}
     </span>
     <div class="input-group mb-3">
       <div class="input-group-prepend">
@@ -47,7 +67,7 @@
 
     <!-- Email -->
     <span class="text-danger" *ngIf="validarCampos('email')">
-      El email es obligatorio
+      {{ errorEmail }}
     </span>
     <div class="input-group mb-3">
       <div class="input-group-prepend">
@@ -63,9 +83,9 @@
       />
     </div>
 
-    <!-- Teléfono -->
+    <!-- Telefono -->
     <span class="text-danger" *ngIf="validarCampos('telefono')">
-      El teléfono es obligatorio
+      {{ errorTelf }}
     </span>
     <div class="input-group mb-3">
       <div class="input-group-prepend">
@@ -81,37 +101,15 @@
       />
     </div>
 
-    <!-- Dirección -->
-    <span class="text-danger" *ngIf="validarCampos('direccion')">
-      La dirección es obligatoria
-    </span>
-    <div class="input-group mb-3">
-      <div class="input-group-prepend">
-        <span class="input-group-text" id="inputGroup-sizing-default"
-          >Dirección</span
-        >
-      </div>
-      <input
-        type="text"
-        class="form-control"
-        id="direccion"
-        formControlName="direccion"
-      />
-    </div>
-
     <!-- Ciudades -->
     <span class="text-danger" *ngIf="validarCampos('ciudades')">
-      Seleccione una opción
+      {{ errorCiudad }}
     </span>
     <div class="input-group mb-3">
       <div class="input-group-prepend">
         <label class="input-group-text" for="inputGroupSelect01">Ciudad</label>
       </div>
-      <select
-        class="form-control custom-select"
-        (change)="onChangeCiudad($event)"
-        formControlName="ciudades"
-      >
+      <select class="form-control custom-select" formControlName="ciudades">
         <option value="">Seleccionar...</option>
         <option *ngFor="let ciudad of ciudades" [ngValue]="ciudad">
           {{ ciudad }}
@@ -119,24 +117,22 @@
       </select>
     </div>
 
-    <!-- Cursos -->
-    <span class="text-danger" *ngIf="validarCampos('cursos')">
-      Seleccione una opción
+    <!-- Password -->
+    <span class="text-danger" *ngIf="validarCampos('passwd')">
+      {{ errorPasswd }}
     </span>
     <div class="input-group mb-3">
       <div class="input-group-prepend">
-        <label class="input-group-text" for="inputGroupSelect01">Curso</label>
+        <span class="input-group-text" id="inputGroup-sizing-default"
+          >Contraseña</span
+        >
       </div>
-      <select
-        class="form-control custom-select"
-        (change)="onChangeCurso($event)"
-        formControlName="cursos"
-      >
-        <option value="">Seleccionar...</option>
-        <option *ngFor="let curso of cursos" [ngValue]="curso">
-          {{ curso }}
-        </option>
-      </select>
+      <input
+        type="password"
+        class="form-control"
+        id="passwd"
+        formControlName="passwd"
+      />
     </div>
   </form>
 </div>
@@ -156,8 +152,8 @@
     type="button"
     class="btn btn-success"
     (click)="guardar()"
-    [disabled]="cargando || !clienteForm.dirty"
-    *ngIf="cliente"
+    [disabled]="cargando || !usuarioForm.dirty"
+    *ngIf="usuario"
   >
     <span
       class="spinner-border spinner-border-sm"

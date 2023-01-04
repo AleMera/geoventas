@@ -12,6 +12,7 @@ export interface Info {
   titulo: string;
   mensaje: string;
   id?: string;
+  col?: string;
 }
 
 @Component({

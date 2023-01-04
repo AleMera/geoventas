@@ -4,7 +4,9 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { Cliente } from 'src/app/app.interfaces';
+import { Info } from 'src/app/pages/auth/registro/registro.component';
 import { FirestoreService } from '../../services/firestore.service';
+import { ModalInfoComponent } from '../modal-info/modal-info.component';
 
 interface Alert {
   type: string;
@@ -64,6 +66,7 @@ export class ModalFormClienteComponent implements OnInit {
 
   asignarValores() {
     this.cliente = {
+      id: this.cliente.id,
       nombre: this.clienteForm.value.nombre,
       apellido: this.clienteForm.value.apellido,
       email: this.clienteForm.value.email,
@@ -81,31 +84,72 @@ export class ModalFormClienteComponent implements OnInit {
     }
 
     if (this.cliente) {
+      console.log(this.cliente.id);
+      
       // Actualizar
+      if (!this.clienteForm.dirty) {
+        return;
+      }
+      this.asignarValores();
+      this.cargando = true;
+      this.firestoreSvc.actualizarDoc('Clientes', this.cliente.id, this.cliente).then(() => {
+        const info: Info = {
+          tipo: 'exito',
+          icono: 'check_circle',
+          titulo: 'Datos actualizados',
+          mensaje: 'Los datos del cliente se han actualizado correctamente',
+        }
+        this.modal.open(ModalInfoComponent, { centered: true, size: 'sm' }).componentInstance.info = info;
+      }).catch((error) => {
+        const info: Info = {
+          tipo: 'error',
+          icono: 'error',
+          titulo: 'Error al actualizar',
+          mensaje: 'No se han podido actualizar los datos del cliente',
+        }
+        this.modal.open(ModalInfoComponent, { centered: true, size: 'sm' }).componentInstance.info = info;
+      }).finally(() => {
+        this.cargando = false;
+        this.finalizado = true;
+      });
     } else {
       // Crear
       this.asignarValores();
       this.cargando = true;
-      this.firestoreSvc.crearDocumento('Clientes', this.cliente)
-        .then(() => {
-          this.alert = {
-            type: 'success',
-            msj: 'El cliente se ha creado exitosamente'
-          }
-          console.log('Documento creado exitosamente');
-        })
-        .catch((error) => {
-          this.alert = {
-            type: 'danger',
-            msj: 'No se ha podido crear el cliente'
-          }
-          console.log('Error creando el documento', error);
-        })
-        .finally(() => {
-          this.cargando = false;
-          this.finalizado = true;
-        });
+      this.firestoreSvc.crearDocumento('Clientes', this.cliente).then(() => {
+        const info: Info = {
+          tipo: 'exito',
+          icono: 'success',
+          titulo: 'Cliente creado',
+          mensaje: 'El cliente se ha creado correctamente',
+        }
+        this.modal.open(ModalInfoComponent, { centered: true, size: 'sm' }).componentInstance.info = info;
+      }).catch((error) => {
+        const info: Info = {
+          tipo: 'error',
+          icono: 'error',
+          titulo: 'Error al crear',
+          mensaje: 'No se ha podido crear el cliente',
+        }
+        this.modal.open(ModalInfoComponent, { centered: true, size: 'sm' }).componentInstance.info = info;
+      }).finally(() => {
+        this.cargando = false;
+        this.finalizado = true;
+      });
     }
+  }
+
+  eliminar() {
+    this.cargando = true;
+    const info: Info = {
+      tipo: 'Eliminar',
+      icono: 'warning',
+      titulo: 'Eliminar Cliente',
+      mensaje: '¿Está seguro que desea eliminar este cliente? \n Esta acción no se puede deshacer.',
+      id: this.cliente.id,
+      col: 'Clientes'
+    }
+    this.modal.open(ModalInfoComponent, { centered: true, size: 'sm' }).componentInstance.info = info;
   }
 
   onChangeCurso(event: any) {

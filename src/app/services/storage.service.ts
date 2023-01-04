@@ -39,4 +39,16 @@ export class StorageService {
       });
     });
   }
+
+  async eliminarImgsDoc(path: string, idDoc: string): Promise<void> {
+    return new Promise(resolve => {
+      const ref = this.storage.ref(`${path}/${idDoc}`);
+      ref.listAll().subscribe((res) => {
+        res.items.forEach((itemRef) => {
+          itemRef.delete();
+        });
+        resolve();
+      });
+    });
+  }
 }

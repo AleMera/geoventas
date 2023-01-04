@@ -22,13 +22,19 @@ export class InicioComponent implements OnInit, OnDestroy {
     this.firestoreSvc.getDocs('Cursos').subscribe((res) => {
       this.cursos = res;
       console.log(res);
-      if (this.cursos.length > 3) {
-        this.cargarMas();
-        return;
-      }
-      this.cursosMostrar = this.cursos
       this.cargando = false;
     })
+    // this.cargando = true;
+    // this.firestoreSvc.getDocs('Cursos').subscribe((res) => {
+    //   this.cursos = res;
+    //   console.log(res);
+    //   if (this.cursos.length > 3) {
+    //     this.cargarMas();
+    //     return;
+    //   }
+    //   this.cursosMostrar = this.cursos
+    //   this.cargando = false;
+    // })
   }
 
   /**
@@ -40,14 +46,6 @@ export class InicioComponent implements OnInit, OnDestroy {
       this.cursosMostrar.push(...this.cursos.splice(0, this.limite));
     }, 1000);
     this.cargando = true;
-  }
-
-  agregarCurso() {
-    this.modal.open(ModalFormCursoComponent, {
-      scrollable: true,
-      size: 'lg',
-      centered: true
-    })
   }
 
   ngOnDestroy(): void {
