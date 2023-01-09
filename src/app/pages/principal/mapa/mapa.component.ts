@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, OnDestroy } from '@angular/core';
 
 import * as L from 'leaflet';
+import { FirestoreService } from '../../../services/firestore.service';
 
 @Component({
   selector: 'app-mapa',
@@ -10,11 +11,15 @@ import * as L from 'leaflet';
 export class MapaComponent implements AfterViewInit, OnDestroy {
 
   private map: any;
+  cargando: boolean = true;
+  constructor(private firestroreSvc: FirestoreService) { }
+
   private initMap() {
     try {
       this.map = L.map('map', {
-        center: [-1.1855339,-78.0652832],
-        zoom: 7
+        center: [-1.1855339, -78.0652832],
+        zoom: 7,
+        worldCopyJump: true,
       });
       const tiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 18,
@@ -31,10 +36,27 @@ export class MapaComponent implements AfterViewInit, OnDestroy {
 
   }
 
-  constructor() { }
-
   ngAfterViewInit() {
     this.initMap();
+    this.cargarMarcadores();
+  }
+  
+  cargarMarcadores() {
+    this.cargando = true;
+    this.firestroreSvc.getDocs('Ciudades').subscribe((ciudades) => {
+      const icon = {
+        icon: L.icon({
+          iconSize: [25, 41],
+          iconAnchor: [13, 41],
+          iconUrl: '/assets/img/marker.svg',
+        })
+      }
+      ciudades.forEach((ciudad: any) => {
+        const marker = L.marker([ciudad.lat, ciudad.lng], icon).addTo(this.map);
+        marker.bindPopup(ciudad.nombre);
+      });
+      this.cargando = false;
+    });
   }
 
   ngOnDestroy() {

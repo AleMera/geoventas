@@ -100,11 +100,22 @@ export class ModalFormClienteComponent implements OnInit {
   ngOnInit(): void {
     this.firestoreSvc.getDocs<Ciudad>('Ciudades').subscribe((resp) => {
       this.ciudades = resp;
+      this.ciudades.sort(this.ordenarAlfabeticamente);
     });
     this.firestoreSvc.getDocs('Cursos').subscribe((resp) => {
       this.cursos = resp;
       (this.idCliente) ? this.cargarCliente() : null;
     });
+  }
+  
+  ordenarAlfabeticamente(a: any, b: any) {
+    if (a.nombre < b.nombre) {
+      return -1;
+    }
+    if (a.nombre > b.nombre) {
+      return 1;
+    }
+    return 0;
   }
 
   cargarCliente() {
@@ -189,8 +200,4 @@ export class ModalFormClienteComponent implements OnInit {
     this.modal.open(ModalInfoComponent, { centered: true, scrollable: true }).componentInstance.info = info;
   }
 
-  onChangeCurso(event: any) {
-  }
-  onChangeCiudad(event: any) {
-  }
 }

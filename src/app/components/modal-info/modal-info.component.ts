@@ -15,10 +15,21 @@ export class ModalInfoComponent implements OnInit {
 
   @Input() info!: Info;
   cargando: boolean = false;
-
+  colorTexto: string;
   constructor(protected modal: NgbModal, private router: Router,  private firestoreSvc: FirestoreService, private storageSvc: StorageService) { }
 
   ngOnInit(): void {
+    console.log(this.info);
+    switch (this.info.tipo) {
+      case 'exito':
+        this.colorTexto = 'modal-title text-success';
+        break;
+      case 'error':
+        this.colorTexto = 'modal-title text-danger';
+        break;
+      case 'ayuda':
+        this.colorTexto = 'modal-title text-primary';
+    }
   }
 
   aceptar() {
@@ -58,9 +69,12 @@ export class ModalInfoComponent implements OnInit {
     if (this.info.tipo === 'error') {
       this.modal.dismissAll();
       return;
-    } else {
+    } else if (this.info.tipo === 'exito') {
       this.modal.dismissAll();
       location.reload();
+      return;
+    } else {
+      this.modal.dismissAll();
       return;
     }
   }

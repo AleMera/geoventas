@@ -178,4 +178,14 @@ export class RegistroComponent implements OnInit {
       this.cargandoGuardar = false;
     });
   }
+
+  ayuda() {
+    const modalRef = this.modal.open(ModalInfoComponent, { centered: true, scrollable: true, backdrop: 'static', keyboard: false });
+    modalRef.componentInstance.info = {
+      tipo: 'ayuda',
+      icono: 'help',
+      titulo: 'Ayuda',
+      mensaje: 'Ingrese el correo electrónico otorgado por el administrador. Si el correo es válido, se mostrarán los datos del usuario; verifíquelos y cree una contraseña. Si el correo no es válido, se mostrará un mensaje de error.'
+    };
+  }
 }
