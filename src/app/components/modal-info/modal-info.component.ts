@@ -15,7 +15,7 @@ export class ModalInfoComponent implements OnInit {
 
   @Input() info!: Info;
   cargando: boolean = false;
-  modalRef: any;
+
   constructor(protected modal: NgbModal, private router: Router,  private firestoreSvc: FirestoreService, private storageSvc: StorageService) { }
 
   ngOnInit(): void {
@@ -29,7 +29,7 @@ export class ModalInfoComponent implements OnInit {
         if (this.info.col === 'Cursos') {
           this.storageSvc.eliminarImgsDoc(this.info.col, idDoc);
         }
-        this.modalRef = this.modal.open(ModalInfoComponent, { centered: true, size: 'sm' }).componentInstance.info = {
+        this.modal.open(ModalInfoComponent, { centered: true, size: 'sm' }).componentInstance.info = {
           tipo: 'exito',
           icono: 'check_circle',
           titulo: 'Registro eliminado.',
@@ -38,8 +38,8 @@ export class ModalInfoComponent implements OnInit {
       }).
       catch(()=>{
         this.modal.dismissAll();
-        this.modalRef = this.modal.open(ModalInfoComponent, { centered: true, size: 'sm' });
-        this.modalRef.componentInstance.info = {
+        this.modal.open(ModalInfoComponent, { centered: true, size: 'sm' }).
+        componentInstance.info = {
           tipo: 'error',
           icono: 'error',
           titulo: 'Error al eliminar.',

@@ -202,7 +202,7 @@ export class ModalFormCursoComponent implements OnInit {
             const modalRef = this.modal.open(ModalInfoComponent, { centered: true, size: 'sm' });
             modalRef.componentInstance.info = {
               tipo: 'exito',
-              icono: 'check-circle',
+              icono: 'check_circle',
               titulo: 'Curso creado con éxito',
               mensaje: 'El curso se ha creado correctamente',
             };

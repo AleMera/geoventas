@@ -16,8 +16,6 @@ export class CursosComponent implements OnInit, AfterViewInit, OnDestroy {
 
   dtOptions: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject<any>();
-  @ViewChild(DataTableDirective) dtElement: DataTableDirective;
-  dtInitialized: boolean = false;
 
   constructor(private firestoreSvc: FirestoreService, private modal: NgbModal) { }
 
@@ -31,12 +29,12 @@ export class CursosComponent implements OnInit, AfterViewInit, OnDestroy {
       lengthMenu: [5, 10, 25, 50, 100],
       responsive: false,
       scrollY: '400px',
+      destroy: true,
     };
   }
   
   ngAfterViewInit(): void {
     this.getData();
-    // this.dtTrigger.next(null);
   }
 
   nuevo() {
@@ -49,7 +47,6 @@ export class CursosComponent implements OnInit, AfterViewInit, OnDestroy {
     this.firestoreSvc.getDocs('Cursos').subscribe((resp) => {
       this.cursos = resp;
       this.dtTrigger.next(null);
-      // this.rerender();
     });
   }
 
@@ -58,16 +55,8 @@ export class CursosComponent implements OnInit, AfterViewInit, OnDestroy {
     modalRef.componentInstance.idCurso = idCurso;
   }
 
-  rerender(): void {
-    this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-      dtInstance.destroy();
-      this.dtTrigger.next(null);
-    });
-  }
-
   ngOnDestroy(): void {
-    console.log('ngOnDestroy');
-
+    this.dtOptions.destroy;
     this.dtTrigger.unsubscribe();
   }
 }

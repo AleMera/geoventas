@@ -162,7 +162,6 @@ export class ModalFormUsuarioComponent implements OnInit {
   }
 
   guardar() {
-    debugger;
     if (this.usuarioForm.invalid) {
       this.usuarioForm.markAllAsTouched();
       return;
