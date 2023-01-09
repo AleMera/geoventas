@@ -1,39 +1,23 @@
 <nav class="navbar sticky-top navbar-expand-lg navbar-light bg-light">
   <div class="container-fluid">
     <img src="/assets/img/logo-corfopym.png" alt="corfopym_logo.jpg" />
-    <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
-
-      <div class="dropdown-center">
-        <button
-          [class]="
-            !logueado
-              ? 'btn btn-outline-success'
-              : 'btn btn-outline-success dropdown-toggle'
-          "
-          data-bs-toggle="dropdown"
-          type="button"
-          aria-expanded="false"
-          (click)="!logueado ? irALogin() : ''"
-          [disabled]="cargando"
-        >
-          <span
-            class="spinner-border spinner-border-sm"
-            role="status"
-            aria-hidden="true"
-            *ngIf="cargando"
-          ></span>
-          {{ !logueado && !cargando ? "Iniciar sesión" : usuario.email }}
+    <div
+      class="collapse navbar-collapse justify-content-end"
+      id="navbarSupportedContent"
+    >
+      <button type="button" class="btn btn-success" (click)="iniciarSesion()" *ngIf="!logueado">
+        <span> Iniciar sesión </span>
+      </button>
+      
+     
+      <div ngbDropdown class="d-inline-block" *ngIf="logueado">
+        <button type="button" class="btn btn-secondary" id="dropdown1" ngbDropdownToggle>
+          {{ usuario.email }}
         </button>
-        <ul class="dropdown-menu dropdown-menu-start">
-          <li>
-            <button
-              class="btn btn-danger dropdown-item"
-              (click)="cerrarSesion()"
-            >
-              Cerrar sesión
-            </button>
-          </li>
-        </ul>
+        <div ngbDropdownMenu aria-labelledby="dropdown1">
+          <!-- items as buttons -->
+          <button ngbDropdownItem type="button" class="btn btn-light text-danger" (click)="cerrarSesion()">Cerrar sesión</button>
+        </div>
       </div>
     </div>
   </div>

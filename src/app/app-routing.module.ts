@@ -3,7 +3,6 @@ import { RouterModule, Routes } from '@angular/router';
 import { redirectLoggedInTo, redirectUnauthorizedTo, canActivate } from "@angular/fire/compat/auth-guard";
 
 import { InicioComponent } from './pages/inicio/inicio.component';
-import { DataTableComponent } from './components/data-table/data-table.component';
 
 const redirectUnauthorizedToAuth = () => redirectUnauthorizedTo(['auth']);
 const redirectLoggedInToPrincipal = () => redirectLoggedInTo(['principal']);
@@ -27,10 +26,6 @@ const routes: Routes = [
   {
     path: 'cursos',
     loadChildren: () => import('./pages/cursos/cursos.module').then(m => m.CursosModule),
-  },
-  {
-    path: 'datatable',
-    component: DataTableComponent
   },
   {
     path: '**',

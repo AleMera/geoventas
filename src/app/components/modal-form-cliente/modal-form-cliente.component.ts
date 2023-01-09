@@ -3,15 +3,12 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
-import { Cliente } from 'src/app/app.interfaces';
 import { Info } from 'src/app/app.interfaces';
 import { FirestoreService } from '../../services/firestore.service';
 import { ModalInfoComponent } from '../modal-info/modal-info.component';
+import { Ciudad } from '../../app.interfaces';
+import { validarCedula } from '../../validators/validators';
 
-interface Alert {
-  type: string;
-  msj: string;
-}
 
 @Component({
   selector: 'app-modal-form-cliente',
@@ -22,59 +19,132 @@ interface Alert {
 
 export class ModalFormClienteComponent implements OnInit {
 
-  @Input() cliente!: any;
+  @Input() idCliente!: any;
+
+  cliente!: any;
   cargando: boolean = false;
   finalizado: boolean = false;
-  alert!: Alert;
+  cursos: any[] = [];
+  ciudades: Ciudad[] = [];
 
   clienteForm: FormGroup = this.fBuilder.group({
+    cedula: ['', [Validators.required, validarCedula]],
     nombre: ['', Validators.required],
     apellido: ['', Validators.required],
-    email: ['', Validators.required],
-    telefono: ['', Validators.required],
+    email: ['', [Validators.required, Validators.email]],
+    telefono: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(10)]],
     direccion: ['', Validators.required],
-    ciudades: [[], Validators.required],
-    cursos: [[], Validators.required],
+    ciudad: [[], Validators.required],
 
   });
 
-  ciudades = ['Ambato', 'Cuenca', 'Guayaquil', 'Loja', 'Quito', 'Riobamba', 'Tulcán'];
-  cursos = ['Programación', 'Diseño', 'Marketing', 'Finanzas', 'Administración', 'Otros'];
 
   constructor(protected modal: NgbModal, private fBuilder: FormBuilder, private firestoreSvc: FirestoreService) { }
 
-  ngOnInit(): void {
-    console.log(this.cliente);
-    (this.cliente) ? this.cargarDatos() : null;
+  get errorCedula() {
+    const error = this.clienteForm.controls['cedula'].errors;
+    if (error) {
+      return error['required'] ? 'La cédula es obligatoria' : (error['cedulaIncompleta'] || error['cedulaInvalida']) ? 'La cédula no es válida' : '';
+    }
+    return '';
   }
 
-  cargarDatos() {
-    this.clienteForm.setValue({
-      nombre: this.cliente.nombre,
-      apellido: this.cliente.apellido,
-      email: this.cliente.email,
-      telefono: '1234567890',
-      direccion: 'Calle 123',
-      ciudades: 'Ambato',
-      cursos: 'Programación'
+  get errorNombre() {
+    const error = this.clienteForm.controls['nombre'].errors;
+    if (error) {
+      return error['required'] ? 'El nombre es obligatorio' : '';
+    }
+    return '';
+  }
+
+  get errorApellido() {
+    const error = this.clienteForm.controls['apellido'].errors;
+    if (error) {
+      return error['required'] ? 'El apellido es obligatorio' : '';
+    }
+    return '';
+  }
+
+  get errorEmail() {
+    const error = this.clienteForm.controls['email'].errors;
+    if (error) {
+      return error['required'] ? 'El email es obligatorio' : error['email'] ? 'El email no es válido' : '';
+    }
+    return '';
+  }
+
+  get errorTelefono() {
+    const error = this.clienteForm.controls['telefono'].errors;
+    if (error) {
+      return error['required'] ? 'El teléfono es obligatorio' : (error['minlength'] || error['maxlength']) ? 'El teléfono debe tener 10 dígitos' : '';
+    }
+    return '';
+  }
+
+  get errorDireccion() {
+    const error = this.clienteForm.controls['direccion'].errors;
+    if (error) {
+      return error['required'] ? 'La dirección es obligatoria' : '';
+    }
+    return '';
+  }
+
+  get errorCiudad() {
+    const error = this.clienteForm.controls['ciudad'].errors;
+    if (error) {
+      return error['required'] ? 'La ciudad es obligatoria' : '';
+    }
+    return '';
+  }
+
+  ngOnInit(): void {
+    this.firestoreSvc.getDocs<Ciudad>('Ciudades').subscribe((resp) => {
+      this.ciudades = resp;
     });
+    this.firestoreSvc.getDocs('Cursos').subscribe((resp) => {
+      this.cursos = resp;
+      (this.idCliente) ? this.cargarCliente() : null;
+    });
+  }
+
+  cargarCliente() {
+    this.cargando = true;
+    this.firestoreSvc.getDoc('Clientes', this.idCliente).subscribe((cliente: any) => {
+      this.cliente = cliente;
+      let ciudadNombre = this.ciudades.find((ciudad) => ciudad.id === this.cliente.idCiudad)?.nombre;
+      this.clienteForm.setValue({
+        cedula: this.cliente.cedula,
+        nombre: this.cliente.nombre,
+        apellido: this.cliente.apellido,
+        email: this.cliente.email,
+        telefono: this.cliente.telefono,
+        direccion: this.cliente.direccion,
+        ciudad: ciudadNombre ? ciudadNombre : '',
+      });
+      this.cargando = false;
+    });
+  }
+
+  asignarValores() {
+    this.ciudades.map((ciudad) => {
+      if (ciudad.nombre === this.clienteForm.controls['ciudad'].value) {
+        this.cliente.idCiudad = ciudad.id;
+      }
+    });
+    this.cliente = {
+      id: this.idCliente,
+      cedula: this.clienteForm.controls['cedula'].value,
+      nombre: this.clienteForm.controls['nombre'].value,
+      apellido: this.clienteForm.controls['apellido'].value,
+      email: this.clienteForm.controls['email'].value,
+      telefono: this.clienteForm.controls['telefono'].value,
+      direccion: this.clienteForm.controls['direccion'].value,
+    }
+    console.log(this.cliente);
   }
 
   validarCampos(campo: string) {
     return this.clienteForm.controls[campo].errors && this.clienteForm.controls[campo].touched;
-  }
-
-  asignarValores() {
-    this.cliente = {
-      id: this.cliente.id,
-      nombre: this.clienteForm.value.nombre,
-      apellido: this.clienteForm.value.apellido,
-      email: this.clienteForm.value.email,
-      telefono: this.clienteForm.value.telefono,
-      direccion: this.clienteForm.value.direccion,
-      ciudades: this.clienteForm.value.ciudades,
-      cursos: this.clienteForm.value.cursos,
-    }
   }
 
   guardar() {
@@ -82,61 +152,28 @@ export class ModalFormClienteComponent implements OnInit {
       this.clienteForm.markAllAsTouched();
       return;
     }
-
-    if (this.cliente) {
-      console.log(this.cliente.id);
-      
-      // Actualizar
-      if (!this.clienteForm.dirty) {
-        return;
+    this.asignarValores();
+    this.cargando = true;
+    this.firestoreSvc.actualizarDoc('Clientes', this.cliente.id, this.cliente).then(() => {
+      const info: Info = {
+        tipo: 'exito',
+        icono: 'check_circle',
+        titulo: 'Datos actualizados',
+        mensaje: 'Los datos del cliente se han actualizado correctamente',
       }
-      this.asignarValores();
-      this.cargando = true;
-      this.firestoreSvc.actualizarDoc('Clientes', this.cliente.id, this.cliente).then(() => {
-        const info: Info = {
-          tipo: 'exito',
-          icono: 'check_circle',
-          titulo: 'Datos actualizados',
-          mensaje: 'Los datos del cliente se han actualizado correctamente',
-        }
-        this.modal.open(ModalInfoComponent, { centered: true, size: 'sm' }).componentInstance.info = info;
-      }).catch((error) => {
-        const info: Info = {
-          tipo: 'error',
-          icono: 'error',
-          titulo: 'Error al actualizar',
-          mensaje: 'No se han podido actualizar los datos del cliente',
-        }
-        this.modal.open(ModalInfoComponent, { centered: true, size: 'sm' }).componentInstance.info = info;
-      }).finally(() => {
-        this.cargando = false;
-        this.finalizado = true;
-      });
-    } else {
-      // Crear
-      this.asignarValores();
-      this.cargando = true;
-      this.firestoreSvc.crearDocumento('Clientes', this.cliente).then(() => {
-        const info: Info = {
-          tipo: 'exito',
-          icono: 'success',
-          titulo: 'Cliente creado',
-          mensaje: 'El cliente se ha creado correctamente',
-        }
-        this.modal.open(ModalInfoComponent, { centered: true, size: 'sm' }).componentInstance.info = info;
-      }).catch((error) => {
-        const info: Info = {
-          tipo: 'error',
-          icono: 'error',
-          titulo: 'Error al crear',
-          mensaje: 'No se ha podido crear el cliente',
-        }
-        this.modal.open(ModalInfoComponent, { centered: true, size: 'sm' }).componentInstance.info = info;
-      }).finally(() => {
-        this.cargando = false;
-        this.finalizado = true;
-      });
-    }
+      this.modal.open(ModalInfoComponent, { centered: true, size: 'sm' }).componentInstance.info = info;
+    }).catch((error) => {
+      const info: Info = {
+        tipo: 'error',
+        icono: 'error',
+        titulo: 'Error al actualizar',
+        mensaje: 'No se han podido actualizar los datos del cliente',
+      }
+      this.modal.open(ModalInfoComponent, { centered: true, size: 'sm' }).componentInstance.info = info;
+    }).finally(() => {
+      this.cargando = false;
+      this.finalizado = true;
+    });
   }
 
   eliminar() {
@@ -149,13 +186,11 @@ export class ModalFormClienteComponent implements OnInit {
       id: this.cliente.id,
       col: 'Clientes'
     }
-    this.modal.open(ModalInfoComponent, { centered: true, size: 'sm' }).componentInstance.info = info;
+    this.modal.open(ModalInfoComponent, { centered: true, scrollable: true }).componentInstance.info = info;
   }
 
   onChangeCurso(event: any) {
-    console.log(event);
   }
   onChangeCiudad(event: any) {
-    console.log(event);
   }
 }

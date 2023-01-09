@@ -53,8 +53,8 @@ export class FirestoreService {
     return this.firestore.collection<T>(col).valueChanges();
   }
 
-  getDoc(col: string, id: string) {
-    return this.firestore.collection(col).doc(id).valueChanges();
+  getDoc<T>(col: string, id: string) {
+    return this.firestore.collection<T>(col).doc(id).valueChanges();
   }
 
 

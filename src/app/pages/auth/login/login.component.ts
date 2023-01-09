@@ -74,6 +74,7 @@ export class LoginComponent implements OnInit {
         icono: '',
         titulo: '',
         mensaje: '',
+        registro: false,
       };
       if (res.code) {
         info.tipo = 'error';
@@ -81,7 +82,8 @@ export class LoginComponent implements OnInit {
         switch (res.code) {
           case 'auth/user-not-found':
             info.titulo = 'Usuario no encontrado';
-            info.mensaje = 'El usuario no existe';
+            info.mensaje = 'El usuario no existe. ¿Desea registrarse? (Puede hacerlo si cuenta con un correo creado por el adiministrador)';
+            info.registro = true;
             break;
           case 'auth/wrong-password':
             this.passwdIncorrecta = true;
@@ -96,7 +98,7 @@ export class LoginComponent implements OnInit {
         return;
       }
       this.cargando = false;
-      this.router.navigate(['/principal'])
+      location.reload();
     });
   }
 

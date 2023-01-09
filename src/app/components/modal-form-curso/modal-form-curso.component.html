@@ -1,5 +1,5 @@
 <div class="modal-header">
-  <h4 class="modal-title">Registrar Curso</h4>
+  <h4 class="modal-title">{{ idCurso ? 'Editar información' : 'Registrar curso'}}</h4>
   <button
     type="button"
     class="btn-close"
@@ -8,10 +8,15 @@
   ></button>
 </div>
 <div class="modal-body">
+  <div class="text-center">
+    <div class="spinner-border" style="width: 3rem; height: 3rem;" role="status" *ngIf="cargandoInicio">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
   <form autocomplete="off" [formGroup]="cursoForm" (ngSubmit)="guardar()">
     <!-- Nombre -->
     <span class="text-danger" *ngIf="validarCampos('nombre')">
-      El nombre es obligatorio
+      {{ errorNombre }}
     </span>
     <div class="input-group mb-3">
       <div class="input-group-prepend">
@@ -29,7 +34,7 @@
 
     <!-- Certificacion -->
     <span class="text-danger" *ngIf="validarCampos('certif')">
-      El tipo de certificación es obligatorio
+      {{ errorCertif }}
     </span>
     <div class="input-group mb-3">
       <div class="input-group-prepend">
@@ -47,7 +52,7 @@
 
     <!-- Duracion -->
     <span class="text-danger" *ngIf="validarCampos('duracion')">
-      La duración es obligatoria
+      {{ errorDuracion }}
     </span>
     <div class="input-group mb-3">
       <div class="input-group-prepend">
@@ -68,7 +73,7 @@
 
     <!-- Horario -->
     <span class="text-danger" *ngIf="validarCampos('horario')">
-      El horario es obligatorio
+      {{ errorHorario }}
     </span>
     <div class="input-group mb-3">
       <div class="input-group-prepend">
@@ -86,7 +91,7 @@
 
     <!-- Modalidad -->
     <span class="text-danger" *ngIf="validarCampos('modalidad')">
-      Seleccione una opción.
+      {{ errorModalidad }}
     </span>
     <div class="input-group mb-3">
       <div class="input-group-prepend">
@@ -96,7 +101,7 @@
       </div>
       <select class="form-control custom-select" formControlName="modalidad">
         <option value="">Seleccionar...</option>
-        <option *ngFor="let modalidad of modalidades" [ngValue]="modalidad">
+        <option *ngFor="let modalidad of modalidades">
           {{ modalidad }}
         </option>
       </select>
@@ -104,7 +109,7 @@
 
     <!-- Fecha -->
     <span class="text-danger" *ngIf="validarCampos('fecha')">
-      La fecha es obligatoria
+      {{ errorFecha }}
     </span>
     <div class="input-group mb-3">
       <div class="input-group-prepend">
@@ -122,7 +127,7 @@
 
     <!-- Precio -->
     <span class="text-danger" *ngIf="validarCampos('precio')">
-      El precio es obligatorio
+      {{ errorPrecio }}
     </span>
     <div class="input-group mb-3">
       <div class="input-group-prepend">
@@ -142,59 +147,63 @@
     </div>
 
     <!-- Imagenes -->
-    <span class="text-danger" *ngIf="validarCampos('imgs')">
-      Debe seleccionar al menos una imagen.
-    </span>
-    <div class="input-group mb-3">
-      <div class="input-group-prepend">
-        <span class="input-group-text">Imágenes</span>
+    <div *ngIf="!editar">
+      <span class="text-danger" *ngIf="validarCampos('imgs')">
+        {{ errorImgs }}
+      </span>
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text">Imágenes</span>
+        </div>
+        <div class="custom-file">
+          <input
+            type="file"
+            class="custom-file-input"
+            multiple
+            accept="image/*"
+            (change)="onChangeImgs($event)"
+            formControlName="imgs"
+            id="imgs"
+          />
+          <label class="custom-file-label" for="inputGroupFile01"></label>
+        </div>
       </div>
-      <div class="custom-file">
-        <input
-          type="file"
-          class="custom-file-input"
-          multiple
-          accept="image/*"
-          formControlName="imgs"
-          id="imgs"
-          (change)="onChangeImgs($event)"
-        />
-        <label class="custom-file-label" for="inputGroupFile01"></label>
-      </div>
-    </div>
-    <div class="container-fluid">
-      <div class="row">
-        <div class="col-4" *ngFor="let img of imgs">
-          <img [src]="img" class="img-fluid" alt="Responsive image" />
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-4" *ngFor="let img of imgs">
+            <img [src]="img" class="img-fluid" alt="Responsive image" />
+          </div>
         </div>
       </div>
     </div>
   </form>
 </div>
 
-<div class="modal-footer justify-content-between">
-  <button type="button" class="btn btn-danger text-left" (click)="eliminar()">
+<div [class]=" editar ? 'modal-footer justify-content-between' : 'modal-footer'">
+  <button type="button" class="btn btn-danger text-left" (click)="eliminar()" *ngIf="editar">
     <span
       class="spinner-border spinner-border-sm"
       role="status"
       aria-hidden="true"
-      *ngIf="cargando"
+      *ngIf="cargandoEliminar"
     >
     </span>
-    {{ !cargando ? "Eliminar" : "" }}
+    <i class="material-icons" *ngIf="!cargandoEliminar">
+      delete
+    </i>
   </button>
   <button
     type="button"
     class="btn btn-success"
     (click)="guardar()"
-    [disabled]="cargando || !cursoForm.dirty"
+    [disabled]="(cargandoGuardar || !cursoForm.dirty) && editar"
   >
     <span
       class="spinner-border spinner-border-sm"
       role="status"
       aria-hidden="true"
-      *ngIf="cargando"
+      *ngIf="cargandoGuardar"
     ></span>
-    {{ cargando ? "Guardando..." : "Guardar" }}
+    {{ cargandoGuardar ? "Guardando..." : "Guardar" }}
   </button>
 </div>

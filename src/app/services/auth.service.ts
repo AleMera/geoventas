@@ -25,23 +25,26 @@ export class AuthService {
     }
   }
 
-  async registro(usuario: any) {
+  async registro(credenciales: any) {
     try {
-      return await (await this.auth.createUserWithEmailAndPassword(usuario.email, usuario.passwd))
+      return await (await this.auth.createUserWithEmailAndPassword(credenciales.email, credenciales.passwd))
     } catch (error: any) {
       const code = error.code;
       return { code };
     }
   }
 
-  async logout() {
-    try {
-      return await this.auth.signOut();
-    } catch (error) {
-      const msj = 'No se ha podido cerrar sesión';
-      console.log(msj + ': ' + error);
-      return msj;
-    }
+  // async logout() {
+  //   try {
+  //     return await this.auth.signOut();
+  //   } catch (error) {
+  //     const msj = 'No se ha podido cerrar sesión';
+  //     console.log(msj + ': ' + error);
+  //     return msj;
+  //   }
+  // }
+  logout() {
+    return this.auth.signOut();
   }
 
   //TODO: Crear el metodo para recuperar la contraseña y para modificar información del usuario

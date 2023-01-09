@@ -1,4 +1,5 @@
 export interface Cliente {
+    idCiudad: string;
     id?: number;
     cedula: string;
     nombre: string;
@@ -30,9 +31,12 @@ export interface Curso {
 
 
 export interface Ciudad {
-    id: number;
+    id: string;
     nombre: string;
     provincia: string;
+    pais?: string;
+    lat?: number;
+    lng?: number;
 }   
 
 export interface Info {
@@ -42,4 +46,5 @@ export interface Info {
     mensaje: string;
     id?: string;
     col?: string;
+    registro?: boolean;
 }

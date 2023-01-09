@@ -1,6 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { ModalFormCursoComponent } from '../../components/modal-form-curso/modal-form-curso.component';
+import { Component, OnInit } from '@angular/core';
 import { FirestoreService } from '../../services/firestore.service';
 
 @Component({
@@ -8,49 +6,20 @@ import { FirestoreService } from '../../services/firestore.service';
   templateUrl: './inicio.component.html',
   styleUrls: ['./inicio.component.scss']
 })
-export class InicioComponent implements OnInit, OnDestroy {
+export class InicioComponent implements OnInit {
 
   cursos: any[] = [];
   cursosMostrar: any[] = [];
   limite: number = 4;
   cargando: boolean = false;
 
-  constructor(private modal: NgbModal, private firestoreSvc: FirestoreService) { }
+  constructor(private firestoreSvc: FirestoreService) { }
 
   ngOnInit(): void {
     this.cargando = true;
     this.firestoreSvc.getDocs('Cursos').subscribe((res) => {
       this.cursos = res;
-      console.log(res);
       this.cargando = false;
-    })
-    // this.cargando = true;
-    // this.firestoreSvc.getDocs('Cursos').subscribe((res) => {
-    //   this.cursos = res;
-    //   console.log(res);
-    //   if (this.cursos.length > 3) {
-    //     this.cargarMas();
-    //     return;
-    //   }
-    //   this.cursosMostrar = this.cursos
-    //   this.cargando = false;
-    // })
-  }
-
-  /**
-   * Método que carga los cursos aumentando de 3 en 3
-   */
-  cargarMas() {
-    setTimeout(() => {
-      this.cargando = false;
-      this.cursosMostrar.push(...this.cursos.splice(0, this.limite));
-    }, 1000);
-    this.cargando = true;
-  }
-
-  ngOnDestroy(): void {
-    this.cursos = [];
-    this.cursosMostrar = [];
-    this.cargando = false;
+    });
   }
 }

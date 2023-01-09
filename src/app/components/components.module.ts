@@ -7,7 +7,6 @@ import { CursoCardComponent } from './curso-card/curso-card.component';
 import { ModalFormClienteComponent } from './modal-form-cliente/modal-form-cliente.component';
 import { ModalFormCursoComponent } from './modal-form-curso/modal-form-curso.component';
 import { ModalInfoComponent } from './modal-info/modal-info.component';
-import { DataTableComponent } from './data-table/data-table.component';
 import { DataTablesModule } from 'angular-datatables';
 import { ModalFormUsuarioComponent } from './modal-form-usuario/modal-form-usuario.component';
 
@@ -18,18 +17,15 @@ import { ModalFormUsuarioComponent } from './modal-form-usuario/modal-form-usuar
     ModalFormClienteComponent,
     ModalFormCursoComponent,
     ModalInfoComponent,
-    DataTableComponent,
     ModalFormUsuarioComponent,
   ],
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    DataTablesModule,
     NgbAlertModule
   ],
   exports: [
     CursoCardComponent,
-    DataTableComponent
   ]
 })
 export class ComponentsModule { }

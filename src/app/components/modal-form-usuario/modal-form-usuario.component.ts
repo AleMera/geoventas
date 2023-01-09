@@ -6,6 +6,9 @@ import { ModalInfoComponent } from '../modal-info/modal-info.component';
 import { AuthService } from '../../services/auth.service';
 import { FirestoreService } from '../../services/firestore.service';
 import { Info } from 'src/app/app.interfaces';
+import { validarCedula } from '../../validators/validators';
+import { Ciudad } from '../../app.interfaces';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-modal-form-usuario',
@@ -14,155 +17,223 @@ import { Info } from 'src/app/app.interfaces';
 })
 export class ModalFormUsuarioComponent implements OnInit {
 
-  @Input() usuario!: any;
-  cargando: boolean = false;
+  @Input() idUsuario!: any;
+  usuario: any;
+  editar: boolean = false;
+  cargandoInicio: boolean = false;
+  cargandoGuardar: boolean = false;
+  cargandoEliminar: boolean = false;
+  ciudades: Ciudad[] = [];
 
   usuarioForm: FormGroup = this.fBuilder.group({
+    // cedula: ['', [Validators.required, validarCedula]],
     cedula: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(10)]],
     nombre: ['', Validators.required],
     apellido: ['', Validators.required],
     email: ['', [Validators.required, Validators.email]],
     telefono: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(10)]],
-    ciudades: [[], Validators.required],
-    passwd: ['', [Validators.required, Validators.minLength(8)]],
+    ciudad: [[], Validators.required],
   });
-  
-  ciudades = ['Ambato', 'Cuenca', 'Guayaquil', 'Loja', 'Quito', 'Riobamba', 'Tulcán'];
 
-  constructor(protected modal: NgbModal, private fBuilder: FormBuilder, private authSvc: AuthService, private firestoreSvc: FirestoreService) { }
+
+  constructor(protected modal: NgbModal, private fBuilder: FormBuilder, private firestoreSvc: FirestoreService) { }
 
   get errorCedula() {
+    // const error = this.usuarioForm.controls['cedula'].errors;
+    // if (error)
+    //   return error['required'] ? 'La cédula es requerida' : (error['cedulaIncompleta'] || error['cedulaInvalida']) ? 'La cédula no es válida' : '';
     const error = this.usuarioForm.controls['cedula'].errors;
-    if (error) {
+    if (error)
       return error['required'] ? 'La cédula es requerida' : (error['minlength'] || error['maxlength']) ? 'La cédula debe tener 10 dígitos' : '';
-    }
-    return '';
+      return '';
   }
 
   get errorNombre() {
     const error = this.usuarioForm.controls['nombre'].errors;
-    if (error) {
+    if (error)
       return error['required'] ? 'El nombre es requerido' : '';
-    }
     return '';
   }
 
   get errorApellido() {
     const error = this.usuarioForm.controls['apellido'].errors;
-    if (error) {
+    if (error)
       return error['required'] ? 'El apellido es requerido' : '';
-    }
     return '';
   }
 
   get errorEmail() {
     const error = this.usuarioForm.controls['email'].errors;
-    if (error) {
+    if (error)
       return error['required'] ? 'El correo es requerido' : error['email'] ? 'El correo no es válido' : '';
-    }
     return '';
   }
 
   get errorTelf() {
     const error = this.usuarioForm.controls['telefono'].errors;
-    if (error) {
+    if (error)
       return error['required'] ? 'El teléfono es requerido' : (error['minlength'] || error['maxlength']) ? 'El teléfono debe tener 10 dígitos' : '';
-    }
     return '';
   }
 
   get errorCiudad() {
-    const error = this.usuarioForm.controls['ciudades'].errors;
-    if (error) {
+    const error = this.usuarioForm.controls['ciudad'].errors;
+    if (error)
       return error['required'] ? 'La ciudad es requerida' : '';
-    }
-    return '';
-  }
-
-  get errorPasswd() {
-    const error = this.usuarioForm.controls['passwd'].errors;
-    if (error) {
-      return error['required'] ? 'La contraseña es requerida' : error['minlength'] ? 'La contraseña debe tener al menos 8 caracteres' : '';
-    }
     return '';
   }
 
 
   ngOnInit(): void {
-    console.log(this.usuario);
-    this.usuario ? this.cargarDatos() : null;
+    this.firestoreSvc.getDocs<Ciudad>('Ciudades').subscribe((resp) => {
+      this.ciudades = resp;
+      this.ciudades.sort(this.ordenarAlfabeticamente);
+      if (this.idUsuario) {
+        this.editar = true;
+        this.usuarioForm.controls['cedula'].disable();
+        this.cargarUsuario();
+      }
+    });
   }
 
-  cargarDatos() {
-    this.usuarioForm.setValue({
-      cedula: this.usuario.cedula,
-      nombre: this.usuario.nombre,
-      apellido: this.usuario.apellido,
-      email: this.usuario.email,
-      telefono: this.usuario.telefono,
-      ciudades: this.usuario.ciudades,
-      passwd: this.usuario.passwd
+  ordenarAlfabeticamente(a: any, b: any) {
+    if (a.nombre < b.nombre) {
+      return -1;
+    }
+    if (a.nombre > b.nombre) {
+      return 1;
+    }
+    return 0;
+  }
+
+  cargarUsuario() {
+    this.firestoreSvc.getDoc<any>('Usuarios', this.idUsuario).subscribe((resp) => {
+      console.log(resp);
+      this.usuario = resp;
+      let ciudadNombre;
+      this.ciudades.map((ciudad) => {
+        if (ciudad.id === this.usuario.idCiudad) {
+          ciudadNombre = ciudad.nombre;
+        }
+      });
+      this.usuarioForm.setValue({
+        cedula: this.usuario.cedula,
+        nombre: this.usuario.nombre,
+        apellido: this.usuario.apellido,
+        email: this.usuario.email,
+        telefono: this.usuario.telefono,
+        ciudad: ciudadNombre,
+      });
+      
     });
   }
 
   validarCampos(campo: string) {
     return this.usuarioForm.controls[campo].errors && this.usuarioForm.controls[campo].touched;
   }
-  
+
   asignarValores() {
+    let idUsuario = '';
+    let idCiudad;
+    if (this.idUsuario) {
+      idUsuario = this.idUsuario;
+    } else {
+      idUsuario = this.firestoreSvc.crearIdDoc();
+    }
+    console.log(this.usuarioForm.controls['ciudad'].value);
+    
+    this.ciudades.map((ciudad) => {
+      if (ciudad.nombre === this.usuarioForm.controls['ciudad'].value) {
+        idCiudad = ciudad.id;
+        console.log(ciudad);
+        
+      }
+    });
     this.usuario = {
-      id: this.firestoreSvc.crearIdDoc(),
+      id: idUsuario,
       cedula: this.usuarioForm.controls['cedula'].value,
       nombre: this.usuarioForm.controls['nombre'].value,
       apellido: this.usuarioForm.controls['apellido'].value,
       email: this.usuarioForm.controls['email'].value,
       telefono: this.usuarioForm.controls['telefono'].value,
-      ciudades: this.usuarioForm.controls['ciudades'].value,
-      passwd: this.usuarioForm.controls['passwd'].value,
+      idCiudad: idCiudad,
     }
+    console.log(this.usuario);
   }
 
   guardar() {
+    debugger;
     if (this.usuarioForm.invalid) {
       this.usuarioForm.markAllAsTouched();
       return;
     }
-    this.cargando = true;
+    if(!this.editar) {
+      //Registrar usuario
+      this.registrarUsuario();
+    } else {
+      //Editar usuario
+      this.guardarCambios();
+    }
+  }
+
+  registrarUsuario() {
+    this.cargandoGuardar = true;
     this.asignarValores();
-    this.firestoreSvc.crearDocumento('Usuarios', this.usuario).then(() => {
-    this.authSvc.registro(this.usuario).then(() => {
-      const info: Info = {
+    this.firestoreSvc.crearDocumentoConId('Usuarios', this.usuario.id, this.usuario).then(() => {
+      const modalRef = this.modal.open(ModalInfoComponent, { centered: true, scrollable: true });
+      modalRef.componentInstance.info = {
         tipo: 'exito',
         icono: 'check_circle',
         titulo: 'Usuario registrado',
         mensaje: 'El usuario se registró correctamente',
-      }
-      this.modal.open(ModalInfoComponent, { centered: true, size: 'sm' }).componentInstance.info = info;
-    }).catch((err) => {
-      const info: Info = {
+      };
+    }).catch(() => {
+      const modalRef = this.modal.open(ModalInfoComponent, { centered: true, scrollable: true });
+      modalRef.componentInstance.info = {
         tipo: 'error',
         icono: 'error',
-        titulo: 'Error al registrar',
-        mensaje: err.message,
-      }
-      this.modal.open(ModalInfoComponent, { centered: true, size: 'sm' }).componentInstance.info = info;
-
+        titulo: 'Error al registrar usuario',
+        mensaje: 'No se pudo registrar el usuario, intente nuevamente más tarde',
+      };
     }).finally(() => {
-      this.cargando = false;
+      this.cargandoGuardar = false;
     });
-  });
+  }
+
+  guardarCambios() {
+    this.cargandoGuardar = true;
+    this.asignarValores();
+    this.firestoreSvc.actualizarDoc('Usuarios', this.usuario.id, this.usuario).then(() => {
+      const modalRef = this.modal.open(ModalInfoComponent, { centered: true, scrollable: true, backdrop: 'static', keyboard: false });
+      modalRef.componentInstance.info = {
+        tipo: 'exito',
+        icono: 'check_circle',
+        titulo: 'Usuario editado',
+        mensaje: 'Datos guardados correctamente',
+      };
+    }).catch((err) => {
+      const modalRef = this.modal.open(ModalInfoComponent, { centered: true, scrollable: true, backdrop: 'static', keyboard: false });
+      modalRef.componentInstance.info = {
+        tipo: 'error',
+        icono: 'error',
+        titulo: 'Error al editar',
+        mensaje: 'No se pudo editar el usuario, intente nuevamente más tarde',
+      };
+    }).finally(() => {
+      this.cargandoGuardar = false;
+    });
   }
 
   eliminar() {
-    this.cargando = true;
+    this.cargandoEliminar = true;
     const info: Info = {
       tipo: 'Eliminar',
       icono: 'warning',
-      titulo: 'Eliminar Usuario',
-      mensaje: '¿Está seguro que desea eliminar este usuario? \n Esta acción no se puede deshacer.',
+      titulo: 'Eliminar Cliente',
+      mensaje: '¿Está seguro que desea eliminar este cliente? \n Esta acción no se puede deshacer.',
       id: this.usuario.id,
       col: 'Usuarios'
     }
-    this.modal.open(ModalInfoComponent, { centered: true, size: 'sm' }).componentInstance.info = info;
+    this.modal.open(ModalInfoComponent, { centered: true, scrollable: true }).componentInstance.info = info;
   }
 }

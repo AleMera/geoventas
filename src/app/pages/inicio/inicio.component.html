@@ -4,7 +4,7 @@
     <div class="text-center">
       <h1>CURSOS DISPONIBLES</h1>
     </div>
-    <div class="card border-danger" *ngIf="cursos.length === 0 || !cursos">
+    <div class="card border-danger" *ngIf="!cursos">
       <div class="text-center">
         <div class="card-body">
           <p class="card-text text-danger">No hay cursos disponibles</p>
@@ -18,13 +18,13 @@
     </div>
     <div class="card-group" *ngIf="cursosMostrar">
       <div class="row">
-        <!-- <div class="col col-4 animate__animated animate__slideInUp animate__faster" *ngFor="let curso of cursosMostrar" > -->
-        <div class="col col-md-4 col-lg-3 animate__animated animate__slideInUp animate__faster" *ngFor="let curso of cursos" >
+        <div class="col col-4 animate__animated animate__slideInUp animate__faster" *ngFor="let curso of cursos" >
+        <!-- <div class="col col-md-4 col-lg-3 animate__animated animate__slideInUp animate__faster" *ngFor="let curso of cursos" > -->
           <app-curso-card [curso] = curso></app-curso-card>
         </div>
       </div>
     </div>
-    <div class="text-center btnCargar" *ngIf="cursos.length == cursosMostrar.length">
+    <!-- <div class="text-center btnCargar" *ngIf="cursos.length == cursosMostrar.length">
       <button type="button" class="btn btn-outline-primary" (click)="cargarMas()" *ngIf="(!cargando && cursos.length > 0) && cursos.length != cursosMostrar.length">
         Cargar más
       </button>
@@ -32,7 +32,7 @@
         <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
         Cargando...
         </button>
-    </div>
+    </div> -->
   </div>
 </div>
 

@@ -8,10 +8,34 @@
   ></button>
 </div>
 <div class="modal-body">
+  <div class="text-center">
+    <div class="spinner-border" style="width: 3rem; height: 3rem;" role="status" *ngIf="cargando">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
   <form autocomplete="off" [formGroup]="clienteForm" (ngSubmit)="guardar()">
+    <!-- Cedula -->
+    <span class="text-danger" *ngIf="validarCampos('cedula')">
+      {{ errorCedula }}
+    </span>
+    <div class="input-group mb-3">
+      <div class="input-group-prepend">
+        <span class="input-group-text" id="inputGroup-sizing-default"
+          >Cédula</span
+        >
+      </div>
+      <input
+        type="text"
+        class="form-control"
+        id="cedula"
+        onkeypress="return event.charCode >= 48 && event.charCode <= 57"
+        formControlName="cedula"
+      />
+    </div>
+    
     <!-- Nombre -->
     <span class="text-danger" *ngIf="validarCampos('nombre')">
-      El nombre es obligatorio
+      {{ errorNombre }}
     </span>
     <div class="input-group mb-3">
       <div class="input-group-prepend">
@@ -29,7 +53,7 @@
 
     <!-- Apellido -->
     <span class="text-danger" *ngIf="validarCampos('apellido')">
-      El apellido es obligatorio
+      {{ errorApellido }}
     </span>
     <div class="input-group mb-3">
       <div class="input-group-prepend">
@@ -47,7 +71,7 @@
 
     <!-- Email -->
     <span class="text-danger" *ngIf="validarCampos('email')">
-      El email es obligatorio
+      {{ errorEmail }}
     </span>
     <div class="input-group mb-3">
       <div class="input-group-prepend">
@@ -65,7 +89,7 @@
 
     <!-- Teléfono -->
     <span class="text-danger" *ngIf="validarCampos('telefono')">
-      El teléfono es obligatorio
+      {{ errorTelefono }}
     </span>
     <div class="input-group mb-3">
       <div class="input-group-prepend">
@@ -77,13 +101,14 @@
         type="text"
         class="form-control"
         id="telefono"
+        onkeypress="return event.charCode >= 48 && event.charCode <= 57"
         formControlName="telefono"
       />
     </div>
 
     <!-- Dirección -->
     <span class="text-danger" *ngIf="validarCampos('direccion')">
-      La dirección es obligatoria
+      {{ errorDireccion }}
     </span>
     <div class="input-group mb-3">
       <div class="input-group-prepend">
@@ -100,8 +125,8 @@
     </div>
 
     <!-- Ciudades -->
-    <span class="text-danger" *ngIf="validarCampos('ciudades')">
-      Seleccione una opción
+    <span class="text-danger" *ngIf="validarCampos('ciudad')">
+      {{ errorCiudad }}
     </span>
     <div class="input-group mb-3">
       <div class="input-group-prepend">
@@ -110,34 +135,15 @@
       <select
         class="form-control custom-select"
         (change)="onChangeCiudad($event)"
-        formControlName="ciudades"
+        formControlName="ciudad"
       >
         <option value="">Seleccionar...</option>
-        <option *ngFor="let ciudad of ciudades" [ngValue]="ciudad">
-          {{ ciudad }}
+        <option *ngFor="let ciudad of ciudades">
+          {{ ciudad.nombre }}
         </option>
       </select>
     </div>
 
-    <!-- Cursos -->
-    <span class="text-danger" *ngIf="validarCampos('cursos')">
-      Seleccione una opción
-    </span>
-    <div class="input-group mb-3">
-      <div class="input-group-prepend">
-        <label class="input-group-text" for="inputGroupSelect01">Curso</label>
-      </div>
-      <select
-        class="form-control custom-select"
-        (change)="onChangeCurso($event)"
-        formControlName="cursos"
-      >
-        <option value="">Seleccionar...</option>
-        <option *ngFor="let curso of cursos" [ngValue]="curso">
-          {{ curso }}
-        </option>
-      </select>
-    </div>
   </form>
 </div>
 
@@ -150,14 +156,13 @@
       *ngIf="cargando"
     >
     </span>
-    {{ !cargando ? "Eliminar" : "" }}
+    <i class="material-icons">delete</i>
   </button>
   <button
     type="button"
     class="btn btn-success"
     (click)="guardar()"
     [disabled]="cargando || !clienteForm.dirty"
-    *ngIf="cliente"
   >
     <span
       class="spinner-border spinner-border-sm"

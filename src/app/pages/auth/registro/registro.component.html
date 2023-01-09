@@ -1,0 +1,163 @@
+<div class="wrapper fadeInDown">
+  <div id="formContent">
+    <div class="fadeIn first">
+      <img src="assets/img/logo-corfopym.png" id="icon" alt="LogoCorfo" />
+    </div>
+    <h2>Registro de credenciales</h2>
+    <br>
+    <form [formGroup]="registroForm">
+      <!-- CORREO -->
+      <span class="text-danger" *ngIf="validarCampos('correo')">
+        {{ errorCorreo }}
+      </span>
+      <div class="correoInput">
+          <input
+            type="text"
+            id="login"
+            class="fadeIn second"
+            name="login"
+            placeholder="Correo electrónico"
+            formControlName="correo"
+            style="width: 80%;"
+          />
+          <button type="button" class="btn btn-light fadeIn first" (click)="buscarCorreo()">
+            <span
+              class="spinner-border spinner-border-sm"
+              role="status"
+              aria-hidden="true"
+              *ngIf="cargandoBuscar"
+            >
+            </span>
+            <i class="material-icons" *ngIf="!cargandoBuscar">search</i>
+          </button>
+      </div>
+      <br />
+
+      <!-- PASSWD -->
+      <span class="text-danger" *ngIf="validarCampos('passwd')">
+        {{ errorPasswd }}
+      </span>
+      <input
+        passwd
+        [type]="[visible ? 'text' : 'password']"
+        id="password"
+        class="fadeIn third"
+        name="login"
+        placeholder="Contraseña"
+        formControlName="passwd"
+      />
+      <br />
+
+      <!-- PASSWD2 -->
+      <span class="text-danger" *ngIf="validarCampos('passwd2')">
+        {{ errorPasswd2 }}
+      </span>
+      <input
+        passwd
+        type="password"
+        id="password2"
+        class="fadeIn third"
+        name="login"
+        placeholder="Confirmar Contraseña"
+        formControlName="passwd2"
+      />
+      <br />
+      <button
+        type="submit"
+        class="fadeIn fourth btn btn-success"
+        (click)="guardar()"
+      >
+        <span
+          class="spinner-border spinner-border-sm"
+          role="status"
+          aria-hidden="true"
+          *ngIf="cargandoGuardar"
+        ></span>
+        {{ !cargandoGuardar ? "Confirmar Registro" : "" }}
+      </button>
+      <hr />
+      <h2>Información del usuario</h2>
+      <div class="contariner">
+        <div class="row">
+          <div class="col-12">
+            <!-- CEDULA -->
+            <input
+              type="text"
+              id="login"
+              class="fadeIn second"
+              name="login"
+              placeholder="Cédula"
+              formControlName="cedula"
+            />
+          </div>
+        </div>
+        <div class="row row-cols-2">
+          <div class="col">
+            <!-- NOMBRE -->
+            <div class="d-flex justify-content-end">
+              <input
+                type="text"
+                id="login"
+                class="fadeIn second"
+                name="login"
+                placeholder="Nombre"
+                formControlName="nombre"
+                style="width: 82%;"
+              />
+            </div>
+          </div>
+          <div class="col">
+            <!-- APELLIDO -->
+            <div class="d-flex justify-content-start">
+              <input
+                type="text"
+                id="login"
+                class="fadeIn second"
+                name="login"
+                placeholder="Apellido"
+                formControlName="apellido"
+                style="width: 82%;"
+              />
+            </div>
+          </div>
+          <div class="col">
+            <!-- TELEFONO -->
+            <div class="d-flex justify-content-end">
+              <input
+                type="text"
+                id="login"
+                class="fadeIn second"
+                name="login"
+                placeholder="Teléfono"
+                formControlName="telefono"
+                style="width: 82%;"
+              />
+            </div>
+          </div>
+          <div class="col">
+            <!-- CIUDAD -->
+            <div class="d-flex justify-content-start">
+              <input
+                type="text"
+                id="login"
+                class="fadeIn second"
+                name="login"
+                placeholder="Ciudad"
+                formControlName="ciudad"
+                style="width: 82%;"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <br>
+    </form>
+    <div id="formFooter">
+      <a class="underlineHover" href="/auth/login">
+        <i class="material-icons">arrow_back</i>
+        Volver al login
+      </a>
+      <br />
+    </div>
+  </div>
+</div>

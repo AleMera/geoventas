@@ -38,34 +38,19 @@ export class NavBarComponent implements OnInit {
     });
   }
 
-  irALogin(){
+  iniciarSesion() {
     this.router.navigate(['/auth/login']);
   }
 
-  irAlRegistro() {
-    this.router.navigate(['/auth/registro']);
-  }
-
-  irAInicio() {
-    this.router.navigate(['/']);
-  }
-
-  irAMain() {
-    this.router.navigate(['/principal/mapa']);
-  }
-
-  adminMenu() {
-    this.router.navigate(['/admin/usuarios']);
-  }
-
   cerrarSesion() {
-    this.authSvc.logout().then(() => {
-
-    this.logueado = false;
-    this.usuario = null;
-    })
-    .finally(() => {
-    this.router.navigate(['/']);
+    this.authSvc.logout().finally(() => {
+      this.logueado = false;
+      this.usuario = {
+        nombre: '',
+        email: '',
+        uid: '',
+      };
+      location.reload();
     });
   }
 

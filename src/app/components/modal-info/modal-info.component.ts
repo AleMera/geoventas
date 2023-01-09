@@ -15,11 +15,10 @@ export class ModalInfoComponent implements OnInit {
 
   @Input() info!: Info;
   cargando: boolean = false;
-
-  constructor(private router: Router, protected modal: NgbModal, private firestoreSvc: FirestoreService, private storageSvc: StorageService) { }
+  modalRef: any;
+  constructor(protected modal: NgbModal, private router: Router,  private firestoreSvc: FirestoreService, private storageSvc: StorageService) { }
 
   ngOnInit(): void {
-    console.log(this.info);
   }
 
   aceptar() {
@@ -30,11 +29,17 @@ export class ModalInfoComponent implements OnInit {
         if (this.info.col === 'Cursos') {
           this.storageSvc.eliminarImgsDoc(this.info.col, idDoc);
         }
-        this.modal.dismissAll();
+        this.modalRef = this.modal.open(ModalInfoComponent, { centered: true, size: 'sm' }).componentInstance.info = {
+          tipo: 'exito',
+          icono: 'check_circle',
+          titulo: 'Registro eliminado.',
+          mensaje: 'El registro se ha eliminado correctamente.',
+        };
       }).
       catch(()=>{
         this.modal.dismissAll();
-        this.modal.open(ModalInfoComponent, { centered: true, size: 'sm' }).componentInstance.info = {
+        this.modalRef = this.modal.open(ModalInfoComponent, { centered: true, size: 'sm' });
+        this.modalRef.componentInstance.info = {
           tipo: 'error',
           icono: 'error',
           titulo: 'Error al eliminar.',
@@ -43,24 +48,20 @@ export class ModalInfoComponent implements OnInit {
       })
       .finally(()=>{
         this.cargando = false;
-        this.modal.open(ModalInfoComponent, { centered: true, size: 'sm' }).componentInstance.info = {
-          tipo: 'exito',
-          icono: 'check_circle',
-          titulo: 'Registro eliminado.',
-          mensaje: 'El registro se ha eliminado correctamente.',
-        };
+        this.modal.dismissAll();
+        location.reload();
       });
       return;
+    } else if (this.info.registro) {
+      this.router.navigate(['/auth/registro']);
     }
     if (this.info.tipo === 'error') {
       this.modal.dismissAll();
-
       return;
     } else {
-      this.router.navigate(['/principal'])
-        .finally(() => {
-          this.modal.dismissAll();
-        });
+      this.modal.dismissAll();
+      location.reload();
+      return;
     }
   }
 }

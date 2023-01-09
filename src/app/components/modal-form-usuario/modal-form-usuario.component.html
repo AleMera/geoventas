@@ -1,6 +1,6 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    {{ usuario ? "Editar Información" : "Registrar Usuario" }}
+    {{ idUsuario ? "Editar Información" : "Registrar Usuario" }}
   </h4>
   <button
     type="button"
@@ -10,6 +10,16 @@
   ></button>
 </div>
 <div class="modal-body">
+  <div class="text-center">
+    <div
+      class="spinner-border"
+      style="width: 3rem; height: 3rem"
+      role="status"
+      *ngIf="cargandoInicio"
+    >
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
   <form autocomplete="off" [formGroup]="usuarioForm" (ngSubmit)="guardar()">
     <!-- Cedula -->
     <span class="text-danger" *ngIf="validarCampos('cedula')">
@@ -24,6 +34,7 @@
       <input
         type="text"
         class="form-control"
+        onkeypress="return event.charCode >= 48 && event.charCode <= 57"
         id="cedula"
         formControlName="cedula"
       />
@@ -96,70 +107,56 @@
       <input
         type="text"
         class="form-control"
+        onkeypress="return event.charCode >= 48 && event.charCode <= 57"
         id="telefono"
         formControlName="telefono"
       />
     </div>
 
     <!-- Ciudades -->
-    <span class="text-danger" *ngIf="validarCampos('ciudades')">
+    <span class="text-danger" *ngIf="validarCampos('ciudad')">
       {{ errorCiudad }}
     </span>
     <div class="input-group mb-3">
       <div class="input-group-prepend">
         <label class="input-group-text" for="inputGroupSelect01">Ciudad</label>
       </div>
-      <select class="form-control custom-select" formControlName="ciudades">
+      <select class="form-control custom-select" formControlName="ciudad">
         <option value="">Seleccionar...</option>
-        <option *ngFor="let ciudad of ciudades" [ngValue]="ciudad">
-          {{ ciudad }}
+        <option *ngFor="let ciudad of ciudades">
+          {{ ciudad.nombre }}
         </option>
       </select>
-    </div>
-
-    <!-- Password -->
-    <span class="text-danger" *ngIf="validarCampos('passwd')">
-      {{ errorPasswd }}
-    </span>
-    <div class="input-group mb-3">
-      <div class="input-group-prepend">
-        <span class="input-group-text" id="inputGroup-sizing-default"
-          >Contraseña</span
-        >
-      </div>
-      <input
-        type="password"
-        class="form-control"
-        id="passwd"
-        formControlName="passwd"
-      />
     </div>
   </form>
 </div>
 
 <div class="modal-footer justify-content-between">
-  <button type="button" class="btn btn-danger text-left" (click)="eliminar()">
+  <button type="button" class="btn btn-danger text-left" (click)="eliminar()" *ngIf="editar">
     <span
       class="spinner-border spinner-border-sm"
       role="status"
       aria-hidden="true"
-      *ngIf="cargando"
+      *ngIf="cargandoEliminar"
     >
     </span>
-    {{ !cargando ? "Eliminar" : "" }}
+    <i class="material-icons" *ngIf="!cargandoEliminar"> delete </i>
   </button>
   <button
     type="button"
     class="btn btn-success"
     (click)="guardar()"
-    [disabled]="cargando || !usuarioForm.dirty"
+    [disabled]="(cargandoGuardar || !usuarioForm.dirty) && editar"
   >
     <span
       class="spinner-border spinner-border-sm"
       role="status"
       aria-hidden="true"
-      *ngIf="cargando"
+      *ngIf="cargandoGuardar"
     ></span>
-    {{ cargando ? "Guardando..." : "Guardar" }}
+    {{ cargandoGuardar ? "Guardando..." : "Guardar" }}
+  </button>
+  <button type="button" class="btn btn-dark" (click)="asignarValores()">
+    TEST
   </button>
 </div>
