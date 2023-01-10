@@ -1,11 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, Validators, FormGroup } from '@angular/forms';
 
 import { AuthService } from '../../../services/auth.service';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbAlert, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalInfoComponent } from '../../../components/modal-info/modal-info.component';
 import { FirestoreService } from '../../../services/firestore.service';
 import { validarPasswdIguales } from 'src/app/validators/validators';
+import { debounceTime, Subject } from 'rxjs';
 
 export interface Info {
   tipo: string;
@@ -22,6 +23,9 @@ export interface Info {
   styleUrls: ['./registro.component.scss']
 })
 export class RegistroComponent implements OnInit {
+  
+	@ViewChild('autoclose', { static: false }) autoclose: NgbAlert;
+	private _success = new Subject<any>();
 
   registroForm: FormGroup = this.fBuilder.group({
     correo: ['', [Validators.required, Validators.email]],
@@ -42,6 +46,8 @@ export class RegistroComponent implements OnInit {
   cargandoBuscar: boolean = false;
   cargandoGuardar: boolean = false;
   visible: boolean = false;
+  encontrado: boolean = false;
+  alert: boolean = false;
 
   constructor(private fBuilder: FormBuilder, private authSvc: AuthService, private firestoreSvc: FirestoreService, private modal: NgbModal) { }
 
@@ -121,9 +127,14 @@ export class RegistroComponent implements OnInit {
         telefono: usuario.telefono,
         ciudad: ciudad ? ciudad.nombre : ''
       });
+      this.encontrado = true;
       this.cargandoBuscar = false;
-      this.cargandoBuscar = false;
-    })
+      this.alert = true;
+      setTimeout(() => {
+        this.alert = false;
+        this.autoclose.close();
+      }, 5000);
+    });
   }
 
   guardar() {
@@ -187,5 +198,17 @@ export class RegistroComponent implements OnInit {
       titulo: 'Ayuda',
       mensaje: 'Ingrese el correo electrónico otorgado por el administrador. Si el correo es válido, se mostrarán los datos del usuario; verifíquelos y cree una contraseña. Si el correo no es válido, se mostrará un mensaje de error.'
     };
+  }
+
+  onKeydown(event: any) {
+    this.encontrado ? this.encontrado = false : null;
+    this.registroForm.controls['cedula'].setValue('');
+    this.registroForm.controls['nombre'].setValue('');
+    this.registroForm.controls['apellido'].setValue('');
+    this.registroForm.controls['telefono'].setValue('');
+    this.registroForm.controls['ciudad'].setValue('');
+    if (event.key === "Enter") {
+      this.buscarCorreo();
+    }
   }
 }
