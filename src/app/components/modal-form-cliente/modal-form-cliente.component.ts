@@ -1,13 +1,14 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 
 import { Info } from 'src/app/app.interfaces';
 import { FirestoreService } from '../../services/firestore.service';
 import { ModalInfoComponent } from '../modal-info/modal-info.component';
 import { Ciudad } from '../../app.interfaces';
 import { validarCedula } from '../../validators/validators';
+import { StorageService } from '../../services/storage.service';
 
 
 @Component({
@@ -24,12 +25,19 @@ export class ModalFormClienteComponent implements OnInit {
 
   cliente!: any;
   curso!: any;
+  venta!: any;
 
   cargando: boolean = false;
-  finalizado: boolean = false;
 
   cursos: any[] = [];
   ciudades: Ciudad[] = [];
+  imgCedula: any;
+  imgCertTrabajo: any;
+  imgCertCapacitacion: any;
+
+  cedulaFisica: File;
+  certTrabajo: File;
+  certCapacitacion: File;
 
   clienteForm: FormGroup = this.fBuilder.group({
     // cedula: ['', [Validators.required, validarCedula]],
@@ -40,13 +48,13 @@ export class ModalFormClienteComponent implements OnInit {
     telefono: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(10)]],
     direccion: ['', Validators.required],
     ciudad: [[], Validators.required],
-    imgCedula: [null, Validators.required],
-    certTrabajo: [null, Validators.required],
-    certCapacitacion: [null, Validators.required],
+    imgCedula: [null],
+    certTrabajo: [null],
+    certCapacitacion: [null],
   });
 
 
-  constructor(protected modal: NgbModal, private fBuilder: FormBuilder, private firestoreSvc: FirestoreService) { }
+  constructor(protected modal: NgbModal, private fBuilder: FormBuilder, private firestoreSvc: FirestoreService, private storageSvc: StorageService) { }
 
   // get errorCedula() {
   //   const error = this.clienteForm.controls['cedula'].errors;
@@ -144,14 +152,13 @@ export class ModalFormClienteComponent implements OnInit {
       (this.idCliente) ? this.cargarCliente() : null;
       if (this.idCurso) {
         this.curso = resp.find((curso: any) => curso.id === this.idCurso);
-        console.log(this.curso);
       } else {
         this.cursos = resp;
       }
       this.cargando = false;
     });
   }
-  
+
   private ordenarAlfabeticamente(a: any, b: any) {
     if (a.nombre < b.nombre) {
       return -1;
@@ -176,7 +183,14 @@ export class ModalFormClienteComponent implements OnInit {
         telefono: this.cliente.telefono,
         direccion: this.cliente.direccion,
         ciudad: ciudadNombre ? ciudadNombre : '',
+        imgCedula: '',
+        certTrabajo: '',
+        certCapacitacion: ''
       });
+      this.imgCedula = this.cliente.imgCedula;
+      this.imgCertTrabajo = this.cliente.certTrabajo;
+      this.imgCertCapacitacion = this.cliente.certCapacitacion;
+    
       this.cargando = false;
     });
   }
@@ -186,6 +200,7 @@ export class ModalFormClienteComponent implements OnInit {
     this.clienteForm.controls['certTrabajo'].setValidators([Validators.required]);
     this.clienteForm.controls['certCapacitacion'].setValidators([Validators.required]);
   }
+
   asignarValores() {
     let idCliente;
     let idCiudad;
@@ -199,9 +214,9 @@ export class ModalFormClienteComponent implements OnInit {
     });
     if (this.idCliente) {
       idCliente = this.idCliente;
-      imgCedula = 'URL';
-      certTrabajo = 'URL';
-      certCapacitacion = 'URL';
+      imgCedula = '';
+      certTrabajo = '';
+      certCapacitacion = '';
     } else {
       //Campos del cliente
       idCliente = this.firestoreSvc.crearIdDoc();
@@ -210,15 +225,15 @@ export class ModalFormClienteComponent implements OnInit {
       certCapacitacion = '';
 
       //Campos de la venta
-      const venta = {
+      this.venta = {
+        id: this.firestoreSvc.crearIdDoc(),
         idCliente: idCliente,
         idCurso: this.idCurso,
         idCiudad: idCiudad,
         fecha: new Date(),
         precio: this.curso.precio,
       }
-      console.log(venta);
-      
+
     }
     this.cliente = {
       id: idCliente,
@@ -233,7 +248,6 @@ export class ModalFormClienteComponent implements OnInit {
       certTrabajo: certTrabajo,
       certCapacitacion: certCapacitacion,
     }
-    console.log(this.cliente);
   }
 
   protected validarCampos(campo: string) {
@@ -247,42 +261,111 @@ export class ModalFormClienteComponent implements OnInit {
     }
     this.asignarValores();
     if (this.idCliente) {
+      console.log('actualizar');
       this.guardarCambios();
     } else {
+      console.log('guardar inscripcion');
       this.guardarInscripcion();
     }
   }
 
-  private guardarCambios(){
+  private guardarCambios() {
     this.cargando = true;
-    this.firestoreSvc.actualizarDoc('Clientes', this.cliente.id, this.cliente).then(() => {
-      const info: Info = {
-        tipo: 'exito',
-        icono: 'check_circle',
-        titulo: 'Datos actualizados',
-        mensaje: 'Los datos del cliente se han actualizado correctamente',
+    let data = [
+      {
+        img: this.cedulaFisica,
+        nombre: 'Cédula Fisica',
+        campo: 'imgCedula',
+        finalizado: false
+      },
+      {
+        img: this.certTrabajo,
+        nombre: 'Certificado de Trabajo',
+        campo: 'certTrabajo',
+        finalizado: false
+      },
+      {
+        img: this.certCapacitacion,
+        nombre: 'Certificado de Capacitación',
+        campo: 'certCapacitacion',
+        finalizado: false
       }
-      this.modal.open(ModalInfoComponent, { centered: true, size: 'sm' }).componentInstance.info = info;
-    }).catch((error) => {
-      const info: Info = {
-        tipo: 'error',
-        icono: 'error',
-        titulo: 'Error al actualizar',
-        mensaje: 'No se han podido actualizar los datos del cliente',
+    ];
+    this.cargando = true;
+    data.forEach((item, i) => {
+      if (item.img) {
+        this.guardarImg(item.img, item.nombre).then((url) => {
+          this.firestoreSvc.actualizarDoc('Clientes', this.cliente.id, { [item.campo]: url }).then(() => {
+            item.finalizado = true;
+            console.log(`Finalizado: ${item.finalizado}`);
+            if (data.every((item) => item.finalizado)) {
+              const info: Info = {
+                tipo: 'exito',
+                icono: 'check_circle',
+                titulo: 'Datos actualizados',
+                mensaje: 'Los datos del cliente se han actualizado correctamente',
+              }
+              this.modal.open(ModalInfoComponent, { centered: true, size: 'sm', backdrop: 'static', keyboard: false }).componentInstance.info = info;
+            }
+            this.cargando = false;
+          })
+        });
       }
-      this.modal.open(ModalInfoComponent, { centered: true, size: 'sm' }).componentInstance.info = info;
-    }).finally(() => {
-      this.cargando = false;
-      this.finalizado = true;
     });
+
+    // this.firestoreSvc.actualizarDoc('Clientes', this.cliente.id, this.cliente).then(() => {
+    //   const info: Info = {
+    //     tipo: 'exito',
+    //     icono: 'check_circle',
+    //     titulo: 'Datos actualizados',
+    //     mensaje: 'Los datos del cliente se han actualizado correctamente',
+    //   }
+    //   this.modal.open(ModalInfoComponent, { centered: true, size: 'sm' });
+    // }).catch((error) => {
+    //   const info: Info = {
+    //     tipo: 'error',
+    //     icono: 'error',
+    //     titulo: 'Error al actualizar',
+    //     mensaje: 'No se han podido actualizar los datos del cliente',
+    //   }
+    //   this.modal.open(ModalInfoComponent, { centered: true, size: 'sm' }).componentInstance.info = info;
+    // }).finally(() => {
+    //   this.cargando = false;
+    // });
   }
 
   private guardarInscripcion() {
-    // this.cargando = true;
-    // this.firestoreSvc.crearDocumentoConId('Clientes', this.cliente.id, this.cliente).then(() => {
-    //   this.firestoreSvc.crearDocumento('Ventas', 
-    // });
+    this.cargando = true;
+    this.firestoreSvc.crearDocumentoConId('Clientes', this.cliente.id, this.cliente).then(() => {
+      this.firestoreSvc.crearDocumentoConId('Ventas', this.venta.id, this.venta).then(() => {
+        const info: Info = {
+          tipo: 'exito',
+          icono: 'check_circle',
+          titulo: 'Inscripción realizada',
+          mensaje: 'La inscripción se ha realizado correctamente',
+        }
+        this.modal.open(ModalInfoComponent, { centered: true, size: 'sm' }).componentInstance.info = info;
+      }).catch((error) => {
+        const info: Info = {
+          tipo: 'error',
+          icono: 'error',
+          titulo: 'Error al guardar',
+          mensaje: 'No se ha podido guardar la inscripción',
+        }
+        this.modal.open(ModalInfoComponent, { centered: true, size: 'sm' }).componentInstance.info = info;
+      }).finally(() => {
+        this.cargando = false;
+      });
+    });
   }
+
+  guardarImg(img: File, nombre: string) {
+    return this.storageSvc.subirImg('Clientes', this.cliente.id, nombre, img).then((url) => {
+      return url
+    })
+
+  }
+
   eliminar() {
     this.cargando = true;
     const info: Info = {
@@ -296,4 +379,30 @@ export class ModalFormClienteComponent implements OnInit {
     this.modal.open(ModalInfoComponent, { centered: true, scrollable: true }).componentInstance.info = info;
   }
 
+  protected onChangeImgCedula(event: any) {
+    this.cedulaFisica = event.target.files[0];
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      this.imgCedula = e.target?.result;
+    }
+    reader.readAsDataURL(this.cedulaFisica);
+  }
+
+  protected onChangeCertTrabajo(event: any) {
+    this.certTrabajo = event.target.files[0];
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      this.imgCertTrabajo = e.target?.result;
+    }
+    reader.readAsDataURL(this.certTrabajo);
+  }
+
+  protected onChangeCertCapacitacion(event: any) {
+    this.certCapacitacion = event.target.files[0];
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      this.imgCertCapacitacion = e.target?.result;
+    }
+    reader.readAsDataURL(this.certCapacitacion);
+  }
 }

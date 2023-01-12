@@ -1,5 +1,10 @@
 <!-- <app-data-table [coleccion]="'Clientes'"></app-data-table> -->
 <div class="container-fluid">
+  <div class="col-2" style="margin-bottom: 2%;">
+    <select #ciudad class="custom-select" id="inputGroupSelect02">
+      <option *ngFor="let ciudad of ciudades">{{ ciudad.nombre }}</option>
+    </select>
+  </div>
   <table
     datatable
     class="row-border hover"
@@ -31,9 +36,13 @@
             class="btn btn-link"
             (click)="verInfo(cliente.id)"
           >
-          Ver mas...
+            Ver mas...
           </button>
-          <span class="text-center text-warning" *ngIf="camposFaltantes(cliente)" title="Este registro contiene campos faltantes">
+          <span
+            class="text-center text-warning"
+            *ngIf="camposFaltantes(cliente)"
+            title="Este registro contiene campos faltantes"
+          >
             <i class="material-icons">warning</i>
           </span>
         </td>

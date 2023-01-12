@@ -9,7 +9,7 @@
 </div>
 <div class="modal-body">
   <div class="text-center">
-    <div class="spinner-border" style="width: 3rem; height: 3rem;" role="status" *ngIf="cargando">
+    <div class="spinner-border" style="width: 3rem; height: 3rem;" role="status" *ngIf="cargando && idCliente">
       <span class="visually-hidden">Loading...</span>
     </div>
   </div>
@@ -165,8 +165,17 @@
           class="form-control"
           id="imgCedula"
           formControlName="imgCedula"
+          (change)="onChangeImgCedula($event)"
         />
       </div>
+      <div class="container-fluid" style="margin-bottom: 2%" *ngIf="imgCedula">
+        <div class="row">
+          <div class="col-4">
+            <img [src]="imgCedula" class="img-fluid" alt="Cédula física" />
+          </div>
+        </div>
+      </div>
+
       <!-- Certificado de trabajo -->
       <span class="text-danger" *ngIf="validarCampos('certTrabajo')">
         {{ errorCertTrabajo }}
@@ -184,8 +193,17 @@
           class="form-control"
           id="certTrabajo"
           formControlName="certTrabajo"
+          (change)="onChangeCertTrabajo($event)"
         />
       </div>
+      <div class="container-fluid" style="margin-bottom: 2%" *ngIf="imgCertTrabajo">
+        <div class="row">
+          <div class="col-4">
+            <img [src]="imgCertTrabajo" class="img-fluid" alt="Certificado de trabajo" />
+          </div>
+        </div>
+      </div>
+
       <!-- Certificado de capacitacion -->
       <span class="text-danger" *ngIf="validarCampos('certCapacitacion')">
         {{ errorCertCapacitacion }}
@@ -203,7 +221,15 @@
           class="form-control"
           id="certCapacitacion"
           formControlName="certCapacitacion"
+          (change)="onChangeCertCapacitacion($event)"
         />
+      </div>
+      <div class="container-fluid" style="margin-bottom: 2%" *ngIf="imgCertCapacitacion">
+        <div class="row">
+          <div class="col-4">
+            <img [src]="imgCertCapacitacion" class="img-fluid" alt="Certificado de capacitacion" />
+          </div>
+        </div>
       </div>
     </div>
   </form>
@@ -224,8 +250,7 @@
     type="button"
     class="btn btn-success"
     (click)="guardar()"
-    [disabled]="(cargando || !clienteForm.dirty) && !curso"
-    hidden
+    [disabled]="cargando || !clienteForm.dirty && !curso"
   >
     <span
       class="spinner-border spinner-border-sm"
@@ -233,8 +258,6 @@
       aria-hidden="true"
       *ngIf="cargando"
     ></span>
-    {{ (cargando && !curso) ? "Guardando..." : (cargando && curso) ? "" : "Finalizar" }}
+    {{ (cargando && !idCurso) ? "Guardando..." : (cargando && idCurso) ? "" : (!cargando && !idCurso ) ? "Guardar" : "Finalizar" }}
   </button>
-
-  <button type="button" class="btn btn-dark" (click)="asignarValores()">TEST</button>
 </div>

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, AfterViewInit, ViewChild, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit, ViewChild, ChangeDetectorRef, ElementRef } from '@angular/core';
 
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Subject } from 'rxjs';
@@ -8,6 +8,7 @@ import { ModalFormClienteComponent } from '../../../components/modal-form-client
 import { FirestoreService } from '../../../services/firestore.service';
 import { DataTableDirective } from 'angular-datatables';
 import { UsuariosComponent } from '../usuarios/usuarios.component';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-clientes',
@@ -16,7 +17,9 @@ import { UsuariosComponent } from '../usuarios/usuarios.component';
 })
 export class ClientesComponent implements OnInit, OnDestroy, AfterViewInit {
 
+  @ViewChild('ciudad') ciudadSelect: ElementRef;
   clientes: any[] = [];
+  usuario: any;
   ciudad: Ciudad = {
     id: '',
     nombre: '',
@@ -29,7 +32,7 @@ export class ClientesComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild(DataTableDirective) dtElement: DataTableDirective;
   dtinitialized: boolean = false;
 
-  constructor(private modal: NgbModal, private firestoreSvc: FirestoreService) { }
+  constructor(private modal: NgbModal, private firestoreSvc: FirestoreService, private authSvc: AuthService) { }
 
   ngOnInit(): void {
     this.dtOptions = {
@@ -46,15 +49,37 @@ export class ClientesComponent implements OnInit, OnDestroy, AfterViewInit {
     };
     // this.rerender();
   }
-  
+
   ngAfterViewInit(): void {
     this.getData();
   }
 
   getData() {
     this.clientes = [];
-    this.firestoreSvc.getDocs<Ciudad>('Ciudades').subscribe((resp) => {
-      this.ciudades = resp;
+    //TODO: Quitar el campo ciudad del datatable y agregar un combo para filtrar por ciudad
+    this.authSvc.getUid().then((resp) => {
+      if (!resp) {
+        return;
+      }
+      const uid = resp.uid;
+      this.firestoreSvc.getDocs('Usuarios').subscribe((resp: any) => {
+        this.usuario = resp.find((usuario: any) => usuario.uid === uid);
+        console.log(this.usuario);
+        if (this.usuario.idCiudad.length === 1) {
+          console.log(this.ciudadSelect);
+          this.firestoreSvc.getDoc<Ciudad>('Ciudades', this.usuario.idCiudad[0]).subscribe((resp: any) => {
+            this.ciudades.push(resp);
+            this.ciudadSelect.nativeElement.disabled = true;
+          });
+        } else {
+          this.usuario.idCiudad.forEach((idCiudad: string) => {
+            this.firestoreSvc.getDoc<Ciudad>('Ciudades', idCiudad).subscribe((resp: any) => {
+              this.ciudades.push(resp);
+            });
+          });
+        }
+
+      });
     });
     this.firestoreSvc.getDocs<Cliente>('Clientes').subscribe((resp) => {
       resp.forEach((cliente) => {
@@ -63,7 +88,6 @@ export class ClientesComponent implements OnInit, OnDestroy, AfterViewInit {
             this.ciudad = ciudad;
           }
         });
-        //TODO: Agregar certificados
         this.clientes.push({
           id: cliente.id,
           cedula: cliente.cedula,
@@ -73,8 +97,9 @@ export class ClientesComponent implements OnInit, OnDestroy, AfterViewInit {
           telefono: cliente.telefono,
           direccion: cliente.direccion,
           ciudad: this.ciudad.nombre,
-          //certificado de estudio
-          //certificado de trabajo
+          imgCedula: cliente.imgCedula,
+          certTrabajo: cliente.certTrabajo,
+          certCapacitacion: cliente.certCapacitacion,
         });
       });
       this.dtinitialized = true;
@@ -86,12 +111,14 @@ export class ClientesComponent implements OnInit, OnDestroy, AfterViewInit {
     this.modal.open(ModalFormClienteComponent, {
       scrollable: true,
       centered: true,
+      size: 'lg',
     }).componentInstance.idCliente = idCliente;
   }
 
   camposFaltantes(cliente: any) {
-    if (cliente.cedula === '')
-      return true;
+    if (!cliente.imgCedula || !cliente.certTrabajo || !cliente.certCapacitacion) {
+      return true
+    }
     return false;
   }
 

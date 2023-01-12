@@ -4,12 +4,13 @@ export interface Cliente {
     cedula: string;
     nombre: string;
     apellido: string;
-    f_nacimiento: string;
     genero: string;
     email: string;
     telefono: string;
     direccion: string;
-    curso?: string;
+    imgCedula?: string;
+    certTrabajo?: string;
+    certCapacitacion?: string;
 }
 
 // export interface Curso {
