@@ -1,7 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { FirestoreService } from '../../../services/firestore.service';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ModalFormClienteComponent } from '../../../components/modal-form-cliente/modal-form-cliente.component';
 
 @Component({
   selector: 'app-info-curso',
@@ -14,8 +16,8 @@ export class InfoCursoComponent implements OnInit, OnDestroy {
   curso: any = {
     id: '',
     nombre: '',
-    horario: '', 
-    modalidad: '', 
+    horario: '',
+    modalidad: '',
     fecha: '',
     certif: "",
     duracion: 0,
@@ -25,18 +27,23 @@ export class InfoCursoComponent implements OnInit, OnDestroy {
   };
   idCurso!: string;
   cargando: boolean = true;
-  constructor(private rutaActiva: ActivatedRoute, private firestoreSvc: FirestoreService) { }
+  inscrito: boolean = false;
+
+  constructor(private rutaActiva: ActivatedRoute, private modal: NgbModal, private firestoreSvc: FirestoreService) { }
 
   ngOnInit(): void {
-    this.rutaActiva.params.subscribe(resp => {
-      this.idCurso = resp['id'];
-      console.log(resp['id']);
-      this.firestoreSvc.getDoc('Cursos', this.idCurso).subscribe((res) => {
-        this.curso = res;
-        console.log(this.curso);
-        this.cargando = false;
-      });
+    this.idCurso = this.rutaActiva.snapshot.params['id'];
+    this.firestoreSvc.getDoc('Cursos', this.idCurso).subscribe((res) => {
+      this.curso = res;
+      this.cargando = false;
     });
+  }
+
+  incribirse() {
+    this.inscrito = true;
+    this.cargando = true;
+    const modalRef = this.modal.open(ModalFormClienteComponent, { centered: true,  scrollable: true });
+    modalRef.componentInstance.idCurso = this.idCurso;
   }
 
   ngOnDestroy(): void {

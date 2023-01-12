@@ -1,5 +1,5 @@
 <div class="modal-header">
-  <h4 class="modal-title">{{ cliente ? 'Editar Información' : 'Registrar Cliente' }}</h4>
+  <h4 class="modal-title">{{ idCliente ? 'Editar Información' : 'Inscribirse al curso' }}</h4>
   <button
     type="button"
     class="btn-close"
@@ -13,6 +13,10 @@
       <span class="visually-hidden">Loading...</span>
     </div>
   </div>
+  <div class="text-left" *ngIf="curso">
+    <strong>{{ curso.nombre }}</strong>
+  </div>
+  <br>
   <form autocomplete="off" [formGroup]="clienteForm" (ngSubmit)="guardar()">
     <!-- Cedula -->
     <span class="text-danger" *ngIf="validarCampos('cedula')">
@@ -124,7 +128,7 @@
       />
     </div>
 
-    <!-- Ciudades -->
+    <!-- Ciudad -->
     <span class="text-danger" *ngIf="validarCampos('ciudad')">
       {{ errorCiudad }}
     </span>
@@ -143,11 +147,70 @@
       </select>
     </div>
 
+    <div *ngIf="idCliente">
+      <!-- Imagen cedula -->
+      <span class="text-danger" *ngIf="validarCampos('imgCedula')">
+        {{ errorImgCedula }}
+      </span>
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="inputGroup-sizing-default"
+            >Cédula física</span
+          >
+        </div>
+        <input
+          type="file"
+          accept="image/*"
+          max="1"
+          class="form-control"
+          id="imgCedula"
+          formControlName="imgCedula"
+        />
+      </div>
+      <!-- Certificado de trabajo -->
+      <span class="text-danger" *ngIf="validarCampos('certTrabajo')">
+        {{ errorCertTrabajo }}
+      </span>
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="inputGroup-sizing-default"
+            >Cert. trabajo</span
+          >
+        </div>
+        <input
+          type="file"
+          accept="image/*"
+          max="1"
+          class="form-control"
+          id="certTrabajo"
+          formControlName="certTrabajo"
+        />
+      </div>
+      <!-- Certificado de capacitacion -->
+      <span class="text-danger" *ngIf="validarCampos('certCapacitacion')">
+        {{ errorCertCapacitacion }}
+      </span>
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="inputGroup-sizing-default"
+            >Cert. capacitación</span
+          >
+        </div>
+        <input
+          type="file"
+          accept="image/*"
+          max="1"
+          class="form-control"
+          id="certCapacitacion"
+          formControlName="certCapacitacion"
+        />
+      </div>
+    </div>
   </form>
 </div>
 
-<div class="modal-footer justify-content-between">
-  <button type="button" class="btn btn-danger text-left" (click)="eliminar()">
+<div [class]="!curso ? 'modal-footer justify-content-between' : 'modal-footer justify-content-center'">
+  <button type="button" class="btn btn-danger text-left" (click)="eliminar()" *ngIf="idCliente">
     <span
       class="spinner-border spinner-border-sm"
       role="status"
@@ -161,7 +224,8 @@
     type="button"
     class="btn btn-success"
     (click)="guardar()"
-    [disabled]="cargando || !clienteForm.dirty"
+    [disabled]="(cargando || !clienteForm.dirty) && !curso"
+    hidden
   >
     <span
       class="spinner-border spinner-border-sm"
@@ -169,6 +233,8 @@
       aria-hidden="true"
       *ngIf="cargando"
     ></span>
-    {{ cargando ? "Guardando..." : "Guardar" }}
+    {{ (cargando && !curso) ? "Guardando..." : (cargando && curso) ? "" : "Finalizar" }}
   </button>
+
+  <button type="button" class="btn btn-dark" (click)="asignarValores()">TEST</button>
 </div>
