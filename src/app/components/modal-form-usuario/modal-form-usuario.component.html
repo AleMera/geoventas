@@ -121,17 +121,25 @@
       <div class="input-group-prepend">
         <label class="input-group-text" for="inputGroupSelect01">Ciudad</label>
       </div>
-      <select class="form-control custom-select" formControlName="ciudad">
+      <select class="form-control custom-select" formControlName="ciudad" (change)="agregarCiudad($event)">
         <option value="">Seleccionar...</option>
         <option *ngFor="let ciudad of ciudades">
           {{ ciudad.nombre }}
         </option>
       </select>
     </div>
+    <div class="input-group mb-3" *ngFor="let ciudad of ciudadesSelect; let i=index">
+      <input type="text" class="form-control" [value]="ciudad.nombre" readonly>
+      <div class="input-group-append">
+        <button class="btn btn-outline-danger" type="button" (click)="quitarCiudad(i)">
+          <i class="material-icons">cancel</i>
+        </button>
+      </div>
+    </div>
   </form>
 </div>
 
-<div class="modal-footer justify-content-between">
+<div [class]="editar ? 'modal-footer justify-content-between' : 'modal-footer justify-content-center'">
   <button type="button" class="btn btn-danger text-left" (click)="eliminar()" *ngIf="editar">
     <span
       class="spinner-border spinner-border-sm"
@@ -156,4 +164,5 @@
     ></span>
     {{ cargandoGuardar ? "Guardando..." : "Guardar" }}
   </button>
+  <button type="button" class="btn btn-dark" (click)="asignarValores()">TEST</button>
 </div>

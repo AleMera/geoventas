@@ -170,7 +170,7 @@ export class ModalFormClienteComponent implements OnInit {
   }
 
   private cargarCliente() {
-    this.asignarValidators();
+    this.clienteForm.controls['imgCedula'].setValidators([Validators.required]);
     this.cargando = true;
     this.firestoreSvc.getDoc('Clientes', this.idCliente).subscribe((cliente: any) => {
       this.cliente = cliente;
@@ -190,15 +190,9 @@ export class ModalFormClienteComponent implements OnInit {
       this.imgCedula = this.cliente.imgCedula;
       this.imgCertTrabajo = this.cliente.certTrabajo;
       this.imgCertCapacitacion = this.cliente.certCapacitacion;
-    
+
       this.cargando = false;
     });
-  }
-
-  private asignarValidators() {
-    this.clienteForm.controls['imgCedula'].setValidators([Validators.required]);
-    this.clienteForm.controls['certTrabajo'].setValidators([Validators.required]);
-    this.clienteForm.controls['certCapacitacion'].setValidators([Validators.required]);
   }
 
   asignarValores() {
@@ -270,7 +264,6 @@ export class ModalFormClienteComponent implements OnInit {
   }
 
   private guardarCambios() {
-    this.cargando = true;
     let data = [
       {
         img: this.cedulaFisica,
@@ -294,11 +287,12 @@ export class ModalFormClienteComponent implements OnInit {
     this.cargando = true;
     data.forEach((item, i) => {
       if (item.img) {
+        console.log(`Guardando: ${item.nombre}`);
         this.guardarImg(item.img, item.nombre).then((url) => {
           this.firestoreSvc.actualizarDoc('Clientes', this.cliente.id, { [item.campo]: url }).then(() => {
             item.finalizado = true;
             console.log(`Finalizado: ${item.finalizado}`);
-            if (data.every((item) => item.finalizado)) {
+            if ((data.every((item) => item.finalizado)) || ((data[0].finalizado) && (data[1].finalizado || data[2].finalizado)) || (data[0].finalizado)) {
               const info: Info = {
                 tipo: 'exito',
                 icono: 'check_circle',
@@ -312,26 +306,6 @@ export class ModalFormClienteComponent implements OnInit {
         });
       }
     });
-
-    // this.firestoreSvc.actualizarDoc('Clientes', this.cliente.id, this.cliente).then(() => {
-    //   const info: Info = {
-    //     tipo: 'exito',
-    //     icono: 'check_circle',
-    //     titulo: 'Datos actualizados',
-    //     mensaje: 'Los datos del cliente se han actualizado correctamente',
-    //   }
-    //   this.modal.open(ModalInfoComponent, { centered: true, size: 'sm' });
-    // }).catch((error) => {
-    //   const info: Info = {
-    //     tipo: 'error',
-    //     icono: 'error',
-    //     titulo: 'Error al actualizar',
-    //     mensaje: 'No se han podido actualizar los datos del cliente',
-    //   }
-    //   this.modal.open(ModalInfoComponent, { centered: true, size: 'sm' }).componentInstance.info = info;
-    // }).finally(() => {
-    //   this.cargando = false;
-    // });
   }
 
   private guardarInscripcion() {

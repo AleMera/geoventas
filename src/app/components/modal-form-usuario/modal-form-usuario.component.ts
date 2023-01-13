@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 
 import { ModalInfoComponent } from '../modal-info/modal-info.component';
 import { AuthService } from '../../services/auth.service';
@@ -8,7 +9,6 @@ import { FirestoreService } from '../../services/firestore.service';
 import { Info } from 'src/app/app.interfaces';
 import { validarCedula } from '../../validators/validators';
 import { Ciudad } from '../../app.interfaces';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-modal-form-usuario',
@@ -24,14 +24,15 @@ export class ModalFormUsuarioComponent implements OnInit {
   cargandoGuardar: boolean = false;
   cargandoEliminar: boolean = false;
   ciudades: Ciudad[] = [];
+  ciudadesSelect: Ciudad[] = [];
 
   usuarioForm: FormGroup = this.fBuilder.group({
     // cedula: ['', [Validators.required, validarCedula]],
-    cedula: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(10)]],
-    nombre: ['', Validators.required],
-    apellido: ['', Validators.required],
-    email: ['', [Validators.required, Validators.email]],
-    telefono: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(10)]],
+    cedula: ['XXXXXXXXXX', [Validators.required, Validators.minLength(10), Validators.maxLength(10)]],
+    nombre: ['XXXXXXXXXX', Validators.required],
+    apellido: ['XXXXXXXXXX', Validators.required],
+    email: ['XXX@YYY.COM', [Validators.required, Validators.email]],
+    telefono: ['XXXXXXXXXX', [Validators.required, Validators.minLength(10), Validators.maxLength(10)]],
     ciudad: [[], Validators.required],
   });
 
@@ -110,19 +111,16 @@ export class ModalFormUsuarioComponent implements OnInit {
     this.firestoreSvc.getDoc<any>('Usuarios', this.idUsuario).subscribe((resp) => {
       console.log(resp);
       this.usuario = resp;
-      let ciudadNombre;
-      this.ciudades.map((ciudad) => {
-        if (ciudad.id === this.usuario.idCiudad) {
-          ciudadNombre = ciudad.nombre;
-        }
-      });
+      this.ciudadesSelect = this.ciudades.filter((ciudad) => this.usuario.idCiudad.includes(ciudad.id));
+      console.log(this.ciudadesSelect);
+      
       this.usuarioForm.setValue({
         cedula: this.usuario.cedula,
         nombre: this.usuario.nombre,
         apellido: this.usuario.apellido,
         email: this.usuario.email,
         telefono: this.usuario.telefono,
-        ciudad: ciudadNombre,
+        ciudad: '',
       });
       
     });
@@ -133,22 +131,18 @@ export class ModalFormUsuarioComponent implements OnInit {
   }
 
   asignarValores() {
-    let idUsuario = '';
-    let idCiudad;
+    let idUsuario: string = '';
+    let ciudades: string[] = [];
     if (this.idUsuario) {
       idUsuario = this.idUsuario;
     } else {
       idUsuario = this.firestoreSvc.crearIdDoc();
     }
-    console.log(this.usuarioForm.controls['ciudad'].value);
-    
-    this.ciudades.map((ciudad) => {
-      if (ciudad.nombre === this.usuarioForm.controls['ciudad'].value) {
-        idCiudad = ciudad.id;
-        console.log(ciudad);
-        
-      }
+    console.log(this.ciudadesSelect);
+    this.ciudadesSelect.map(({ id }) => {
+      ciudades.push(id);
     });
+
     this.usuario = {
       id: idUsuario,
       cedula: this.usuarioForm.controls['cedula'].value,
@@ -156,9 +150,21 @@ export class ModalFormUsuarioComponent implements OnInit {
       apellido: this.usuarioForm.controls['apellido'].value,
       email: this.usuarioForm.controls['email'].value,
       telefono: this.usuarioForm.controls['telefono'].value,
-      idCiudad: idCiudad,
+      idCiudad: ciudades,
     }
     console.log(this.usuario);
+  }
+
+  agregarCiudad(event: any) {
+    const nombreCiudad = event.target.value;
+    const ciudad = this.ciudades.find((ciudad) => ciudad.nombre === nombreCiudad);
+    if (ciudad) {
+      this.ciudadesSelect.push(ciudad);
+    }
+  }
+
+  quitarCiudad(pos: number) {
+    this.ciudadesSelect.splice(pos, 1);
   }
 
   guardar() {
