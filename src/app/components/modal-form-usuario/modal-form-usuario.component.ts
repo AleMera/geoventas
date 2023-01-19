@@ -234,8 +234,8 @@ export class ModalFormUsuarioComponent implements OnInit {
     const info: Info = {
       tipo: 'Eliminar',
       icono: 'warning',
-      titulo: 'Eliminar Cliente',
-      mensaje: '¿Está seguro que desea eliminar este cliente? \n Esta acción no se puede deshacer.',
+      titulo: 'Eliminar Usuario',
+      mensaje: '¿Está seguro que desea eliminar este usuario? \n Esta acción no se puede deshacer.',
       id: this.usuario.id,
       col: 'Usuarios'
     }

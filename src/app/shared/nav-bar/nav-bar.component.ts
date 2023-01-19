@@ -38,6 +38,9 @@ export class NavBarComponent implements OnInit {
     });
   }
 
+  irAInicio() {
+    this.router.navigate(['/']);
+  }
   iniciarSesion() {
     this.router.navigate(['/auth/login']);
   }
