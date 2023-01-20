@@ -88,7 +88,7 @@ export class MapaComponent implements AfterViewInit, OnDestroy {
                     </div>
                   <div class="card-body">
                     <p class="card-text"># Cursos vendidos: ${cursosPorCiudad.length}</p>
-                    <p class="card-text">Total: ${cursosPorCiudad.reduce((acc: any, cur: any) => acc + cur.precio, 0)}</p>
+                    <p class="card-text">Total: $${cursosPorCiudad.reduce((acc: any, cur: any) => acc + cur.precio, 0)}</p>
                   </div>
                 </div>
                       `);
