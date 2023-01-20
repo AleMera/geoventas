@@ -1,5 +1,7 @@
 <div class="modal-header">
-  <h4 class="modal-title">{{ idCliente ? 'Editar Información' : 'Inscribirse al curso' }}</h4>
+  <h4 class="modal-title">
+    {{ idCliente ? "Editar Información" : "Inscribirse al curso" }}
+  </h4>
   <button
     type="button"
     class="btn-close"
@@ -9,14 +11,19 @@
 </div>
 <div class="modal-body">
   <div class="text-center">
-    <div class="spinner-border" style="width: 3rem; height: 3rem;" role="status" *ngIf="cargando && idCliente">
+    <div
+      class="spinner-border"
+      style="width: 3rem; height: 3rem"
+      role="status"
+      *ngIf="cargando && idCliente"
+    >
       <span class="visually-hidden">Loading...</span>
     </div>
   </div>
   <div class="text-left" *ngIf="curso">
     <strong>{{ curso.nombre }}</strong>
   </div>
-  <br>
+  <br />
   <form autocomplete="off" [formGroup]="clienteForm" (ngSubmit)="guardar()">
     <!-- Cedula -->
     <span class="text-danger" *ngIf="validarCampos('cedula')">
@@ -136,10 +143,7 @@
       <div class="input-group-prepend">
         <label class="input-group-text" for="inputGroupSelect01">Ciudad</label>
       </div>
-      <select
-        class="form-control custom-select"
-        formControlName="ciudad"
-      >
+      <select class="form-control custom-select" formControlName="ciudad">
         <option value="">Seleccionar...</option>
         <option *ngFor="let ciudad of ciudades">
           {{ ciudad.nombre }}
@@ -165,13 +169,13 @@
           class="form-control"
           id="imgCedula"
           formControlName="imgCedula"
-          (change)="onChangeImgCedula($event)"
         />
       </div>
-      <div class="container-fluid" style="margin-bottom: 2%" *ngIf="imgCedula">
+      <div class="container-fluid" style="margin-bottom: 2%" *ngIf="pdfCedula">
         <div class="row">
           <div class="col-4">
-            <img [src]="imgCedula" class="img-fluid" alt="Cédula física" />
+            <!-- <img [src]="imgCedula" class="img-fluid" alt="Cédula física" /> -->
+            <a class="btn btn-dark btn-sm" [href]="pdfCedula" target="_blank" rel="noopener noreferrer">Ver archivo</a>
           </div>
         </div>
       </div>
@@ -193,13 +197,17 @@
           class="form-control"
           id="certTrabajo"
           formControlName="certTrabajo"
-          (change)="onChangeCertTrabajo($event)"
         />
       </div>
-      <div class="container-fluid" style="margin-bottom: 2%" *ngIf="imgCertTrabajo">
+      <div
+        class="container-fluid"
+        style="margin-bottom: 2%"
+        *ngIf="pdfCertTrabajo"
+      >
         <div class="row">
           <div class="col-4">
-            <img [src]="imgCertTrabajo" class="img-fluid" alt="Certificado de trabajo" />
+            <!-- <img [src]="imgCertTrabajo" class="img-fluid" alt="Certificado de trabajo" /> -->
+            <a class="btn btn-dark btn-sm" [href]="pdfCertTrabajo" target="_blank" rel="noopener noreferrer">Ver archivo</a>
           </div>
         </div>
       </div>
@@ -221,13 +229,17 @@
           class="form-control"
           id="certCapacitacion"
           formControlName="certCapacitacion"
-          (change)="onChangeCertCapacitacion($event)"
         />
       </div>
-      <div class="container-fluid" style="margin-bottom: 2%" *ngIf="imgCertCapacitacion">
+      <div
+        class="container-fluid"
+        style="margin-bottom: 2%"
+        *ngIf="pdfCertCapacitacion"
+      >
         <div class="row">
           <div class="col-4">
-            <img [src]="imgCertCapacitacion" class="img-fluid" alt="Certificado de capacitacion" />
+            <!-- <img [src]="imgCertCapacitacion" class="img-fluid" alt="Certificado de capacitacion" /> -->
+            <a class="btn btn-dark btn-sm" [href]="pdfCertCapacitacion" target="_blank" rel="noopener noreferrer">Ver archivo</a>
           </div>
         </div>
       </div>
@@ -235,8 +247,19 @@
   </form>
 </div>
 
-<div [class]="!curso ? 'modal-footer justify-content-between' : 'modal-footer justify-content-center'">
-  <button type="button" class="btn btn-danger text-left" (click)="eliminar()" *ngIf="idCliente">
+<div
+  [class]="
+    !curso
+      ? 'modal-footer justify-content-between'
+      : 'modal-footer justify-content-center'
+  "
+>
+  <button
+    type="button"
+    class="btn btn-danger text-left"
+    (click)="eliminar()"
+    *ngIf="idCliente"
+  >
     <span
       class="spinner-border spinner-border-sm"
       role="status"
@@ -250,7 +273,7 @@
     type="button"
     class="btn btn-success"
     (click)="guardar()"
-    [disabled]="cargando || !clienteForm.dirty && !curso"
+    [disabled]="cargando || (!clienteForm.dirty && !curso)"
   >
     <span
       class="spinner-border spinner-border-sm"
@@ -258,6 +281,14 @@
       aria-hidden="true"
       *ngIf="cargando"
     ></span>
-    {{ (cargando && !idCurso) ? "Guardando..." : (cargando && idCurso) ? "" : (!cargando && !idCurso ) ? "Guardar" : "Finalizar" }}
+    {{
+      cargando && !idCurso
+        ? "Guardando..."
+        : cargando && idCurso
+        ? ""
+        : !cargando && !idCurso
+        ? "Guardar"
+        : "Finalizar"
+    }}
   </button>
 </div>

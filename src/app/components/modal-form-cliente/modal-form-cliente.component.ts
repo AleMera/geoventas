@@ -31,9 +31,9 @@ export class ModalFormClienteComponent implements OnInit {
 
   cursos: any[] = [];
   ciudades: Ciudad[] = [];
-  imgCedula: any;
-  imgCertTrabajo: any;
-  imgCertCapacitacion: any;
+  pdfCedula: string;
+  pdfCertTrabajo: string;
+  pdfCertCapacitacion: string;
 
   cedulaFisica: File;
   certTrabajo: File;
@@ -187,9 +187,9 @@ export class ModalFormClienteComponent implements OnInit {
         certTrabajo: '',
         certCapacitacion: ''
       });
-      this.imgCedula = this.cliente.imgCedula;
-      this.imgCertTrabajo = this.cliente.certTrabajo;
-      this.imgCertCapacitacion = this.cliente.certCapacitacion;
+      this.pdfCedula = this.cliente.imgCedula;
+      this.pdfCertTrabajo = this.cliente.certTrabajo;
+      this.pdfCertCapacitacion = this.cliente.certCapacitacion;
 
       this.cargando = false;
     });
@@ -351,32 +351,5 @@ export class ModalFormClienteComponent implements OnInit {
       col: 'Clientes'
     }
     this.modal.open(ModalInfoComponent, { centered: true, scrollable: true }).componentInstance.info = info;
-  }
-
-  protected onChangeImgCedula(event: any) {
-    this.cedulaFisica = event.target.files[0];
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      this.imgCedula = e.target?.result;
-    }
-    reader.readAsDataURL(this.cedulaFisica);
-  }
-
-  protected onChangeCertTrabajo(event: any) {
-    this.certTrabajo = event.target.files[0];
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      this.imgCertTrabajo = e.target?.result;
-    }
-    reader.readAsDataURL(this.certTrabajo);
-  }
-
-  protected onChangeCertCapacitacion(event: any) {
-    this.certCapacitacion = event.target.files[0];
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      this.imgCertCapacitacion = e.target?.result;
-    }
-    reader.readAsDataURL(this.certCapacitacion);
   }
 }

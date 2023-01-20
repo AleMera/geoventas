@@ -22,7 +22,7 @@ import { ModalFormUsuarioComponent } from './modal-form-usuario/modal-form-usuar
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    NgbAlertModule
+    NgbAlertModule,
   ],
   exports: [
     CursoCardComponent,

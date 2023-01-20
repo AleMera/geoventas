@@ -54,9 +54,7 @@ export class ClientesComponent implements OnInit, OnDestroy, AfterViewInit {
 
   cargarData() {
     this.authSvc.getUid().then((resp) => {
-      if (!resp) {
-        return;
-      }
+      if (!resp) return;
       const uid = resp.uid;
       this.firestoreSvc.getDocs('Usuarios').subscribe((resp: any) => {
         this.usuario = resp.find((usuario: any) => usuario.uid === uid);
@@ -108,6 +106,12 @@ export class ClientesComponent implements OnInit, OnDestroy, AfterViewInit {
     });
     this.firestoreSvc.getDocs('Ventas').subscribe((resp: any) => {
       const ventas = resp.filter((venta: any) => venta.idCiudad === ciudad);
+      console.log(ventas);
+      if (ventas.length === 0) {
+        this.clientes = [];
+        this.dtTrigger.next(null);
+        return;
+      }
       this.firestoreSvc.getDocs('Clientes').subscribe((resp: any) => {
         const clientes = resp.filter((cliente: any) => ventas.find((venta: any) => venta.idCliente === cliente.id));
         clientes.forEach((cliente: any) => {
