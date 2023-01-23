@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ModalEditarPerfilComponent } from 'src/app/components/modal-editar-perfil/modal-editar-perfil.component';
 
 import { AuthService } from '../../services/auth.service';
 
@@ -11,14 +13,9 @@ import { AuthService } from '../../services/auth.service';
 export class NavBarComponent implements OnInit {
 
   logueado: boolean;
-  usuario: any = {
-    nombre: '',
-    email: '',
-    uid: '',
-    
-  };
+  usuario: any = {};
   cargando: boolean;
-  constructor(private router: Router, private authSvc: AuthService) {
+  constructor(private router: Router, private authSvc: AuthService, private modal: NgbModal) {
     this.logueado = false;
     this.cargando = false;
   }
@@ -35,12 +32,24 @@ export class NavBarComponent implements OnInit {
         this.usuario = user;
       }
       this.cargando = false;
+      console.log(this.usuario);
+      
     });
+  }
+
+  esAdmin() {
+    return this.usuario.uid === 'sIjSGyg7Afa4TbIWdXxWMfYckVC2'
+  }
+
+  editarPerfil() {
+    const modalRef = this.modal.open(ModalEditarPerfilComponent, { size: 'md' });
+    modalRef.componentInstance.uidUser = this.usuario.uid;
   }
 
   irAInicio() {
     this.router.navigate(['/']);
   }
+
   iniciarSesion() {
     this.router.navigate(['/auth/login']);
   }
@@ -48,11 +57,7 @@ export class NavBarComponent implements OnInit {
   cerrarSesion() {
     this.authSvc.logout().finally(() => {
       this.logueado = false;
-      this.usuario = {
-        nombre: '',
-        email: '',
-        uid: '',
-      };
+      this.usuario = {};
       location.reload();
     });
   }

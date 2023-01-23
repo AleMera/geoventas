@@ -2,9 +2,22 @@
   <div class="container-fluid">
     <img src="/assets/img/logo-corfopym.png" alt="corfopym_logo.jpg" (click)="irAInicio()" style="cursor: pointer;"/>
     <div
-      class="collapse navbar-collapse justify-content-end"
-      id="navbarSupportedContent"
-    >
+      class="collapse navbar-collapse justify-content-between"
+      id="navbarSupportedContent">
+      <div class="card">
+        <div class="card-header">
+          <span
+            class="text-center text-warning"
+            *ngIf="!usuario.displayName"
+            title="Este registro contiene campos faltantes, haga click para ver los detalles y completarlos."
+            [style]="!usuario.displayName ? 'cursor: pointer;' : ''"
+            (click)="editarPerfil()"
+          >
+            <i class="material-icons">warning</i>
+          </span>
+          <strong>{{!esAdmin() ? 'Vendedor' : 'Administrador'}}: {{ usuario.displayName }}</strong>
+        </div>
+      </div>
       <button type="button" class="btn btn-success" (click)="iniciarSesion()" *ngIf="!logueado">
         <span> Iniciar sesión </span>
       </button>

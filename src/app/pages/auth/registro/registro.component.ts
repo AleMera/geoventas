@@ -175,6 +175,10 @@ export class RegistroComponent implements OnInit {
           mensaje: mensaje
         };
       } else {
+        resp.user.updateProfile({
+          displayName: `${this.usuario.nombre} ${this.usuario.apellido}`
+        })
+        console.log(resp);
         this.firestoreSvc.actualizarDoc('Usuarios', this.usuario.id, { uid: resp.user.uid }).then(() => {
           const modalRef = this.modal.open(ModalInfoComponent, { centered: true, scrollable: true, backdrop: 'static', keyboard: false });
           modalRef.componentInstance.info = {

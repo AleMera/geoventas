@@ -23,26 +23,6 @@ const routes: Routes = [
     redirectTo: 'login',
     pathMatch: 'full'
   }
-    // children: [
-    //   {
-    //     path: 'login',
-    //     component: LoginComponent,
-    //   },
-    //   {
-    //     path: 'registro',
-    //     component: RegistroComponent,
-    //   },
-    //   {
-    //     path: '**',
-    //     redirectTo: 'login',
-    //     pathMatch: 'full'
-    //   },
-    //   {
-    //     path: '',
-    //     redirectTo: 'login',
-    //     pathMatch: 'full'
-    //   }
-    // ]
 ];
 
 @NgModule({

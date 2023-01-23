@@ -12,7 +12,7 @@ import { Ciudad } from '../../../app.interfaces';
 })
 export class MapaComponent implements AfterViewInit, OnDestroy {
 
-  private map: any;
+  private map: L.Map;
   cargando: boolean = true;
 
   usuario: any;
@@ -57,29 +57,31 @@ export class MapaComponent implements AfterViewInit, OnDestroy {
         //Cargar select de ciudades del usuario
         this.firestoreSvc.getDocs('Ciudades').subscribe((resp: any) => {
           this.ciudades = resp.filter((ciudad: any) => ciudadesUsuario.includes(ciudad.id));
-          console.log(this.ciudades);
           this.firestoreSvc.getDocs('Ventas').subscribe((resp: any[]) => {
             const ventas = resp.filter((venta: any) => ciudadesUsuario.includes(venta.idCiudad));
             console.log(ventas);
-            const icon = {
-              icon: L.icon({
-                iconSize: [25, 41],
-                iconAnchor: [13, 41],
-                iconUrl: '/assets/img/marker.svg',
-              })
-            }
             let cursosPorCiudad: any[] = [];
             this.ciudades.forEach((ciudad: any) => {
               ventas.forEach((venta: any) => {
-                if (venta.idCiudad !== ciudad.id) {
-                  console.log(`no hay ventas en ${ciudad.nombre}`);
-                } else {
-                  cursosPorCiudad.push({
-                    ciudad: ciudad.nombre,
-                    precio: venta.precio,
-                  });
-                }
+                if (venta.idCiudad !== ciudad.id) return
+                cursosPorCiudad.push({
+                  ciudad: ciudad.nombre,
+                  precio: venta.precio
+                });
               });
+              // console.log(cursosPorCiudad);
+              console.log(ciudad.nombre);
+              const ciudadVenta = cursosPorCiudad.filter((venta: any) => venta.ciudad === ciudad.nombre);
+              console.log(ciudadVenta);
+              
+              let color = ciudadVenta.length >= 3 ? 'rgb(0, 144, 46)' : 'rgb(0, 46, 144)';
+              const icon = {
+                icon: L.divIcon({
+                  className: 'custom-div-icon',
+                  html: `<span class="material-icons" style="color:${color}; font-size: 35px; border-radius: 50%; background-color: rgba(243, 243, 243, 0.479);">pin_drop</span>`,
+                  iconSize: [30, 50],
+                })
+              }
               const marker = L.marker([ciudad.lat, ciudad.lng], icon).addTo(this.map);
               marker.bindPopup(`
                 <div class="card">
@@ -87,42 +89,25 @@ export class MapaComponent implements AfterViewInit, OnDestroy {
                     <h3>${ciudad.nombre}</h3>
                     </div>
                   <div class="card-body">
-                    <p class="card-text"># Cursos vendidos: ${cursosPorCiudad.length}</p>
-                    <p class="card-text">Total: $${cursosPorCiudad.reduce((acc: any, cur: any) => acc + cur.precio, 0)}</p>
+                    <p class="card-text"># Cursos vendidos: ${ciudadVenta.length}</p>
+                    <p class="card-text">Total: $${ciudadVenta.reduce((acc: any, cur: any) => acc + cur.precio, 0)}</p>
                   </div>
-                </div>
-                      `);
+                </div>`);
+              marker.on('click', () => {
+                this.map.flyTo([ciudad.lat, ciudad.lng], 8);
+              });
             });
-            
-              // const ventaCiudad = ventas.find((venta: any) => venta.idCiudad === ciudad.id);
-              // console.log(ventaCiudad);
-              
-              // const numCursos = ventaCiudad ? ventaCiudad.numCursos : 0;
-              // const total = ventaCiudad ? ventaCiudad.total : 0;
-              // const marker = L.marker([ciudad.lat, ciudad.lng], icon).addTo(this.map);
-              // marker.bindPopup(`
-              //   <div class="card">
-              //     <div class="card-header">
-              //       <h4>${ciudad.nombre}</h4>
-              //     </div>
-              //     <div class="card-body">
-              //       <h5 class="card-title>${ciudad.nombre}</h5>
-              //       <p class="card-text"># Cursos vendidos: ${numCursos}</p>
-              //       <p class="card-text">Total: ${total}</p>
-              //     </div>
-              //   </div>
-              // `);
             this.cargando = false;
-            });
           });
         });
       });
-    }
+    });
+  }
 
   ngOnDestroy() {
-      this.map.remove();
-      console.log('mapa eliminado');
+    this.map.remove();
+    console.log('mapa eliminado');
 
-    }
+  }
 
 }

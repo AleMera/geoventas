@@ -12,14 +12,12 @@ interface LoginData {
 
 export class AuthService {
 
-  // constructor(private auth: Auth) { }
   constructor(private auth: AngularFireAuth) { }
 
   async login(email: string, passwd: string) {
     try {
       return await this.auth.signInWithEmailAndPassword(email, passwd);
     } catch (err: any) {
-      // const msj = 'No se ha podido iniciar sesión';
       const code = err.code;
       return { code };
     }
@@ -34,15 +32,6 @@ export class AuthService {
     }
   }
 
-  // async logout() {
-  //   try {
-  //     return await this.auth.signOut();
-  //   } catch (error) {
-  //     const msj = 'No se ha podido cerrar sesión';
-  //     console.log(msj + ': ' + error);
-  //     return msj;
-  //   }
-  // }
   logout() {
     return this.auth.signOut();
   }
