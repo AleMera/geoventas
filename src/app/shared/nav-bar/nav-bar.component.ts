@@ -32,7 +32,6 @@ export class NavBarComponent implements OnInit {
         this.usuario = user;
       }
       this.cargando = false;
-      console.log(this.usuario);
       
     });
   }

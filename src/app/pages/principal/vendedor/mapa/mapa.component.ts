@@ -1,9 +1,9 @@
 import { AfterViewInit, Component, OnDestroy } from '@angular/core';
 
 import * as L from 'leaflet';
-import { FirestoreService } from '../../../services/firestore.service';
-import { AuthService } from '../../../services/auth.service';
-import { Ciudad } from '../../../app.interfaces';
+import { FirestoreService } from '../../../../services/firestore.service';
+import { AuthService } from '../../../../services/auth.service';
+import { Ciudad } from '../../../../app.interfaces';
 
 @Component({
   selector: 'app-mapa',
@@ -33,10 +33,8 @@ export class MapaComponent implements AfterViewInit, OnDestroy {
       });
 
       tiles.addTo(this.map);
-      console.log('mapa cargado');
 
     } catch {
-      console.log('Error al cargar el mapa');
     }
 
   }
@@ -59,7 +57,6 @@ export class MapaComponent implements AfterViewInit, OnDestroy {
           this.ciudades = resp.filter((ciudad: any) => ciudadesUsuario.includes(ciudad.id));
           this.firestoreSvc.getDocs('Ventas').subscribe((resp: any[]) => {
             const ventas = resp.filter((venta: any) => ciudadesUsuario.includes(venta.idCiudad));
-            console.log(ventas);
             let cursosPorCiudad: any[] = [];
             this.ciudades.forEach((ciudad: any) => {
               ventas.forEach((venta: any) => {
@@ -69,11 +66,8 @@ export class MapaComponent implements AfterViewInit, OnDestroy {
                   precio: venta.precio
                 });
               });
-              // console.log(cursosPorCiudad);
-              console.log(ciudad.nombre);
               const ciudadVenta = cursosPorCiudad.filter((venta: any) => venta.ciudad === ciudad.nombre);
-              console.log(ciudadVenta);
-              
+
               let color = ciudadVenta.length >= 3 ? 'rgb(0, 144, 46)' : 'rgb(0, 46, 144)';
               const icon = {
                 icon: L.divIcon({
@@ -93,6 +87,9 @@ export class MapaComponent implements AfterViewInit, OnDestroy {
                     <p class="card-text">Total: $${ciudadVenta.reduce((acc: any, cur: any) => acc + cur.precio, 0)}</p>
                   </div>
                 </div>`);
+              marker.on('mouseover', () => {
+                marker.bindTooltip(ciudad.nombre, { permanent: false, direction: 'center' }).openTooltip();
+              });
               marker.on('click', () => {
                 this.map.flyTo([ciudad.lat, ciudad.lng], 8);
               });
@@ -106,7 +103,6 @@ export class MapaComponent implements AfterViewInit, OnDestroy {
 
   ngOnDestroy() {
     this.map.remove();
-    console.log('mapa eliminado');
 
   }
 

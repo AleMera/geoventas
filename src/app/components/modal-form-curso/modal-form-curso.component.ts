@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormControl, FormArray } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { FirestoreService } from '../../services/firestore.service';
 import { StorageService } from '../../services/storage.service';
@@ -16,6 +16,7 @@ export class ModalFormCursoComponent implements OnInit {
 
   @Input() idCurso!: any;
   curso: any;
+  numPagina: number = 1;
 
   cursoForm: FormGroup = this.fBuilder.group({
     nombre: ['', Validators.required],
@@ -25,10 +26,16 @@ export class ModalFormCursoComponent implements OnInit {
     modalidad: ['', Validators.required],
     fecha: ['', [Validators.required, validarFecha]],
     precio: ['', [Validators.required, Validators.min(1)]],
+    categoria: ['', Validators.required],
     imgs: [null],
+    justificacion: ['', Validators.required],
+    objetivos: this.fBuilder.array([], Validators.required)
   });
 
-  modalidades = ['Presencial', 'Virtual'];
+  nuevoObj: FormControl = new FormControl('', [Validators.required]);
+
+  modalidades: string[] = ['Presencial', 'Virtual'];
+  categorias: any[] = [];
   cargandoInicio: boolean = false;
   cargandoGuardar: boolean = false;
   cargandoEliminar: boolean = false;
@@ -36,6 +43,7 @@ export class ModalFormCursoComponent implements OnInit {
   imgs: any[] = [];
   imgsStorage: any[] = [];
   editar: boolean = false;
+  errorObj: boolean = false;
 
   constructor(protected modal: NgbModal, private fBuilder: FormBuilder, private firestoreSvc: FirestoreService, private storageSc: StorageService) { }
 
@@ -103,7 +111,36 @@ export class ModalFormCursoComponent implements OnInit {
     return '';
   }
 
+  get errorCategoria() {
+    const error = this.cursoForm.controls['categoria'].errors;
+    if (error) {
+      return error['required'] ? 'La categoría es obligatoria' : '';
+    }
+    return '';
+  }
+
+  get errorJustificacion() {
+    const error = this.cursoForm.controls['justificacion'].errors;
+    if (error) {
+      return error['required'] ? 'La justificación es obligatoria' : '';
+    }
+    return '';
+  }
+
+  get errorObjetivos() {
+    const error = this.cursoForm.controls['objetivos'].errors;
+    if (error) {
+      return error['required'] ? 'Los objetivos son obligatorios' : '';
+    }
+    return '';
+  }
+
+  get objetivosArray() {
+    return this.cursoForm.controls['objetivos'] as FormArray;
+  }
+
   ngOnInit(): void {
+    this.cargarCategorias();
     if (this.idCurso) {
       this.editar = true;
       this.cargarDatos();
@@ -112,9 +149,18 @@ export class ModalFormCursoComponent implements OnInit {
     }
   }
 
+  cargarCategorias() {
+    this.firestoreSvc.getDocs('Categorias').subscribe((categorias: any) => {
+      this.categorias = categorias;
+    });
+  }
+
   cargarDatos() {
     this.cargandoInicio = true;
     this.firestoreSvc.getDoc('Cursos', this.idCurso).subscribe((curso: any) => {
+      const categoria = this.categorias.find((cat: any) => cat.id === curso.idCategoria);
+      const objetivos = curso.objetivos.map((obj: any) => new FormControl(obj, Validators.required));
+      this.cursoForm.setControl('objetivos', new FormArray(objetivos));
       this.cursoForm.setValue({
         nombre: curso.nombre,
         certif: curso.certif,
@@ -123,7 +169,10 @@ export class ModalFormCursoComponent implements OnInit {
         modalidad: curso.modalidad,
         fecha: curso.fecha,
         precio: curso.precio,
-        imgs: []
+        categoria: categoria ? categoria.nombre : '',
+        imgs: [],
+        justificacion: curso.justificacion,
+        objetivos: objetivos.map((obj: any) => obj.value)
       });
       this.cargandoInicio = false;
     });
@@ -141,7 +190,7 @@ export class ModalFormCursoComponent implements OnInit {
     this.asignarDatos();
     if (!this.editar) {
       //Guardar nuevo curso
-      this.subirImgs(this.imgsStorage);
+      this.guardarNuevo(this.imgsStorage);
     } else {
       //Guardar curso editado
       this.guardarCambios();
@@ -164,7 +213,7 @@ export class ModalFormCursoComponent implements OnInit {
   }
 
   asignarDatos() {
-    let id
+    let id: string;
     if (this.idCurso) {
       id = this.idCurso
     } else {
@@ -180,35 +229,46 @@ export class ModalFormCursoComponent implements OnInit {
       fecha: this.cursoForm.value.fecha,
       precio: this.cursoForm.value.precio,
       estado: 'Activo',
-      imgsUrl: []
+      idCategoria: this.cursoForm.value.categoria,
+      imgsUrl: [],
+      justificacion: this.cursoForm.value.justificacion,
+      objetivos: this.cursoForm.value.objetivos
     }
+
+    console.log(this.curso);
+    
   }
 
-  subirImgs(imgs: File[]) {
-    console.log(imgs);
-    console.log('Guardar nuevo curso');
+  onChangeCat(event: any) {
+    console.log(event.target.value);
     
-    let imgsUrl: string[] = [];
-    console.log(imgs);
-    console.log(this.curso);
+  }
+
+  guardarNuevo(imgs: File[]) {
+    console.log('Guardar nuevo curso');
+    let imgsUrl: Promise<string>[] = [];
     this.cargandoGuardar = true;
-    imgs.forEach(img => {
-      this.storageSc.subirImg('Cursos', this.curso.id, img.name, img)
-        .then((url) => {
-          imgsUrl.push(url);
-          console.log(imgsUrl);
-          this.curso.imgsUrl = imgsUrl;
-          this.firestoreSvc.crearDocumentoConId('Cursos', this.curso.id, this.curso).finally(() => {
-            const modalRef = this.modal.open(ModalInfoComponent, { centered: true, size: 'sm' });
-            modalRef.componentInstance.info = {
-              tipo: 'exito',
-              icono: 'check_circle',
-              titulo: 'Curso creado con éxito',
-              mensaje: 'El curso se ha creado correctamente',
-            };
-            this.cargandoGuardar = false;
-          });
-        });
+    imgs.forEach((img) => {
+      imgsUrl.push(
+        this.storageSc.subirArchivo('Cursos', this.curso.id, img.name, img).then((url) => {
+          return url;
+        })
+      );
+    });
+    Promise.all(imgsUrl).then((urls) => {
+      this.curso.imgsUrl = urls;
+      console.log(this.curso);
+
+      this.firestoreSvc.crearDocumentoConId('Cursos', this.curso.id, this.curso).finally(() => {
+        const modalRef = this.modal.open(ModalInfoComponent, { centered: true, size: 'sm' });
+        modalRef.componentInstance.info = {
+          tipo: 'exito',
+          icono: 'check_circle',
+          titulo: 'Curso creado con éxito',
+          mensaje: 'El curso se ha creado correctamente',
+        };
+        this.cargandoGuardar = false;
+      });
     });
   }
 
@@ -219,29 +279,29 @@ export class ModalFormCursoComponent implements OnInit {
       const modalRef = this.modal.open(ModalInfoComponent, { centered: true, size: 'sm' });
       modalRef.componentInstance.info = {
         tipo: 'exito',
-        icono: 'check-circle',
+        icono: 'check_circle',
         titulo: 'Curso editado con éxito',
-        mensaje: 'El curso se ha editado correctamente',
+        mensaje: 'Datos actualizados correctamente',
       };
     }).
-    catch((error) => {
-      const modalRef = this.modal.open(ModalInfoComponent, { centered: true, size: 'sm' });
-      modalRef.componentInstance.info = {
-        tipo: 'error',
-        icono: 'exclamation-circle',
-        titulo: 'Error al editar el curso',
-        mensaje: 'Ha ocurrido un error al editar el curso, intente nuevamente',
-      };
-    }).
-    finally(() => {
-      this.cargandoGuardar = false;
-    });
+      catch((error) => {
+        const modalRef = this.modal.open(ModalInfoComponent, { centered: true, size: 'sm' });
+        modalRef.componentInstance.info = {
+          tipo: 'error',
+          icono: 'exclamation_circle',
+          titulo: 'Error al editar el curso',
+          mensaje: 'Ha ocurrido un error al editar el curso, intente nuevamente',
+        };
+      }).
+      finally(() => {
+        this.cargandoGuardar = false;
+      });
   }
 
   eliminar() {
     this.cargandoEliminar = true;
     const info: Info = {
-      tipo: 'Eliminar',
+      tipo: 'eliminar',
       icono: 'warning',
       titulo: 'Eliminar Curso',
       mensaje: '¿Está seguro que desea eliminar el curso? \n Esta acción no se puede deshacer.',
@@ -249,5 +309,25 @@ export class ModalFormCursoComponent implements OnInit {
       col: 'Cursos'
     }
     this.modal.open(ModalInfoComponent, { centered: true, size: 'sm' }).componentInstance.info = info;
+  }
+
+  agregarObjetivo() {
+    if (this.nuevoObj.invalid) {
+      this.nuevoObj.markAllAsTouched();
+      return;
+    };
+    const objetivo = new FormControl(this.nuevoObj.value, Validators.required);
+    this.objetivosArray.push(objetivo);
+    this.nuevoObj.reset();
+    this.cursoForm.markAsDirty();
+  }
+
+  eliminarObjetivo(pos: number) {
+    this.objetivosArray.removeAt(pos);
+    this.cursoForm.markAsDirty();
+  }
+
+  crearCamposFaltantes() {
+    this.asignarDatos();
   }
 }

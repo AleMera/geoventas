@@ -26,10 +26,37 @@ export class FirestoreService {
       return code;
     }
   }
+
+  async crearSubDoc(col: string, id: string, subCol: string, data: any) {
+    try {
+      return await this.firestore.collection(col).doc(id).collection(subCol).add(data);
+    } catch (error: any) {
+      const code = error.code
+      return code;
+    }
+  }
+
+  async crearSubDocConId(col: string, id: string, subCol: string, subId: string, data: any) {
+    try {
+      return await this.firestore.collection(col).doc(id).collection(subCol).doc(subId).set(data);
+    } catch (error: any) {
+      const code = error.code
+      return code;
+    }
+  }
   
   async actualizarDoc(col: string, id: string, data: any) {
     try {
       return await this.firestore.collection(col).doc(id).set(data, { merge: true });
+    } catch (error: any) {
+      const code = error.code
+      return code;
+    }
+  }
+
+  async actualizarSubDoc(col: string, id: string, subCol: string, subId: string, data: any) {
+    try {
+      return await this.firestore.collection(col).doc(id).collection(subCol).doc(subId).set(data, { merge: true });
     } catch (error: any) {
       const code = error.code
       return code;
@@ -45,6 +72,20 @@ export class FirestoreService {
     }
   }
 
+  async eliminarSubDocs(col: string, id: string, subCol: string) {
+    try {
+      return this.firestore.collection(col).doc(id).collection(subCol).get().subscribe((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          doc.ref.delete();
+        });
+      });
+    } catch (error: any) {
+      const code = error.code
+      return code;
+    }
+  }
+
+  
   crearIdDoc() {
     return this.firestore.createId();
   }
@@ -55,6 +96,14 @@ export class FirestoreService {
 
   getDoc<T>(col: string, id: string) {
     return this.firestore.collection<T>(col).doc(id).valueChanges();
+  }
+
+  getSubDocs<T>(col: string, id: string, subCol: string) {
+    return this.firestore.collection(col).doc(id).collection<T>(subCol).valueChanges();
+  }
+
+  getSubDoc<T>(col: string, id: string, subCol: string, subId: string) {
+    return this.firestore.collection(col).doc(id).collection<T>(subCol).doc(subId).valueChanges();
   }
 
 

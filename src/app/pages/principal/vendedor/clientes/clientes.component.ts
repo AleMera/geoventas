@@ -4,11 +4,10 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Subject } from 'rxjs';
 
 import { Ciudad, Cliente, Info } from 'src/app/app.interfaces';
-import { ModalFormClienteComponent } from '../../../components/modal-form-cliente/modal-form-cliente.component';
-import { FirestoreService } from '../../../services/firestore.service';
+import { ModalFormClienteComponent } from '../../../../components/modal-form-cliente/modal-form-cliente.component';
+import { FirestoreService } from '../../../../services/firestore.service';
 import { DataTableDirective } from 'angular-datatables';
-import { UsuariosComponent } from '../usuarios/usuarios.component';
-import { AuthService } from '../../../services/auth.service';
+import { AuthService } from '../../../../services/auth.service';
 
 @Component({
   selector: 'app-clientes',
@@ -27,9 +26,6 @@ export class ClientesComponent implements OnInit, OnDestroy, AfterViewInit {
   dtTrigger: Subject<any> = new Subject<any>();
   @ViewChild(DataTableDirective) dtElement: DataTableDirective;
 
-  nombreCurso: string = '';
-  nombreCiudad: string = '';
-
   constructor(private modal: NgbModal, private firestoreSvc: FirestoreService, private authSvc: AuthService) { }
 
   ngOnInit(): void {
@@ -38,14 +34,12 @@ export class ClientesComponent implements OnInit, OnDestroy, AfterViewInit {
       language: {
         url: '//cdn.datatables.net/plug-ins/1.10.22/i18n/Spanish.json'
       },
-      pageLength: 5,
-      lengthMenu: [1, 5, 10, 25, 50, 100],
+      lengthMenu: [10, 25, 50, 100],
       responsive: false,
       processing: true,
       scrollY: '400px',
       retrieve: true,
     };
-    // this.rerender();
     this.cargarData();
   }
 
@@ -67,24 +61,27 @@ export class ClientesComponent implements OnInit, OnDestroy, AfterViewInit {
             this.ciudadSelect.nativeElement.disabled = true;
           }
         });
+
         //Cargar tabla de clientes
         this.clientes = [];
         this.firestoreSvc.getDocs('Ventas').subscribe((resp: any) => {
           let ventas: any[] = [];
+          console.log(this.ciudades);
           this.ciudades.forEach((ciudad: any) => {
             const venta = resp.filter((venta: any) => venta.idCiudad === ciudad.id);
             ventas = [...ventas, ...venta];
-
           });
-          this.firestoreSvc.getDocs('Clientes').subscribe((resp: any) => {
+          this.firestoreSvc.getDocs('Clientes').subscribe((resp: any[]) => {
             const clientes = resp.filter((cliente: any) => ventas.find((venta: any) => venta.idCliente === cliente.id));
             this.clientes = clientes;
+            
+            //TODO: Obtener la ciudad correctamente
             this.clientes.forEach((cliente: any, i) => {
               const venta = ventas.find((venta: any) => venta.idCliente === cliente.id);
+              if (!venta) return;
               this.firestoreSvc.getDoc('Cursos', venta.idCurso).subscribe((resp: any) => {
-                const ciudad = this.ciudades.find((ciudad: any) => ciudad.id === cliente.idCiudad);
                 this.clientes[i].curso = resp.nombre;
-                this.clientes[i].ciudad = ciudad!.nombre;
+                this.clientes[i].ciudad = this.ciudades.find((ciudad: any) => ciudad.id === venta.idCiudad)?.nombre;
                 this.dtTrigger.next(null);
               });
             });
@@ -117,7 +114,7 @@ export class ClientesComponent implements OnInit, OnDestroy, AfterViewInit {
         clientes.forEach((cliente: any) => {
           const venta = ventas.find((venta: any) => venta.idCliente === cliente.id);
           this.firestoreSvc.getDoc('Cursos', venta.idCurso).subscribe((resp: any) => {
-            const ciudad = this.ciudades.find((ciudad: any) => ciudad.id === cliente.idCiudad);
+            const ciudad = this.ciudades.find((ciudad: any) => ciudad.id === venta.idCiudad);
             this.clientes.push({
               id: cliente.id,
               cedula: cliente.cedula,
@@ -126,7 +123,7 @@ export class ClientesComponent implements OnInit, OnDestroy, AfterViewInit {
               email: cliente.email,
               telefono: cliente.telefono,
               direccion: cliente.direccion,
-              ciudad: ciudad!.nombre,
+              ciudad: ciudad?.nombre,
               imgCedula: cliente.imgCedula,
               certTrabajo: cliente.certTrabajo,
               certCapacitacion: cliente.certCapacitacion,
@@ -150,12 +147,14 @@ export class ClientesComponent implements OnInit, OnDestroy, AfterViewInit {
         const venta = resp.filter((venta: any) => venta.idCiudad === ciudad.id);
         ventas = [...ventas, ...venta];
       });
+      console.log(ventas);
+      
       this.firestoreSvc.getDocs('Clientes').subscribe((resp: any) => {
         const clientes = resp.filter((cliente: any) => ventas.find((venta: any) => venta.idCliente === cliente.id));
         clientes.forEach((cliente: any) => {
           const venta = ventas.find((venta: any) => venta.idCliente === cliente.id);
           this.firestoreSvc.getDoc('Cursos', venta.idCurso).subscribe((resp: any) => {
-            const ciudad = this.ciudades.find((ciudad: any) => ciudad.id === cliente.idCiudad);
+            const ciudad = this.ciudades.find((ciudad: any) => ciudad.id === venta.idCiudad);
             this.clientes.push({
               id: cliente.id,
               cedula: cliente.cedula,
@@ -164,7 +163,7 @@ export class ClientesComponent implements OnInit, OnDestroy, AfterViewInit {
               email: cliente.email,
               telefono: cliente.telefono,
               direccion: cliente.direccion,
-              ciudad: ciudad!.nombre,
+              ciudad: ciudad?.nombre,
               imgCedula: cliente.imgCedula,
               certTrabajo: cliente.certTrabajo,
               certCapacitacion: cliente.certCapacitacion,
@@ -181,7 +180,7 @@ export class ClientesComponent implements OnInit, OnDestroy, AfterViewInit {
     this.modal.open(ModalFormClienteComponent, {
       scrollable: true,
       centered: true,
-      size: 'lg',
+      size: 'md',
     }).componentInstance.idCliente = idCliente;
   }
 
@@ -191,6 +190,7 @@ export class ClientesComponent implements OnInit, OnDestroy, AfterViewInit {
     }
     return false;
   }
+
   private ordenarAlfabeticamente(a: any, b: any) {
     if (a.nombre < b.nombre) {
       return -1;

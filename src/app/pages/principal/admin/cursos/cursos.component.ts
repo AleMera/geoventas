@@ -1,8 +1,8 @@
 import { AfterViewInit, Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { Subject } from 'rxjs';
-import { FirestoreService } from '../../../services/firestore.service';
+import { FirestoreService } from '../../../../services/firestore.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { ModalFormCursoComponent } from '../../../components/modal-form-curso/modal-form-curso.component';
+import { ModalFormCursoComponent } from '../../../../components/modal-form-curso/modal-form-curso.component';
 import { DataTableDirective } from 'angular-datatables';
 
 @Component({

@@ -23,135 +23,137 @@
   <div class="text-left" *ngIf="curso">
     <strong>{{ curso.nombre }}</strong>
   </div>
-  <br />
+  
   <form autocomplete="off" [formGroup]="clienteForm" (ngSubmit)="guardar()">
-    <!-- Cedula -->
-    <span class="text-danger" *ngIf="validarCampos('cedula')">
-      {{ errorCedula }}
-    </span>
-    <div class="input-group mb-3">
-      <div class="input-group-prepend">
-        <span class="input-group-text" id="inputGroup-sizing-default"
-          >Cédula</span
-        >
+    <div *ngIf="numPagina === 1">
+      <h5 class="text-center">Información básica</h5>
+      <hr>
+      <!-- Cedula -->
+      <span class="text-danger" *ngIf="validarCampos('cedula')">
+        {{ errorCedula }}
+      </span>
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="inputGroup-sizing-default"
+            >Cédula</span
+          >
+        </div>
+        <input
+          type="text"
+          class="form-control"
+          id="cedula"
+          onkeypress="return event.charCode >= 48 && event.charCode <= 57"
+          (change)="verificarCedula($event)"
+          formControlName="cedula"
+        />
       </div>
-      <input
-        type="text"
-        class="form-control"
-        id="cedula"
-        onkeypress="return event.charCode >= 48 && event.charCode <= 57"
-        formControlName="cedula"
-      />
+      <!-- Nombre -->
+      <span class="text-danger" *ngIf="validarCampos('nombre')">
+        {{ errorNombre }}
+      </span>
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="inputGroup-sizing-default"
+            >Nombre</span
+          >
+        </div>
+        <input
+          type="text"
+          class="form-control"
+          id="nombre"
+          formControlName="nombre"
+        />
+      </div>
+      <!-- Apellido -->
+      <span class="text-danger" *ngIf="validarCampos('apellido')">
+        {{ errorApellido }}
+      </span>
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="inputGroup-sizing-default"
+            >Apellido</span
+          >
+        </div>
+        <input
+          type="text"
+          class="form-control"
+          id="apellido"
+          formControlName="apellido"
+        />
+      </div>
+      <!-- Email -->
+      <span class="text-danger" *ngIf="validarCampos('email')">
+        {{ errorEmail }}
+      </span>
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="inputGroup-sizing-default"
+            >Email</span
+          >
+        </div>
+        <input
+          type="email"
+          class="form-control"
+          id="email"
+          formControlName="email"
+        />
+      </div>
+      <!-- Teléfono -->
+      <span class="text-danger" *ngIf="validarCampos('telefono')">
+        {{ errorTelefono }}
+      </span>
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="inputGroup-sizing-default"
+            >Telefono</span
+          >
+        </div>
+        <input
+          type="text"
+          class="form-control"
+          id="telefono"
+          onkeypress="return event.charCode >= 48 && event.charCode <= 57"
+          formControlName="telefono"
+        />
+      </div>
+      <!-- Dirección -->
+      <span class="text-danger" *ngIf="validarCampos('direccion')">
+        {{ errorDireccion }}
+      </span>
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="inputGroup-sizing-default"
+            >Dirección</span
+          >
+        </div>
+        <input
+          type="text"
+          class="form-control"
+          id="direccion"
+          formControlName="direccion"
+        />
+      </div>
+      <!-- Ciudad -->
+      <span class="text-danger" *ngIf="validarCampos('ciudad')">
+        {{ errorCiudad }}
+      </span>
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <label class="input-group-text" for="inputGroupSelect01">Ciudad</label>
+        </div>
+        <select class="form-control custom-select" formControlName="ciudad">
+          <option value="">Seleccionar...</option>
+          <option *ngFor="let ciudad of ciudades" [value]="ciudad.id">
+            {{ ciudad.nombre }}
+          </option>
+        </select>
+      </div>
     </div>
 
-    <!-- Nombre -->
-    <span class="text-danger" *ngIf="validarCampos('nombre')">
-      {{ errorNombre }}
-    </span>
-    <div class="input-group mb-3">
-      <div class="input-group-prepend">
-        <span class="input-group-text" id="inputGroup-sizing-default"
-          >Nombre</span
-        >
-      </div>
-      <input
-        type="text"
-        class="form-control"
-        id="nombre"
-        formControlName="nombre"
-      />
-    </div>
-
-    <!-- Apellido -->
-    <span class="text-danger" *ngIf="validarCampos('apellido')">
-      {{ errorApellido }}
-    </span>
-    <div class="input-group mb-3">
-      <div class="input-group-prepend">
-        <span class="input-group-text" id="inputGroup-sizing-default"
-          >Apellido</span
-        >
-      </div>
-      <input
-        type="text"
-        class="form-control"
-        id="apellido"
-        formControlName="apellido"
-      />
-    </div>
-
-    <!-- Email -->
-    <span class="text-danger" *ngIf="validarCampos('email')">
-      {{ errorEmail }}
-    </span>
-    <div class="input-group mb-3">
-      <div class="input-group-prepend">
-        <span class="input-group-text" id="inputGroup-sizing-default"
-          >Email</span
-        >
-      </div>
-      <input
-        type="email"
-        class="form-control"
-        id="email"
-        formControlName="email"
-      />
-    </div>
-
-    <!-- Teléfono -->
-    <span class="text-danger" *ngIf="validarCampos('telefono')">
-      {{ errorTelefono }}
-    </span>
-    <div class="input-group mb-3">
-      <div class="input-group-prepend">
-        <span class="input-group-text" id="inputGroup-sizing-default"
-          >Telefono</span
-        >
-      </div>
-      <input
-        type="text"
-        class="form-control"
-        id="telefono"
-        onkeypress="return event.charCode >= 48 && event.charCode <= 57"
-        formControlName="telefono"
-      />
-    </div>
-
-    <!-- Dirección -->
-    <span class="text-danger" *ngIf="validarCampos('direccion')">
-      {{ errorDireccion }}
-    </span>
-    <div class="input-group mb-3">
-      <div class="input-group-prepend">
-        <span class="input-group-text" id="inputGroup-sizing-default"
-          >Dirección</span
-        >
-      </div>
-      <input
-        type="text"
-        class="form-control"
-        id="direccion"
-        formControlName="direccion"
-      />
-    </div>
-
-    <!-- Ciudad -->
-    <span class="text-danger" *ngIf="validarCampos('ciudad')">
-      {{ errorCiudad }}
-    </span>
-    <div class="input-group mb-3">
-      <div class="input-group-prepend">
-        <label class="input-group-text" for="inputGroupSelect01">Ciudad</label>
-      </div>
-      <select class="form-control custom-select" formControlName="ciudad">
-        <option value="">Seleccionar...</option>
-        <option *ngFor="let ciudad of ciudades">
-          {{ ciudad.nombre }}
-        </option>
-      </select>
-    </div>
-
-    <div *ngIf="idCliente">
+    <!-- SEGUNDA PAGINA -->
+    <div *ngIf="numPagina === 2">
+      <h5 class="text-center">Información adicional</h5>
+      <hr>
       <!-- Imagen cedula -->
       <span class="text-danger" *ngIf="validarCampos('imgCedula')">
         {{ errorImgCedula }}
@@ -164,26 +166,23 @@
         </div>
         <input
           type="file"
-          accept="pdf/*"
+          accept="application/pdf"
           max="1"
           class="form-control"
           id="imgCedula"
           formControlName="imgCedula"
+          (change)="cargarArchivo($event, 'cedula')"
         />
       </div>
-      <div class="container-fluid" style="margin-bottom: 2%" *ngIf="pdfCedula">
+      <div class="container-fluid" style="margin-bottom: 2%" *ngIf="urlCedula">
         <div class="row">
           <div class="col-4">
-            <!-- <img [src]="imgCedula" class="img-fluid" alt="Cédula física" /> -->
-            <a class="btn btn-dark btn-sm" [href]="pdfCedula" target="_blank" rel="noopener noreferrer">Ver archivo</a>
+            <a class="btn btn-dark btn-sm" [href]="urlCedula" target="_blank" rel="noopener noreferrer">Ver archivo</a>
           </div>
         </div>
       </div>
 
       <!-- Certificado de trabajo -->
-      <span class="text-danger" *ngIf="validarCampos('certTrabajo')">
-        {{ errorCertTrabajo }}
-      </span>
       <div class="input-group mb-3">
         <div class="input-group-prepend">
           <span class="input-group-text" id="inputGroup-sizing-default"
@@ -192,30 +191,27 @@
         </div>
         <input
           type="file"
-          accept="pdf/*"
+          accept="application/pdf"
           max="1"
           class="form-control"
           id="certTrabajo"
           formControlName="certTrabajo"
+          (change)="cargarArchivo($event, 'certTrabajo')"
         />
       </div>
       <div
         class="container-fluid"
         style="margin-bottom: 2%"
-        *ngIf="pdfCertTrabajo"
+        *ngIf="urlCertTrabajo"
       >
         <div class="row">
           <div class="col-4">
-            <!-- <img [src]="imgCertTrabajo" class="img-fluid" alt="Certificado de trabajo" /> -->
-            <a class="btn btn-dark btn-sm" [href]="pdfCertTrabajo" target="_blank" rel="noopener noreferrer">Ver archivo</a>
+            <a class="btn btn-dark btn-sm" [href]="urlCertTrabajo" target="_blank" rel="noopener noreferrer">Ver archivo</a>
           </div>
         </div>
       </div>
 
       <!-- Certificado de capacitacion -->
-      <span class="text-danger" *ngIf="validarCampos('certCapacitacion')">
-        {{ errorCertCapacitacion }}
-      </span>
       <div class="input-group mb-3">
         <div class="input-group-prepend">
           <span class="input-group-text" id="inputGroup-sizing-default"
@@ -224,27 +220,31 @@
         </div>
         <input
           type="file"
-          accept="pdf/*"
+          accept="application/pdf"
           max="1"
           class="form-control"
           id="certCapacitacion"
           formControlName="certCapacitacion"
+          (change)="cargarArchivo($event, 'certCapacitacion')"
         />
       </div>
       <div
         class="container-fluid"
         style="margin-bottom: 2%"
-        *ngIf="pdfCertCapacitacion"
+        *ngIf="urlCertCapacitacion"
       >
         <div class="row">
           <div class="col-4">
-            <!-- <img [src]="imgCertCapacitacion" class="img-fluid" alt="Certificado de capacitacion" /> -->
-            <a class="btn btn-dark btn-sm" [href]="pdfCertCapacitacion" target="_blank" rel="noopener noreferrer">Ver archivo</a>
+            <a class="btn btn-dark btn-sm" [href]="urlCertCapacitacion" target="_blank" rel="noopener noreferrer">Ver archivo</a>
           </div>
         </div>
       </div>
     </div>
   </form>
+</div>
+
+<div class="d-flex justify-content-center">
+  <ngb-pagination [collectionSize]="20" [(page)]="numPagina"> </ngb-pagination>
 </div>
 
 <div
@@ -291,4 +291,5 @@
         : "Finalizar"
     }}
   </button>
+  <button type="button" class="btn btn-dark" (click)="asignarValores()">TEST</button>
 </div>

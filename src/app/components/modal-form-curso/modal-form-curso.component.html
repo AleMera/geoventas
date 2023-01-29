@@ -1,5 +1,7 @@
 <div class="modal-header">
-  <h4 class="modal-title">{{ idCurso ? 'Editar información' : 'Registrar curso'}}</h4>
+  <h4 class="modal-title">
+    {{ idCurso ? "Editar información" : "Registrar curso" }}
+  </h4>
   <button
     type="button"
     class="btn-close"
@@ -9,178 +11,279 @@
 </div>
 <div class="modal-body">
   <div class="text-center">
-    <div class="spinner-border" style="width: 3rem; height: 3rem;" role="status" *ngIf="cargandoInicio">
+    <div
+      class="spinner-border"
+      style="width: 3rem; height: 3rem"
+      role="status"
+      *ngIf="cargandoInicio"
+    >
       <span class="visually-hidden">Loading...</span>
     </div>
   </div>
   <form autocomplete="off" [formGroup]="cursoForm" (ngSubmit)="guardar()">
-    <!-- Nombre -->
-    <span class="text-danger" *ngIf="validarCampos('nombre')">
-      {{ errorNombre }}
-    </span>
-    <div class="input-group mb-3">
-      <div class="input-group-prepend">
-        <span class="input-group-text" id="inputGroup-sizing-default"
-          >Nombre</span
-        >
-      </div>
-      <input
-        type="text"
-        class="form-control"
-        id="nombre"
-        formControlName="nombre"
-      />
-    </div>
-
-    <!-- Certificacion -->
-    <span class="text-danger" *ngIf="validarCampos('certif')">
-      {{ errorCertif }}
-    </span>
-    <div class="input-group mb-3">
-      <div class="input-group-prepend">
-        <span class="input-group-text" id="inputGroup-sizing-default"
-          >Certificación</span
-        >
-      </div>
-      <input
-        type="text"
-        class="form-control"
-        id="certif"
-        formControlName="certif"
-      />
-    </div>
-
-    <!-- Duracion -->
-    <span class="text-danger" *ngIf="validarCampos('duracion')">
-      {{ errorDuracion }}
-    </span>
-    <div class="input-group mb-3">
-      <div class="input-group-prepend">
-        <span class="input-group-text" id="inputGroup-sizing-default"
-          >Duración</span
-        >
-      </div>
-      <input
-        type="number"
-        class="form-control"
-        id="duracion"
-        formControlName="duracion"
-      />
-      <div class="input-group-append">
-        <span class="input-group-text">Horas</span>
-      </div>
-    </div>
-
-    <!-- Horario -->
-    <span class="text-danger" *ngIf="validarCampos('horario')">
-      {{ errorHorario }}
-    </span>
-    <div class="input-group mb-3">
-      <div class="input-group-prepend">
-        <span class="input-group-text" id="inputGroup-sizing-default"
-          >Horario</span
-        >
-      </div>
-      <input
-        type="text"
-        class="form-control"
-        id="horario"
-        formControlName="horario"
-      />
-    </div>
-
-    <!-- Modalidad -->
-    <span class="text-danger" *ngIf="validarCampos('modalidad')">
-      {{ errorModalidad }}
-    </span>
-    <div class="input-group mb-3">
-      <div class="input-group-prepend">
-        <label class="input-group-text" for="inputGroupSelect01"
-          >Modalidad</label
-        >
-      </div>
-      <select class="form-control custom-select" formControlName="modalidad">
-        <option value="">Seleccionar...</option>
-        <option *ngFor="let modalidad of modalidades">
-          {{ modalidad }}
-        </option>
-      </select>
-    </div>
-
-    <!-- Fecha -->
-    <span class="text-danger" *ngIf="validarCampos('fecha')">
-      {{ errorFecha }}
-    </span>
-    <div class="input-group mb-3">
-      <div class="input-group-prepend">
-        <span class="input-group-text" id="inputGroup-sizing-default"
-          >Fecha</span
-        >
-      </div>
-      <input
-        type="date"
-        class="form-control"
-        id="fecha"
-        formControlName="fecha"
-      />
-    </div>
-
-    <!-- Precio -->
-    <span class="text-danger" *ngIf="validarCampos('precio')">
-      {{ errorPrecio }}
-    </span>
-    <div class="input-group mb-3">
-      <div class="input-group-prepend">
-        <span class="input-group-text" id="inputGroup-sizing-default"
-          >Precio ($)</span
-        >
-      </div>
-      <input
-        type="number"
-        class="form-control"
-        id="precio"
-        formControlName="precio"
-      />
-      <div class="input-group-append">
-        <span class="input-group-text">$</span>
-      </div>
-    </div>
-
-    <!-- Imagenes -->
-    <div *ngIf="!editar">
-      <span class="text-danger" *ngIf="validarCampos('imgs')">
-        {{ errorImgs }}
+    <div *ngIf="numPagina === 1">
+      <h5 class="text-center">Información básica</h5>
+      <!-- Nombre -->
+      <span class="text-danger" *ngIf="validarCampos('nombre')">
+        {{ errorNombre }}
       </span>
       <div class="input-group mb-3">
         <div class="input-group-prepend">
-          <span class="input-group-text">Imágenes</span>
+          <span class="input-group-text" id="inputGroup-sizing-default"
+            >Nombre</span
+          >
         </div>
-        <div class="custom-file">
-          <input
-            type="file"
-            class="custom-file-input"
-            multiple
-            accept="image/*"
-            (change)="onChangeImgs($event)"
-            formControlName="imgs"
-            id="imgs"
-          />
-          <label class="custom-file-label" for="inputGroupFile01"></label>
+        <input
+          type="text"
+          class="form-control"
+          id="nombre"
+          formControlName="nombre"
+        />
+      </div>
+
+      <!-- Certificacion -->
+      <span class="text-danger" *ngIf="validarCampos('certif')">
+        {{ errorCertif }}
+      </span>
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="inputGroup-sizing-default"
+            >Certificación</span
+          >
+        </div>
+        <input
+          type="text"
+          class="form-control"
+          id="certif"
+          formControlName="certif"
+        />
+      </div>
+
+      <!-- Duracion -->
+      <span class="text-danger" *ngIf="validarCampos('duracion')">
+        {{ errorDuracion }}
+      </span>
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="inputGroup-sizing-default"
+            >Duración</span
+          >
+        </div>
+        <input
+          type="number"
+          class="form-control"
+          id="duracion"
+          formControlName="duracion"
+        />
+        <div class="input-group-append">
+          <span class="input-group-text">Horas</span>
         </div>
       </div>
-      <div class="container-fluid">
-        <div class="row">
-          <div class="col-4" *ngFor="let img of imgs">
-            <img [src]="img" class="img-fluid" alt="Responsive image" />
+
+      <!-- Horario -->
+      <span class="text-danger" *ngIf="validarCampos('horario')">
+        {{ errorHorario }}
+      </span>
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="inputGroup-sizing-default"
+            >Horario</span
+          >
+        </div>
+        <input
+          type="text"
+          class="form-control"
+          id="horario"
+          formControlName="horario"
+        />
+      </div>
+      
+      <!-- Modalidad -->
+      <span class="text-danger" *ngIf="validarCampos('modalidad')">
+        {{ errorModalidad }}
+      </span>
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <label class="input-group-text" for="inputGroupSelect01"
+            >Modalidad</label
+          >
+        </div>
+        <select class="form-control custom-select" formControlName="modalidad">
+          <option value="">Seleccionar...</option>
+          <option *ngFor="let modalidad of modalidades">
+            {{ modalidad }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Fecha -->
+      <span class="text-danger" *ngIf="validarCampos('fecha')">
+        {{ errorFecha }}
+      </span>
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="inputGroup-sizing-default"
+            >Fecha</span
+          >
+        </div>
+        <input
+          type="date"
+          class="form-control"
+          id="fecha"
+          formControlName="fecha"
+        />
+      </div>
+
+      <!-- Precio -->
+      <span class="text-danger" *ngIf="validarCampos('precio')">
+        {{ errorPrecio }}
+      </span>
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="inputGroup-sizing-default"
+            >Precio ($)</span
+          >
+        </div>
+        <input
+          type="number"
+          class="form-control"
+          id="precio"
+          formControlName="precio"
+        />
+        <div class="input-group-append">
+          <span class="input-group-text">$</span>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="numPagina === 2">
+      <h5 class="text-center">Información adicional</h5>
+      <!-- Categoría -->
+      <span class="text-danger" *ngIf="validarCampos('categoria')">
+        {{ errorCategoria }}
+      </span>
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <label class="input-group-text" for="inputGroupSelect01"
+            >Categoría</label
+          >
+        </div>
+        <select class="form-control custom-select" formControlName="categoria" (change)="onChangeCat($event)">
+          <option value="">Seleccionar...</option>
+          <option *ngFor="let categoria of categorias" [value]="categoria.id">
+            {{ categoria.nombre }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Imagenes -->
+      <div *ngIf="!editar">
+        <span class="text-danger" *ngIf="validarCampos('imgs')">
+          {{ errorImgs }}
+        </span>
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text">Imágenes</span>
           </div>
+          <div class="custom-file" style="cursor: pointer">
+            <input
+              type="file"
+              class="custom-file-input"
+              multiple
+              accept="image/*"
+              (change)="onChangeImgs($event)"
+              formControlName="imgs"
+              id="imgs"
+            />
+            <label class="custom-file-label" for="inputGroupFile01"></label>
+          </div>
+        </div>
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-4" *ngFor="let img of imgs">
+              <img [src]="img" class="img-fluid" alt="Responsive image" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Justificacion -->
+      <span class="text-danger" *ngIf="validarCampos('justificacion')">
+        {{ errorJustificacion }}
+      </span>
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text">Justificación</span>
+        </div>
+        <textarea
+          class="form-control"
+          aria-label="With textarea"
+          formControlName="justificacion"
+        ></textarea>
+      </div>
+
+      <!-- Objetivos -->
+      <span class="text-danger" *ngIf="validarCampos('objetivos')">
+        {{ errorObjetivos }}
+      </span>
+      <br *ngIf="validarCampos('objetivos')" />
+      <span class="text-danger" *ngIf="nuevoObj.touched && nuevoObj.errors">
+        Escriba un objetivo
+      </span>
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text">Objetivos</span>
+        </div>
+        <textarea
+          class="form-control"
+          aria-label="With textarea"
+          [formControl]="nuevoObj"
+        ></textarea>
+        <div class="input-group-append">
+          <button
+            class="btn btn-outline-success"
+            type="button"
+            (click)="agregarObjetivo()"
+          >
+            +
+          </button>
+        </div>
+      </div>
+      <div
+        class="input-group mb-3"
+        formArrayName="objetivos"
+        *ngFor="let obj of objetivosArray.controls; let i = index"
+      >
+        <textarea
+          type="text"
+          class="form-control"
+          [formControlName]="i"
+        ></textarea>
+        <div class="input-group-append">
+          <button
+            type="button"
+            class="btn btn-outline-danger btn-sm"
+            (click)="eliminarObjetivo(i)"
+          >
+            <i class="material-icons">cancel</i>
+          </button>
         </div>
       </div>
     </div>
   </form>
 </div>
 
-<div [class]=" editar ? 'modal-footer justify-content-between' : 'modal-footer'">
-  <button type="button" class="btn btn-danger text-left" (click)="eliminar()" *ngIf="editar">
+<div class="d-flex justify-content-center">
+  <ngb-pagination [collectionSize]="20" [(page)]="numPagina"> </ngb-pagination>
+</div>
+
+<div [class]="editar ? 'modal-footer justify-content-between' : 'modal-footer'">
+  <button
+    type="button"
+    class="btn btn-danger text-left"
+    (click)="eliminar()"
+    *ngIf="editar"
+  >
     <span
       class="spinner-border spinner-border-sm"
       role="status"
@@ -188,15 +291,13 @@
       *ngIf="cargandoEliminar"
     >
     </span>
-    <i class="material-icons" *ngIf="!cargandoEliminar">
-      delete
-    </i>
+    <i class="material-icons" *ngIf="!cargandoEliminar"> delete </i>
   </button>
   <button
     type="button"
     class="btn btn-success"
     (click)="guardar()"
-    [disabled]="(cargandoGuardar || !cursoForm.dirty) && editar"
+    [disabled]="((cargandoGuardar || !cursoForm.dirty) && editar) || (cargandoGuardar && !editar)"
   >
     <span
       class="spinner-border spinner-border-sm"
@@ -206,4 +307,5 @@
     ></span>
     {{ cargandoGuardar ? "Guardando..." : "Guardar" }}
   </button>
+  <button type="button" class="btn btn-dark" (click)="asignarDatos()">TEST</button>
 </div>

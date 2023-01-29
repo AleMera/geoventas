@@ -13,21 +13,9 @@ import { ModalFormClienteComponent } from '../../../components/modal-form-client
 export class InfoCursoComponent implements OnInit, OnDestroy {
 
   //TODO: Cambiar any por el tipo de dato correcto
-  curso: any = {
-    id: '',
-    nombre: '',
-    horario: '',
-    modalidad: '',
-    fecha: '',
-    certif: "",
-    duracion: 0,
-    estado: "",
-    imgsUrl: [],
-    precio: 0
-  };
+  curso: any = {};
   idCurso!: string;
   cargando: boolean = true;
-  inscrito: boolean = false;
 
   constructor(private rutaActiva: ActivatedRoute, private modal: NgbModal, private firestoreSvc: FirestoreService) { }
 
@@ -40,8 +28,6 @@ export class InfoCursoComponent implements OnInit, OnDestroy {
   }
 
   incribirse() {
-    this.inscrito = true;
-    this.cargando = true;
     const modalRef = this.modal.open(ModalFormClienteComponent, { centered: true,  scrollable: true });
     modalRef.componentInstance.idCurso = this.idCurso;
   }

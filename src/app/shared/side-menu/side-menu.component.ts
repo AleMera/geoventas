@@ -22,7 +22,6 @@ export class SideMenuComponent implements OnInit {
       }
       if (resp.uid === 'sIjSGyg7Afa4TbIWdXxWMfYckVC2') {
         // Es admin
-
         return true;
       } else {
         // No es admin
@@ -43,6 +42,11 @@ export class SideMenuComponent implements OnInit {
           ruta: '/principal/usuarios',
           texto: 'Usuarios',
           icono: 'people'
+        },
+        {
+          ruta: '/principal/ventas',
+          texto: 'Ventas',
+          icono: 'attach_money'
         }
       ]
     } else {

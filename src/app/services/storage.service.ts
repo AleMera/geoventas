@@ -10,7 +10,7 @@ export class StorageService {
   constructor(private storage: AngularFireStorage) { }
 
   
-  async subirImg(path: string, idDoc: string, nombre: string, imagen: File): Promise<string> {
+  async subirArchivo(path: string, idDoc: string, nombre: string, imagen: File): Promise<string> {
     return new Promise(resolve => {
       const filePath = `${path}/${idDoc}/${nombre}`;
       const ref = this.storage.ref(filePath);

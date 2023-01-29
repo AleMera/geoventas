@@ -28,11 +28,11 @@ export class ModalFormUsuarioComponent implements OnInit {
 
   usuarioForm: FormGroup = this.fBuilder.group({
     // cedula: ['', [Validators.required, validarCedula]],
-    cedula: ['XXXXXXXXXX', [Validators.required, Validators.minLength(10), Validators.maxLength(10)]],
-    nombre: ['XXXXXXXXXX', Validators.required],
-    apellido: ['XXXXXXXXXX', Validators.required],
-    email: ['XXX@YYY.COM', [Validators.required, Validators.email]],
-    telefono: ['XXXXXXXXXX', [Validators.required, Validators.minLength(10), Validators.maxLength(10)]],
+    cedula: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(10)]],
+    nombre: ['', Validators.required],
+    apellido: ['', Validators.required],
+    email: ['', [Validators.required, Validators.email]],
+    telefono: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(10)]],
     ciudad: [[], Validators.required],
   });
 
@@ -83,7 +83,6 @@ export class ModalFormUsuarioComponent implements OnInit {
       return error['required'] ? 'La ciudad es requerida' : '';
     return '';
   }
-
 
   ngOnInit(): void {
     this.firestoreSvc.getDocs<Ciudad>('Ciudades').subscribe((resp) => {
@@ -165,6 +164,7 @@ export class ModalFormUsuarioComponent implements OnInit {
 
   quitarCiudad(pos: number) {
     this.ciudadesSelect.splice(pos, 1);
+    this.usuarioForm.markAsDirty();
   }
 
   guardar() {

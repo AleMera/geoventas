@@ -1,0 +1,12 @@
+- Poner las categorias en el inicio ya esta creada en la BD - LISTO
+- Poner buscador en el inicio :3
+- Poner mision, vision y objetivos de la empresa en el incio y otras cosas como metodos de pago (escribir a naty) xd
+- Cambiar la informacion interna en cada curso (Subcoleccion objetivos, justificacion) - LISTO
+- Poner boton para volver al inicio o solo dar clic en el logo para que vuelva al inicio - LISTO
+- Poder ver la cedula en pdf en los vendedores en el programa - LISTO
+- Anclar todos los clientes para el admin porque el hace seguimiento de todo (ojala valga hacer) - LISTO
+- Validar correo - en el caso de ser vendedor o admin no puede inscribirse al curso(solo si vale) - LISTO
+- Validar que no se pueda inscribir a un curso que ya esta inscrito - LISTO
+
+- Calcular la comision por ciudad (10% del numero de cursos que se vendieron en esa ciudad) y mostrar en el dashboard
+- Dashboard benja 

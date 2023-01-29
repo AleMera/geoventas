@@ -3,7 +3,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Subject } from 'rxjs';
 import { ModalFormUsuarioComponent } from 'src/app/components/modal-form-usuario/modal-form-usuario.component';
 import { FirestoreService } from 'src/app/services/firestore.service';
-import { DataService } from '../../../services/data.service';
+import { DataService } from '../../../../services/data.service';
 
 @Component({
   selector: 'app-usuarios',

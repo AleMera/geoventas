@@ -50,42 +50,11 @@
           <h1>{{ curso.nombre }}</h1>
           <hr>
           <h2>Justificación</h2>
-          <p>
-            CERTIFICACIÓN CAOHC: El participante aprobará con el 70% de la
-            evaluación teórica y práctica, recibirá el certifcado avalado por la
-            CAOHC que tiene una vigencia de 5 años.
-          </p>
-          <p>
-            La interpretación de los audiogramas debe realizarse conociendo las
-            bases de la anatomía y la fisiología fundamental del sistema auditivo
-            así como de las mediciones de la vía aérea y vía ósea. La obtención
-            del audiograma es la actividad básica a partir del cual se elabora
-            todo el proceso de la valoración auditiva del trabajador expuesto a
-            ruido.
-          </p>
-          <p>
-            En audiología ocupacional es importante manejar el contexto normativo
-            de la salud ocupacional, por ello se propone la interpretación con la
-            Escala de Klockhoff modificado. Una buena interpretación es la base
-            para la vigilancia auditiva de los trabajadores expuestos a ruido.
-            Este curso integra los conocimientos clínicos audiológicos y su aplica
-            ción en el ámbito de la salud ocupacional.
-          </p>
+          <p> {{ curso.justificacion }} </p>
           <hr />
           <h2>Objetivos</h2>
           <ul>
-            <li>
-              El curso de AUDIOMETRIA CAOHC tiene como objetivo entrenar a los
-              participantes en la correcta realización de la audiometría bajo los
-              estándares de “Council for Accreditation in Occupational Hearing
-              Conservation” de los Estados Unidos de América.
-            </li>
-  
-            <li>
-              Los participantes que aprueben los exámenes teórico-prácticos
-              estarán calificados en la correcta toma del examen audiométrico
-              ocupacional.
-            </li>
+            <li *ngFor="let objetivo of curso.objetivos">{{ objetivo }}</li>
           </ul>
           <hr />
         </div>
@@ -93,11 +62,11 @@
           <div class="text-center">
             <span class="material-icons"> attach_money </span>
             <p>Costo: {{ curso.precio | currency }}</p>
-            <button type="button" [class]="inscrito ? 'btn btn-outline-success' : 'btn btn-success'" [disabled]="inscrito || cargando" (click)="incribirse()">
+            <button type="button" class="btn btn-success" (click)="incribirse()">
               <div class="spinner-border spinner-border-sm text-success" role="status" *ngIf="cargando">
                 <span class="sr-only">Loading...</span>
               </div>
-              {{ (inscrito && !cargando) ? 'Inscrito ✓' : !cargando ? 'Inscribirse' : '' }}
+              Inscribirse
             </button>
           </div>
         </div>

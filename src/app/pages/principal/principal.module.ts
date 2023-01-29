@@ -8,11 +8,12 @@ import { PrincipalRoutingModule } from './principal-routing.module';
 import { PrincipalComponent } from './principal.component';
 import { SharedModule } from '../../shared/shared.module';
 import { ComponentsModule } from '../../components/components.module';
-import { DashboardComponent } from './dashboard/dashboard.component';
-import { ClientesComponent } from './clientes/clientes.component';
-import { MapaComponent } from './mapa/mapa.component';
-import { UsuariosComponent } from './usuarios/usuarios.component';
-import { CursosComponent } from './cursos/cursos.component';
+import { DashboardComponent } from './vendedor/dashboard/dashboard.component';
+import { ClientesComponent } from './vendedor/clientes/clientes.component';
+import { MapaComponent } from './vendedor/mapa/mapa.component';
+import { UsuariosComponent } from './admin/usuarios/usuarios.component';
+import { CursosComponent } from './admin/cursos/cursos.component';
+import { VentasComponent } from './admin/ventas/ventas.component';
 
 
 @NgModule({
@@ -22,7 +23,8 @@ import { CursosComponent } from './cursos/cursos.component';
     ClientesComponent,
     MapaComponent,
     UsuariosComponent,
-    CursosComponent
+    CursosComponent,
+    VentasComponent
   ],
   imports: [
     CommonModule,
