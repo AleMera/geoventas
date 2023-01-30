@@ -28,6 +28,14 @@ const routes: Routes = [
     loadChildren: () => import('./pages/cursos/cursos.module').then(m => m.CursosModule),
   },
   {
+    path: 'nosotros',
+    component: InicioComponent,
+  },
+  {
+    path: 'infoCursos',
+    component: InicioComponent,
+  },
+  {
     path: '**',
     redirectTo: 'inicio',
     pathMatch: 'full'

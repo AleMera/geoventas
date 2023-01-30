@@ -67,10 +67,10 @@
 		<div class="collapse navbar-collapse justify-content-between" collapse="true" id="navbarContent">
 			<ul class="navbar-nav" *ngIf="!logueado">
         <li class="nav-item">
-          <a class="nav-link" aria-current="page" href="#">Nosotros</a>
+          <a class="nav-link" routerLinkActive="active" routerLink="/nosotros">Nosotros</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">Información de cursos</a>
+          <a class="nav-link" routerLinkActive="active" routerLink="/infoCursos">Información de cursos</a>
         </li>
 				<li class="nav-item" ngbDropdown display="dynamic" placement="bottom-end">
 					<a class="nav-link" tabindex="0" ngbDropdownToggle id="navbarDropdown3" role="button"> Categorías </a>
