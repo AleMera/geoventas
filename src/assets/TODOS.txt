@@ -7,6 +7,8 @@
 - Anclar todos los clientes para el admin porque el hace seguimiento de todo (ojala valga hacer) - LISTO
 - Validar correo - en el caso de ser vendedor o admin no puede inscribirse al curso(solo si vale) - LISTO
 - Validar que no se pueda inscribir a un curso que ya esta inscrito - LISTO
-
-- Calcular la comision por ciudad (10% del numero de cursos que se vendieron en esa ciudad) y mostrar en el dashboard
-- Dashboard benja 
+- Calcular el total por vendedor en la pantalla del admin
+- Dashboard benja
+    - TOTAL DE VENTAS ($) EN CADA CIUDAD - LISTO
+    - TOTAL DE CURSOS VENDIDOS DEL USUARIO (#) - LISTO
+    - COMISION DE VENDEDOR (10% del numero de cursos que se vendieron en esa ciudad)

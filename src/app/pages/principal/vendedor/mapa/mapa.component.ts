@@ -52,7 +52,6 @@ export class MapaComponent implements AfterViewInit, OnDestroy {
       this.firestoreSvc.getDocs('Usuarios').subscribe((resp: any) => {
         this.usuario = resp.find((usuario: any) => usuario.uid === uid);
         const ciudadesUsuario = this.usuario.idCiudad;
-        //Cargar select de ciudades del usuario
         this.firestoreSvc.getDocs('Ciudades').subscribe((resp: any) => {
           this.ciudades = resp.filter((ciudad: any) => ciudadesUsuario.includes(ciudad.id));
           this.firestoreSvc.getDocs('Ventas').subscribe((resp: any[]) => {
@@ -67,7 +66,7 @@ export class MapaComponent implements AfterViewInit, OnDestroy {
                 });
               });
               const ciudadVenta = cursosPorCiudad.filter((venta: any) => venta.ciudad === ciudad.nombre);
-
+              
               let color = ciudadVenta.length >= 3 ? 'rgb(0, 144, 46)' : 'rgb(0, 46, 144)';
               const icon = {
                 icon: L.divIcon({

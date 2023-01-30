@@ -14,7 +14,7 @@ import { AuthService } from '../../../../services/auth.service';
   templateUrl: './clientes.component.html',
   styleUrls: ['./clientes.component.scss']
 })
-export class ClientesComponent implements OnInit, OnDestroy, AfterViewInit {
+export class ClientesComponent implements OnInit, OnDestroy {
 
   @ViewChild('ciudad') ciudadSelect: ElementRef;
   clientes: any[] = [];
@@ -41,9 +41,6 @@ export class ClientesComponent implements OnInit, OnDestroy, AfterViewInit {
       retrieve: true,
     };
     this.cargarData();
-  }
-
-  ngAfterViewInit(): void {
   }
 
   cargarData() {
