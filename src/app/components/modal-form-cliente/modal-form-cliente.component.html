@@ -116,6 +116,21 @@
           formControlName="telefono"
         />
       </div>
+      <!-- Ciudad -->
+      <span class="text-danger" *ngIf="validarCampos('ciudad')">
+        {{ errorCiudad }}
+      </span>
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <label class="input-group-text" for="inputGroupSelect01">Ciudad de residencia</label>
+        </div>
+        <select class="form-control custom-select" formControlName="ciudad">
+          <option value="">Seleccionar...</option>
+          <option *ngFor="let ciudad of ciudades" [value]="ciudad.id">
+            {{ ciudad.nombre }}
+          </option>
+        </select>
+      </div>
       <!-- Dirección -->
       <span class="text-danger" *ngIf="validarCampos('direccion')">
         {{ errorDireccion }}
@@ -132,21 +147,6 @@
           id="direccion"
           formControlName="direccion"
         />
-      </div>
-      <!-- Ciudad -->
-      <span class="text-danger" *ngIf="validarCampos('ciudad')">
-        {{ errorCiudad }}
-      </span>
-      <div class="input-group mb-3">
-        <div class="input-group-prepend">
-          <label class="input-group-text" for="inputGroupSelect01">Ciudad</label>
-        </div>
-        <select class="form-control custom-select" formControlName="ciudad">
-          <option value="">Seleccionar...</option>
-          <option *ngFor="let ciudad of ciudades" [value]="ciudad.id">
-            {{ ciudad.nombre }}
-          </option>
-        </select>
       </div>
     </div>
 

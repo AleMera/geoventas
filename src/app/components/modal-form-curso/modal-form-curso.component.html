@@ -277,6 +277,9 @@
   <ngb-pagination [collectionSize]="20" [(page)]="numPagina"> </ngb-pagination>
 </div>
 
+<span class="text-danger text-center" *ngIf="cursoForm.invalid">
+  Hay campos inválidos, por favor verifique.
+</span>
 <div [class]="editar ? 'modal-footer justify-content-between' : 'modal-footer'">
   <button
     type="button"

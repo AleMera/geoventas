@@ -51,7 +51,7 @@ export class CursosComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   verInfo(idCurso: any) {
-    const modalRef = this.modal.open(ModalFormCursoComponent, { centered: true, scrollable: true });
+    const modalRef = this.modal.open(ModalFormCursoComponent, { centered: true, scrollable: true, size: 'xl' });
     modalRef.componentInstance.idCurso = idCurso;
   }
 

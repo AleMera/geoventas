@@ -160,11 +160,9 @@ export class ModalFormCursoComponent implements OnInit {
     this.cargandoInicio = true;
     this.firestoreSvc.getDoc('Cursos', this.idCurso).subscribe((curso: any) => {
       const categoria = this.categorias.find((cat: any) => cat.id === curso.idCategoria);
-      console.log(categoria);
       
       const objetivos = curso.objetivos.map((obj: any) => new FormControl(obj, Validators.required));
       this.imgsUrl = curso.imgsUrl;
-      console.log(this.imgsUrl);
       
       this.cursoForm.setControl('objetivos', new FormArray(objetivos));
       this.cursoForm.setValue({
@@ -185,11 +183,10 @@ export class ModalFormCursoComponent implements OnInit {
   }
 
   validarCampos(campo: string) {
-    return this.cursoForm.controls[campo].errors && this.cursoForm.controls[campo].touched;
+    return this.cursoForm.controls[campo].errors || this.cursoForm.controls[campo].touched;
   }
 
   guardar() {
-    console.log(this.cursoForm);
     
     if (this.cursoForm.invalid) {
       this.cursoForm.markAllAsTouched();
@@ -237,17 +234,13 @@ export class ModalFormCursoComponent implements OnInit {
       objetivos: this.cursoForm.value.objetivos
     }
 
-    console.log(this.curso);
-    console.log(this.cursoForm);
     
   }
 
   onChangeCat(event: any) {
-    console.log(event.target.value);
   }
 
   guardarNuevo(imgs: File[]) {
-    console.log('Guardar nuevo curso');
     let imgsUrl: Promise<string>[] = [];
     this.cargandoGuardar = true;
     imgs.forEach((img) => {
@@ -259,7 +252,6 @@ export class ModalFormCursoComponent implements OnInit {
     });
     Promise.all(imgsUrl).then((urls) => {
       this.curso.imgsUrl = urls;
-      console.log(this.curso);
 
       this.firestoreSvc.crearDocumentoConId('Cursos', this.curso.id, this.curso).finally(() => {
         const modalRef = this.modal.open(ModalInfoComponent, { centered: true, size: 'sm' });
@@ -275,7 +267,6 @@ export class ModalFormCursoComponent implements OnInit {
   }
 
   guardarCambios() {
-    console.log('Guardar curso editado');
     this.cargandoGuardar = true;
     this.firestoreSvc.actualizarDoc('Cursos', this.curso.id, this.curso).then(() => {
       const modalRef = this.modal.open(ModalInfoComponent, { centered: true, size: 'sm' });
