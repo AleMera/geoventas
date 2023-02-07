@@ -21,8 +21,31 @@ export class DashboardComponent implements OnInit {
   totalVentas: any[] = [];
   totalCursos: any[] = [];
   comision: number = 0;
+  titulosChart: string[] = ['TOTAL DE VENTAS ($) EN CADA CIUDAD', 'TOTAL DE CURSOS VENDIDOS'];
 
   cargando: boolean = false;
+
+  //Graficos
+  pieChartOptions: ChartConfiguration['options'] = {
+    responsive: true,
+    plugins: {
+      legend: {
+        display: true,
+        position: 'top',
+      },
+      title: {
+        display: true,
+        text: '',
+      },
+    }
+  };
+
+  pieChartData: ChartData<'pie'> = {
+    labels: [],
+    datasets: [{
+      data: [0],
+    }]
+  };
 
   constructor(private authSvc: AuthService, private firestoreSvc: FirestoreService) { }
 
@@ -59,12 +82,6 @@ export class DashboardComponent implements OnInit {
 
               })
             });
-            this.pieChartTotales = {
-              labels: this.totalVentas.map((venta: any) => venta.ciudad),
-              datasets: [{
-                data: this.totalVentas.map((venta: any) => venta.total),
-              }]
-            }
             this.firestoreSvc.getDocs('Cursos').subscribe((resp: any[]) => {
               const cursos = ventas.map((venta: any) => {
                 const curso = resp.find((curso: any) => curso.id === venta.idCurso).nombre;
@@ -82,16 +99,10 @@ export class DashboardComponent implements OnInit {
                 }
                 return acc;
               }, []);
-              this.pieChartCursos = {
-                labels: this.totalCursos.map((curso: any) => curso.nombreCurso),
-                datasets: [{
-                  data: this.totalCursos.map((curso: any) => curso.cantidad),
-                }]
-              }
               let total: number;
               total = ventas.reduce((total: number, venta: any) => total + venta.precio, 0);
               this.comision = total * 0.1;
-              
+              this.cargarCharts(this.titulosChart[0], this.totalVentas);
               this.cargando = false;
             });
           });
@@ -100,41 +111,35 @@ export class DashboardComponent implements OnInit {
     });
   }
 
-  cargarChartTotales() {
-
+  cambiarChart(event: any) {
+    const titulo = event.target.value;
+    console.log(titulo);
+    if (titulo === 'TOTAL DE VENTAS ($) EN CADA CIUDAD') {
+      this.cargarCharts(titulo, this.totalVentas);
+    } else {
+      this.cargarCharts(titulo, this.totalCursos);
+    }
   }
 
-  // Pie
-  public pieChartOptionsTotales: ChartConfiguration['options'] = {
-    responsive: true,
-    plugins: {
-      legend: {
-        display: true,
-        position: 'top',
-      },
-      title: {
-        display: true,
-        text: 'TOTAL DE VENTAS ($) EN CADA CIUDAD'
-      },
+  cargarCharts(titulo: string, data: any) {
+    this.pieChartOptions = {
+      responsive: true,
+      plugins: {
+        legend: {
+          display: true,
+          position: 'top',
+        },
+        title: {
+          display: true,
+          text: titulo,
+        },
+      }
     }
-  };
-
-  public pieChartOptionsCursos: ChartConfiguration['options'] = {
-    responsive: true,
-    plugins: {
-      legend: {
-        display: true,
-        position: 'top',
-      },
-      title: {
-        display: true,
-        text: 'TOTAL DE CURSOS VENDIDOS'
-      },
+    this.pieChartData = {
+      labels: data.map((venta: any) => venta.nombreCurso || venta.ciudad),
+      datasets: [{
+        data: data.map((venta: any) => venta.total || venta.cantidad),
+      }]
     }
-  };
-
-  public pieChartTotales: ChartData<'pie'>;
-  public pieChartCursos: ChartData<'pie'>;
-
-  public pieChartType: ChartType = 'pie';
+  }
 }

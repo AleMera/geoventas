@@ -4,6 +4,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalEditarPerfilComponent } from 'src/app/components/modal-editar-perfil/modal-editar-perfil.component';
 
 import { AuthService } from '../../services/auth.service';
+import { FirestoreService } from '../../services/firestore.service';
 
 @Component({
   selector: 'app-nav-bar',
@@ -14,7 +15,11 @@ export class NavBarComponent implements OnInit {
 
   logueado: boolean;
   usuario: any = {};
-  cargando: boolean;
+  menu: any[] = [];
+  categorias: any[] = [];
+
+  cargando: boolean = false;
+
   constructor(private router: Router, private authSvc: AuthService, private modal: NgbModal) {
     this.logueado = false;
     this.cargando = false;
@@ -22,6 +27,20 @@ export class NavBarComponent implements OnInit {
 
   ngOnInit(): void {
     this.usuarioLogueado();
+    this.menu = [
+      {
+        ruta: '/inicio',
+        texto: 'Cursos',
+      },
+      {
+        ruta: '/informacionCursos',
+        texto: 'Información de cursos',
+      },
+      {
+        ruta: '/nosotros',
+        texto: 'Nosotros',
+      },
+    ];
   }
 
   usuarioLogueado() {

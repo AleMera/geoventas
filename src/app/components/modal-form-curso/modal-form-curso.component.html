@@ -110,7 +110,7 @@
         </div>
         <select class="form-control custom-select" formControlName="modalidad">
           <option value="">Seleccionar...</option>
-          <option *ngFor="let modalidad of modalidades">
+          <option *ngFor="let modalidad of modalidades" [value]="modalidad">
             {{ modalidad }}
           </option>
         </select>

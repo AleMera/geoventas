@@ -1,9 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { FirestoreService } from '../../../services/firestore.service';
+import { FirestoreService } from '../../../../services/firestore.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { ModalFormClienteComponent } from '../../../components/modal-form-cliente/modal-form-cliente.component';
+import { ModalFormClienteComponent } from '../../../../components/modal-form-cliente/modal-form-cliente.component';
 
 @Component({
   selector: 'app-info-curso',

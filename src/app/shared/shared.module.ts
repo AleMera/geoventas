@@ -5,11 +5,13 @@ import { NavBarComponent } from './nav-bar/nav-bar.component';
 import { SideMenuComponent } from './side-menu/side-menu.component';
 import { RouterModule } from '@angular/router';
 import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
+import { FooterComponent } from './footer/footer.component';
 
 @NgModule({
   declarations: [
     NavBarComponent,
-    SideMenuComponent
+    SideMenuComponent,
+    FooterComponent
   ],
   imports: [
     CommonModule,
@@ -18,7 +20,8 @@ import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
   ],
   exports: [
     NavBarComponent,
-    SideMenuComponent
+    SideMenuComponent,
+    FooterComponent
   ]
 })
 export class SharedModule { }

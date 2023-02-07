@@ -28,7 +28,7 @@ export class ModalFormClienteComponent implements OnInit {
   venta!: any;
 
   cargando: boolean = false;
-
+  editar: boolean = false;
   cursos: any[] = [];
   ciudades: Ciudad[] = [];
   urlCedula: string;
@@ -137,7 +137,10 @@ export class ModalFormClienteComponent implements OnInit {
       this.ciudades = resp;
       this.ciudades.sort(this.ordenarAlfabeticamente);
     });
-    (this.idCliente) ? this.cargarCliente() : null;
+    if (this.idCliente) {
+      this.cargarCliente();
+      this.editar = true;
+    }
     this.firestoreSvc.getDocs('Cursos').subscribe((resp) => {
       if (this.idCurso) {
         this.curso = resp.find((curso: any) => curso.id === this.idCurso);
@@ -194,7 +197,7 @@ export class ModalFormClienteComponent implements OnInit {
     let imgCedula;
     let certTrabajo;
     let certCapacitacion;
-    if (this.idCliente) {
+    if (this.editar) {
       //Editar cliente
       idCliente = this.idCliente;
       imgCedula = this.urlCedula;
@@ -207,7 +210,6 @@ export class ModalFormClienteComponent implements OnInit {
       imgCedula = '';
       certTrabajo = '';
       certCapacitacion = '';
-
       //Campos de la venta
       this.venta = {
         id: this.firestoreSvc.crearIdDoc(),
@@ -243,12 +245,12 @@ export class ModalFormClienteComponent implements OnInit {
   }
 
   guardar() {
-    if (this.clienteForm.invalid || !this.cliente.imgCedula) {
+    if (this.clienteForm.invalid) {
       this.clienteForm.markAllAsTouched();
       return;
     }
     this.asignarValores();
-    if (this.idCliente) {
+    if (this.editar) {
       console.log('actualizar');
       this.guardarCambios();
     } else {
@@ -283,7 +285,7 @@ export class ModalFormClienteComponent implements OnInit {
         }
       });
     } else {
-      console.log('no hay archivos, solo actualizar inforacion basica');
+      console.log('no hay archivos, solo actualizar informacion basica');
       this.cargando = true;
       this.firestoreSvc.actualizarDoc('Clientes', this.cliente.id, this.cliente).then(() => {
         const info: Info = {

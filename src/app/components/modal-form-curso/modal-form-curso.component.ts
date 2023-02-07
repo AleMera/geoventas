@@ -34,7 +34,7 @@ export class ModalFormCursoComponent implements OnInit {
 
   nuevoObj: FormControl = new FormControl('', [Validators.required]);
 
-  modalidades: string[] = ['Presencial', 'Virtual'];
+  modalidades: any[] = ['Presencial', 'Virtual'];
   categorias: any[] = [];
   cargandoInicio: boolean = false;
   cargandoGuardar: boolean = false;
@@ -42,6 +42,7 @@ export class ModalFormCursoComponent implements OnInit {
   finalizado: boolean = false;
   imgs: any[] = [];
   imgsStorage: any[] = [];
+  imgsUrl: any[] = [];
   editar: boolean = false;
   errorObj: boolean = false;
 
@@ -159,7 +160,12 @@ export class ModalFormCursoComponent implements OnInit {
     this.cargandoInicio = true;
     this.firestoreSvc.getDoc('Cursos', this.idCurso).subscribe((curso: any) => {
       const categoria = this.categorias.find((cat: any) => cat.id === curso.idCategoria);
+      console.log(categoria);
+      
       const objetivos = curso.objetivos.map((obj: any) => new FormControl(obj, Validators.required));
+      this.imgsUrl = curso.imgsUrl;
+      console.log(this.imgsUrl);
+      
       this.cursoForm.setControl('objetivos', new FormArray(objetivos));
       this.cursoForm.setValue({
         nombre: curso.nombre,
@@ -169,7 +175,7 @@ export class ModalFormCursoComponent implements OnInit {
         modalidad: curso.modalidad,
         fecha: curso.fecha,
         precio: curso.precio,
-        categoria: categoria ? categoria.nombre : '',
+        categoria: categoria ? categoria.id : '',
         imgs: [],
         justificacion: curso.justificacion,
         objetivos: objetivos.map((obj: any) => obj.value)
@@ -183,6 +189,8 @@ export class ModalFormCursoComponent implements OnInit {
   }
 
   guardar() {
+    console.log(this.cursoForm);
+    
     if (this.cursoForm.invalid) {
       this.cursoForm.markAllAsTouched();
       return;
@@ -213,14 +221,8 @@ export class ModalFormCursoComponent implements OnInit {
   }
 
   asignarDatos() {
-    let id: string;
-    if (this.idCurso) {
-      id = this.idCurso
-    } else {
-      id = this.firestoreSvc.crearIdDoc()
-    }
     this.curso = {
-      id: id,
+      id: this.idCurso ? this.idCurso : this.firestoreSvc.crearIdDoc(),
       nombre: this.cursoForm.value.nombre,
       certif: this.cursoForm.value.certif,
       duracion: this.cursoForm.value.duracion,
@@ -230,18 +232,18 @@ export class ModalFormCursoComponent implements OnInit {
       precio: this.cursoForm.value.precio,
       estado: 'Activo',
       idCategoria: this.cursoForm.value.categoria,
-      imgsUrl: [],
+      imgsUrl: this.imgsUrl ? this.imgsUrl : [],
       justificacion: this.cursoForm.value.justificacion,
       objetivos: this.cursoForm.value.objetivos
     }
 
     console.log(this.curso);
+    console.log(this.cursoForm);
     
   }
 
   onChangeCat(event: any) {
     console.log(event.target.value);
-    
   }
 
   guardarNuevo(imgs: File[]) {

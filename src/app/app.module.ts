@@ -8,18 +8,19 @@ import { AppComponent } from './app.component';
 import { AngularFireModule } from '@angular/fire/compat';
 import { AngularFirestoreModule } from "@angular/fire/compat/firestore";
 import { AngularFireStorageModule } from '@angular/fire/compat/storage';
-import { Auth, provideAuth } from '@angular/fire/auth';
 
 import { environment } from 'src/environments/environment';
-import { InicioComponent } from './pages/inicio/inicio.component';
+import { InicioComponent } from './pages/home/inicio/inicio.component';
 import { ComponentsModule } from './components/components.module';
 import { SharedModule } from './shared/shared.module';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { NosotrosComponent } from './pages/home/nosotros/nosotros.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     InicioComponent,
+    NosotrosComponent,
   ],
   imports: [
     BrowserModule,

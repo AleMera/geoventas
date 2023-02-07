@@ -2,7 +2,9 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { redirectLoggedInTo, redirectUnauthorizedTo, canActivate } from "@angular/fire/compat/auth-guard";
 
-import { InicioComponent } from './pages/inicio/inicio.component';
+import { InicioComponent } from './pages/home/inicio/inicio.component';
+import { NosotrosComponent } from './pages/home/nosotros/nosotros.component';
+import { CursosComponent } from './pages/home/cursos/cursos.component';
 
 const redirectUnauthorizedToAuth = () => redirectUnauthorizedTo(['auth']);
 const redirectLoggedInToPrincipal = () => redirectLoggedInTo(['principal']);
@@ -24,16 +26,16 @@ const routes: Routes = [
     ...canActivate(redirectUnauthorizedToAuth),
   },
   {
-    path: 'cursos',
-    loadChildren: () => import('./pages/cursos/cursos.module').then(m => m.CursosModule),
+    path: 'informacionCursos',
+    component: CursosComponent,
   },
   {
     path: 'nosotros',
-    component: InicioComponent,
+    component: NosotrosComponent,
   },
   {
-    path: 'infoCursos',
-    component: InicioComponent,
+    path: 'cursos',
+    loadChildren: () => import('./pages/home/cursos/cursos.module').then(m => m.CursosModule),
   },
   {
     path: '**',
