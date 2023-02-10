@@ -21,7 +21,7 @@
 		<div class="collapse navbar-collapse justify-content-between" collapse="true" id="navbarContent">
 			<ul class="navbar-nav" *ngIf="!logueado">
         <li class="nav-link" *ngFor="let item of menu">
-          <a class="nav-link" routerLinkActive="active" routerLink="/inicio" [fragment]="item.fragment">
+          <a class="nav-link page-scroll" routerLinkActive="active" routerLink="/inicio" [fragment]="item.fragment">
             {{ item.texto }}
           </a>
         </li>

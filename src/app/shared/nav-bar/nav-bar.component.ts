@@ -17,19 +17,16 @@ export class NavBarComponent implements OnInit {
   usuario: any = {};
   menu: any[] = [
     {
-      ruta: '/inicio',
-      texto: 'Cursos',
-      fragment: 'cursos',
+      texto: 'Nosotros',
+      fragment: 'nosotros',
     },
     {
-      ruta: '/infoCursos',
       texto: 'Información de cursos',
       fragment: 'infoCursos',
     },
     {
-      ruta: '/nosotros',
-      texto: 'Nosotros',
-      fragment: 'nosotros',
+      texto: 'Cursos',
+      fragment: 'cursos',
     },
   ];
   categorias: any[] = [];

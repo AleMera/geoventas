@@ -12,16 +12,10 @@ import { AngularFireStorageModule } from '@angular/fire/compat/storage';
 import { environment } from 'src/environments/environment';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { HomeModule } from './pages/home/home.module';
-import { ScrollAnchorDirective } from './directives/scroll-anchor.directive';
-import { ScrollManagerDirective } from './directives/scroll-manager.directive';
-import { ScrollSectionDirective } from './directives/scroll-section.directive';
 
 @NgModule({
   declarations: [
     AppComponent,
-    ScrollAnchorDirective,
-    ScrollManagerDirective,
-    ScrollSectionDirective,
   ],
   imports: [
     BrowserModule,
