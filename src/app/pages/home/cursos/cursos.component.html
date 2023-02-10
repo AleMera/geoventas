@@ -1,0 +1,22 @@
+<div class="cards">
+    <div class="text-center">
+      <h1>TODOS NUESTROS CURSOS DISPONIBLES</h1>
+    </div>
+    <div class="card border-danger" *ngIf="!cursos">
+      <div class="text-center">
+        <div class="card-body">
+          <p class="card-text text-danger">No hay cursos disponibles</p>
+        </div>
+      </div>
+    </div>
+    <div class="card-group">
+      <div class="row">
+        <div
+          class="col col-4 animate__animated animate__slideInUp animate__faster"
+          *ngFor="let curso of cursos"
+        >
+          <app-curso-card [curso]="curso"></app-curso-card>
+        </div>
+      </div>
+    </div>
+</div>

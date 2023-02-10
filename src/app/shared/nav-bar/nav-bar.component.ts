@@ -15,7 +15,23 @@ export class NavBarComponent implements OnInit {
 
   logueado: boolean;
   usuario: any = {};
-  menu: any[] = [];
+  menu: any[] = [
+    {
+      ruta: '/inicio',
+      texto: 'Cursos',
+      fragment: 'cursos',
+    },
+    {
+      ruta: '/infoCursos',
+      texto: 'Información de cursos',
+      fragment: 'infoCursos',
+    },
+    {
+      ruta: '/nosotros',
+      texto: 'Nosotros',
+      fragment: 'nosotros',
+    },
+  ];
   categorias: any[] = [];
 
   cargando: boolean = false;
@@ -27,20 +43,6 @@ export class NavBarComponent implements OnInit {
 
   ngOnInit(): void {
     this.usuarioLogueado();
-    this.menu = [
-      {
-        ruta: '/inicio',
-        texto: 'Cursos',
-      },
-      {
-        ruta: '/informacionCursos',
-        texto: 'Información de cursos',
-      },
-      {
-        ruta: '/nosotros',
-        texto: 'Nosotros',
-      },
-    ];
   }
 
   usuarioLogueado() {
