@@ -4,13 +4,27 @@
   background-color: #fff;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 }
+
 .card-group {
   margin: 2%;
   padding: 20px;
 }
 
-.text-center {
+.card {
+  cursor: pointer;
+}
+
+.text-center, .text-left, .text-right {
   padding: 2%;
+}
+
+.card-img-top{
+  border-radius: 5%;
+}
+
+.card-img-top:hover {
+  transform: scale(1.1);
+  transition: 0.5s;
 }
 
 .col {
@@ -19,4 +33,8 @@
 
 .btnCargar {
   margin-top: 0%;
+}
+
+.list-group-item {
+  margin-bottom: 10px;
 }

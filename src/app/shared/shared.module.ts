@@ -6,12 +6,14 @@ import { SideMenuComponent } from './side-menu/side-menu.component';
 import { RouterModule } from '@angular/router';
 import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 import { FooterComponent } from './footer/footer.component';
+import { ScrollToTopComponent } from './scroll-to-top/scroll-to-top.component';
 
 @NgModule({
   declarations: [
     NavBarComponent,
     SideMenuComponent,
-    FooterComponent
+    FooterComponent,
+    ScrollToTopComponent
   ],
   imports: [
     CommonModule,
@@ -21,7 +23,8 @@ import { FooterComponent } from './footer/footer.component';
   exports: [
     NavBarComponent,
     SideMenuComponent,
-    FooterComponent
+    FooterComponent,
+    ScrollToTopComponent
   ]
 })
 export class SharedModule { }

@@ -10,17 +10,14 @@ import { AngularFirestoreModule } from "@angular/fire/compat/firestore";
 import { AngularFireStorageModule } from '@angular/fire/compat/storage';
 
 import { environment } from 'src/environments/environment';
-import { InicioComponent } from './pages/home/inicio/inicio.component';
 import { ComponentsModule } from './components/components.module';
 import { SharedModule } from './shared/shared.module';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { NosotrosComponent } from './pages/home/nosotros/nosotros.component';
+import { HomeModule } from './pages/home/home.module';
 
 @NgModule({
   declarations: [
     AppComponent,
-    InicioComponent,
-    NosotrosComponent,
   ],
   imports: [
     BrowserModule,
@@ -29,8 +26,6 @@ import { NosotrosComponent } from './pages/home/nosotros/nosotros.component';
     AngularFireModule.initializeApp(environment.firebaseConfig),
     AngularFirestoreModule,
     AngularFireStorageModule,
-    SharedModule,
-    ComponentsModule,
     NgbModule,
   ],
   providers: [

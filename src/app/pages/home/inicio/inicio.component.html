@@ -1,15 +1,85 @@
 <app-nav-bar></app-nav-bar>
 <div class="container">
   <!-- <router-outlet></router-outlet> -->
+  <!-- NOSOTROS -->
   <div class="cards">
     <div class="text-center">
-      <h1>CURSOS DISPONIBLES</h1>
+      <h1>Acerca de CORFOPYM</h1>
+      <p>
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. In tempore,
+        velit porro obcaecati temporibus maxime officiis magnam qui cum odio
+        consequatur ducimus assumenda, nemo soluta quo. Voluptate veritatis
+        atque libero.
+      </p>
+    </div>
+    <div class="text-left">
+      <h3>Misión</h3>
+      <p>
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Numquam, est?
+        Nemo necessitatibus facere odio consequatur, veniam
+      </p>
+    </div>
+    <div class="text-left">
+      <h3>Visión</h3>
+      <p>
+        quibusdam ratione magnam vitae nobis. Quis accusantium quia aperiam
+        repudiandae numquam iste obcaecati sequi?
+      </p>
+    </div>
+  </div>
+
+  <!-- INFORMACION CURSOS -->
+  <div class="cards">
+    <div class="text-center">
+      <h1>Información sobre los cursos</h1>
+      <p>
+        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Fuga numquam
+        necessitatibus vero assumenda natus, sunt repellendus quis quo, repellat
+        nulla animi sint ex qui tempora possimus, deleniti magni nobis
+        explicabo!
+      </p>
+    </div>
+    <div class="text-center">
+      <h3>Categorías</h3>
+    </div>
+    <div class="card-group">
+      <ngb-accordion class="col col-4 animate__animated animate__slideInUp animate__faster" (panelChange)="cambiarPanel($event)" *ngFor="let cat of categorias" [id]="'acc'+cat.id">
+        <ngb-panel [id]="cat.id">
+          <ng-template ngbPanelTitle>
+            <img class="card-img-top" [src]="'assets/img/categorias/'+cat.nombre.split(' ')[0]+'.png'" alt="Title" />
+          </ng-template>
+          <ng-template ngbPanelContent>
+            <div class="list-group" *ngFor="let curso of cursosXCategoria">
+              <a [routerLink]="['../cursos/'+curso.id]" class="list-group-item list-group-item-action">{{ curso.nombre }}</a>
+            </div>
+          </ng-template>
+        </ngb-panel>
+      </ngb-accordion>
+      <!-- <ngb-accordion class="d-flex animate__animated animate__slideInUp animate__faster" [closeOthers]="true" (panelChange)="cambiarPanel($event)">
+        <ngb-panel *ngFor="let cat of categorias" [id]="cat.id">
+          <ng-template ngbPanelTitle>
+            <img class="card-img-top" [src]="'assets/img/categorias/'+cat.nombre.split(' ')[0]+'.png'" alt="Title" />
+          </ng-template>
+          <ng-template ngbPanelContent>
+            <div class="list-group" *ngFor="let curso of cursosXCategoria">
+              <a [routerLink]="['../cursos/'+curso.id]" class="list-group-item list-group-item-action">{{ curso.nombre }}</a>
+            </div>
+          </ng-template>
+        </ngb-panel>
+      </ngb-accordion> -->
+    </div>
+  </div>
+
+  <!-- CURSOS -->
+  <div class="cards">
+    <div class="text-center">
+      <h1>TODOS NUESTROS CURSOS DISPONIBLES</h1>
     </div>
     <div class="card border-danger" *ngIf="!cursos">
       <div class="text-center">
         <div class="card-body">
           <p class="card-text text-danger">No hay cursos disponibles</p>
-      </div>
+        </div>
       </div>
     </div>
     <div class="d-flex justify-content-center" *ngIf="cargando">
@@ -19,12 +89,15 @@
     </div>
     <div class="card-group" *ngIf="cursosMostrar">
       <div class="row">
-        <div class="col col-4 animate__animated animate__slideInUp animate__faster" *ngFor="let curso of cursos" >
-          <app-curso-card [curso] = curso></app-curso-card>
+        <div
+          class="col col-4 animate__animated animate__slideInUp animate__faster"
+          *ngFor="let curso of cursos"
+        >
+          <app-curso-card [curso]="curso"></app-curso-card>
         </div>
       </div>
     </div>
   </div>
 </div>
 <app-footer></app-footer>
-
+<!-- <app-scroll-to-top></app-scroll-to-top> -->
