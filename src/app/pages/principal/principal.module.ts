@@ -32,7 +32,7 @@ import { VentasComponent } from './admin/ventas/ventas.component';
     DataTablesModule,
     SharedModule,
     ComponentsModule,
-    NgChartsModule
+    NgChartsModule,
   ]
 })
 export class PrincipalModule { }

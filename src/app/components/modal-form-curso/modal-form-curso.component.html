@@ -157,23 +157,37 @@
     </div>
 
     <div *ngIf="numPagina === 2">
-      <h5 class="text-center">Información adicional</h5>
-      <!-- Categoría -->
-      <span class="text-danger" *ngIf="validarCampos('categoria')">
-        {{ errorCategoria }}
-      </span>
-      <div class="input-group mb-3">
-        <div class="input-group-prepend">
-          <label class="input-group-text" for="inputGroupSelect01"
-            >Categoría</label
-          >
+      <div>
+        <h5 class="text-center">Información adicional</h5>
+        <!-- Categoría -->
+        <span class="text-danger" *ngIf="validarCampos('categoria') || categoriasSeleccionadas.length === 0">
+          {{ errorCategoria }}
+        </span>
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <label class="input-group-text" for="inputGroupSelect01"
+              >Categoría</label
+            >
+          </div>
+          <select class="form-control custom-select" formControlName="categoria" (change)="onChangeCat($event)">
+            <option value="">Seleccionar...</option>
+            <option *ngFor="let categoria of categorias" [value]="categoria.id">
+              {{ categoria.nombre }}
+            </option>
+          </select>
         </div>
-        <select class="form-control custom-select" formControlName="categoria" (change)="onChangeCat($event)">
-          <option value="">Seleccionar...</option>
-          <option *ngFor="let categoria of categorias" [value]="categoria.id">
-            {{ categoria.nombre }}
-          </option>
-        </select>
+        <div class="toastDiv" *ngFor="let cat of categoriasSeleccionadas">
+          <ngb-toast [autohide]="false">
+            {{ cat.nombre }}
+            <button
+              type="button"
+              class="ml-2 mb-1 close"
+              aria-label="Close"
+              (click)="eliminarCategoria(cat.id)">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </ngb-toast>
+        </div>
       </div>
 
       <!-- Imagenes -->

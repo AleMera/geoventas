@@ -12,6 +12,7 @@ import { AngularFireStorageModule } from '@angular/fire/compat/storage';
 import { environment } from 'src/environments/environment';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { HomeModule } from './pages/home/home.module';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,8 @@ import { HomeModule } from './pages/home/home.module';
     AngularFirestoreModule,
     AngularFireStorageModule,
     NgbModule,
-    HomeModule
+    HomeModule,
+    BrowserAnimationsModule
   ],
   providers: [
   ],
