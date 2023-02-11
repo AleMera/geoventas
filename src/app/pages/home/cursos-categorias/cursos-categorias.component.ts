@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FirestoreService } from '../../../services/firestore.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-cursos-categorias',
@@ -13,7 +14,7 @@ export class CursosCategoriasComponent implements OnInit {
   idCategoriaSeleccionada: string = '';
   cursosXCategoria: any[] = [];
 
-  constructor(private firestoreSvc: FirestoreService) { }
+  constructor(private firestoreSvc: FirestoreService, protected router: Router) { }
 
   ngOnInit(): void {
     this.firestoreSvc.getDocs('Cursos').subscribe((res) => {
@@ -22,11 +23,5 @@ export class CursosCategoriasComponent implements OnInit {
     this.firestoreSvc.getDocs('Categorias').subscribe((res: any) => {
       this.categorias = res;
     });
-  }
-
-  cambiarPanel(event: any) {
-    const idCategoria = this.idCategoriaSeleccionada = event.panelId;
-    this.cursosXCategoria = this.cursos.filter((curso) => curso.idCategoria == idCategoria);
-
   }
 }

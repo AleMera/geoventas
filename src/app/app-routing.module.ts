@@ -4,6 +4,7 @@ import { redirectLoggedInTo, redirectUnauthorizedTo, canActivate } from "@angula
 
 import { InicioComponent } from './pages/home/inicio/inicio.component';
 import { NosotrosComponent } from './pages/home/nosotros/nosotros.component';
+import { CursosCategoriasModule } from './pages/home/cursos-categorias/cursos-categorias.module';
 
 const redirectUnauthorizedToAuth = () => redirectUnauthorizedTo(['auth']);
 const redirectLoggedInToPrincipal = () => redirectLoggedInTo(['principal']);
@@ -15,6 +16,10 @@ const routes: Routes = [
     ...canActivate(redirectLoggedInToPrincipal)
   },
   {
+    path: 'categoria',
+    loadChildren: () => import('./pages/home/cursos-categorias/cursos-categorias.module').then(m => m.CursosCategoriasModule),
+  },
+  {
     path: 'auth',
     loadChildren: () => import('./pages/auth/auth.module').then(m => m.AuthModule),
     ...canActivate(redirectLoggedInToPrincipal)
@@ -23,10 +28,6 @@ const routes: Routes = [
     path: 'principal',
     loadChildren: () => import('./pages/principal/principal.module').then(m => m.PrincipalModule),
     ...canActivate(redirectUnauthorizedToAuth),
-  },
-  {
-    path: 'nosotros',
-    component: NosotrosComponent,
   },
   {
     path: 'cursos',

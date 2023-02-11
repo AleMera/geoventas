@@ -1,6 +1,6 @@
 <div class="cards">
     <div class="text-center">
-      <h1>TODOS NUESTROS CURSOS DISPONIBLES</h1>
+      <h1>{{ idCategoria ? 'CURSOS DE ' + categoria : 'TODOS NUESTROS CURSOS DISPONIBLES' }}</h1>
     </div>
     <div class="card border-danger" *ngIf="!cursos">
       <div class="text-center">
