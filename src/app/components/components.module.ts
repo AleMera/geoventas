@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
-import { NgbAlertModule, NgbDropdownModule, NgbPagination, NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbAlertModule, NgbDropdownModule, NgbPaginationModule, NgbToastModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { CursoCardComponent } from './curso-card/curso-card.component';
 import { ModalFormClienteComponent } from './modal-form-cliente/modal-form-cliente.component';
@@ -26,6 +26,7 @@ import { ModalEditarPerfilComponent } from './modal-editar-perfil/modal-editar-p
     NgbAlertModule,
     NgbDropdownModule,
     NgbPaginationModule,
+    NgbToastModule
   ],
   exports: [
     CursoCardComponent,
