@@ -99,9 +99,7 @@ export class DashboardComponent implements OnInit {
                 }
                 return acc;
               }, []);
-              let total: number;
-              total = ventas.reduce((total: number, venta: any) => total + venta.precio, 0);
-              this.comision = total * 0.1;
+              this.comision = this.usuario.comision;
               this.cargarCharts(this.titulosChart[0], this.totalVentas);
               this.cargando = false;
             });
