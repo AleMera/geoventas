@@ -253,6 +253,7 @@ export class ModalFormCursoComponent implements OnInit {
   eliminarCategoria(idCategoria: string) {
     this.categoriasSeleccionadas.findIndex((cat: any) => cat.id === idCategoria);
     this.categoriasSeleccionadas.splice(this.categoriasSeleccionadas.findIndex((cat: any) => cat.id === idCategoria), 1);
+    this.cursoForm.markAsDirty();
   }
 
   guardarNuevo(imgs: File[]) {
@@ -333,10 +334,6 @@ export class ModalFormCursoComponent implements OnInit {
   eliminarObjetivo(pos: number) {
     this.objetivosArray.removeAt(pos);
     this.cursoForm.markAsDirty();
-  }
-
-  crearCamposFaltantes() {
-    this.asignarDatos();
   }
 
 }
