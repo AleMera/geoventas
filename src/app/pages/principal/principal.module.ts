@@ -14,6 +14,7 @@ import { MapaComponent } from './vendedor/mapa/mapa.component';
 import { UsuariosComponent } from './admin/usuarios/usuarios.component';
 import { CursosComponent } from './admin/cursos/cursos.component';
 import { VentasComponent } from './admin/ventas/ventas.component';
+import { ReactiveFormsModule } from '@angular/forms';
 
 
 @NgModule({
@@ -28,6 +29,7 @@ import { VentasComponent } from './admin/ventas/ventas.component';
   ],
   imports: [
     CommonModule,
+    ReactiveFormsModule,
     PrincipalRoutingModule,
     DataTablesModule,
     SharedModule,
