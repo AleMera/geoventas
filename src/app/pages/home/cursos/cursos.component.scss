@@ -23,13 +23,19 @@
 }
 
 
-
+button {
+  margin-right: 2px;
+}
 
 .cards {
   margin: 20px;
   border-radius: 10px;
   background-color: #fff;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.d-flex {
+  margin-right: 2%;
 }
 
 .card-group {
