@@ -33,7 +33,6 @@ export class InfoCursoComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    console.log('Destruyendo componente');
     this.cargando = true;
   }
 

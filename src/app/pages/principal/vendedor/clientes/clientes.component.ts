@@ -197,23 +197,17 @@ export class ClientesComponent implements OnInit, OnDestroy {
       case 'pagado':
         this.auxClientesVenta = this.clientesVenta.filter((cliente: any) => cliente.pagoVenta);
         this.dtTrigger.next(null);
-        console.log('Lista real', this.clientesVenta);
 
-        console.log('Auxiliar', this.auxClientesVenta);
         break;
       case 'pendiente':
         this.auxClientesVenta = this.clientesVenta.filter((cliente: any) => !cliente.pagoVenta);
         this.dtTrigger.next(null);
-        console.log('Lista real', this.clientesVenta);
 
-        console.log('Auxiliar', this.auxClientesVenta);
         break;
       default:
         this.auxClientesVenta = [...this.clientesVenta];
         this.dtTrigger.next(null);
-        console.log('Lista real', this.clientesVenta);
 
-        console.log('Auxiliar', this.auxClientesVenta);
         break;
     }
   }

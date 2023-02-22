@@ -27,8 +27,7 @@ export class ModalFormUsuarioComponent implements OnInit {
   ciudadesSelect: Ciudad[] = [];
 
   usuarioForm: FormGroup = this.fBuilder.group({
-    // cedula: ['', [Validators.required, validarCedula]],
-    cedula: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(10)]],
+    cedula: ['', [Validators.required, validarCedula]],
     nombre: ['', Validators.required],
     apellido: ['', Validators.required],
     email: ['', [Validators.required, Validators.email]],
@@ -40,13 +39,9 @@ export class ModalFormUsuarioComponent implements OnInit {
   constructor(protected modal: NgbModal, private fBuilder: FormBuilder, private firestoreSvc: FirestoreService) { }
 
   get errorCedula() {
-    // const error = this.usuarioForm.controls['cedula'].errors;
-    // if (error)
-    //   return error['required'] ? 'La cédula es requerida' : (error['cedulaIncompleta'] || error['cedulaInvalida']) ? 'La cédula no es válida' : '';
     const error = this.usuarioForm.controls['cedula'].errors;
     if (error)
-      return error['required'] ? 'La cédula es requerida' : (error['minlength'] || error['maxlength']) ? 'La cédula debe tener 10 dígitos' : '';
-      return '';
+      return error['required'] ? 'La cédula es requerida' : (error['cedulaIncompleta'] || error['cedulaInvalida']) ? 'La cédula no es válida' : '';
   }
 
   get errorNombre() {
@@ -108,10 +103,8 @@ export class ModalFormUsuarioComponent implements OnInit {
 
   cargarUsuario() {
     this.firestoreSvc.getDoc<any>('Usuarios', this.idUsuario).subscribe((resp) => {
-      console.log(resp);
       this.usuario = resp;
       this.ciudadesSelect = this.ciudades.filter((ciudad) => this.usuario.idCiudad.includes(ciudad.id));
-      console.log(this.ciudadesSelect);
       
       this.usuarioForm.setValue({
         cedula: this.usuario.cedula,
@@ -137,7 +130,6 @@ export class ModalFormUsuarioComponent implements OnInit {
     } else {
       idUsuario = this.firestoreSvc.crearIdDoc();
     }
-    console.log(this.ciudadesSelect);
     this.ciudadesSelect.map(({ id }) => {
       ciudades.push(id);
     });
@@ -151,7 +143,6 @@ export class ModalFormUsuarioComponent implements OnInit {
       telefono: this.usuarioForm.controls['telefono'].value,
       idCiudad: ciudades,
     }
-    console.log(this.usuario);
   }
 
   agregarCiudad(event: any) {

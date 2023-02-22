@@ -111,7 +111,6 @@ export class DashboardComponent implements OnInit {
 
   cambiarChart(event: any) {
     const titulo = event.target.value;
-    console.log(titulo);
     if (titulo === 'TOTAL DE VENTAS ($) EN CADA CIUDAD') {
       this.cargarCharts(titulo, this.totalVentas);
     } else {

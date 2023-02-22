@@ -44,8 +44,7 @@ export class ModalFormClienteComponent implements OnInit {
   dataArchivos: any[] = [];
 
   clienteForm: FormGroup = this.fBuilder.group({
-    // cedula: ['', [Validators.required, validarCedula]],
-    cedula: ['', [Validators.required]],
+    cedula: ['', [Validators.required, validarCedula]],
     nombre: ['', Validators.required],
     apellido: ['', Validators.required],
     email: ['', [Validators.required, Validators.email]],
@@ -65,20 +64,10 @@ export class ModalFormClienteComponent implements OnInit {
 
   constructor(protected modal: NgbModal, private fBuilder: FormBuilder, private firestoreSvc: FirestoreService, private storageSvc: StorageService) { }
 
-  // get errorCedula() {
-  //   const error = this.clienteForm.controls['cedula'].errors;
-  //   if (error) {
-  //     return error['required'] ? 'La cédula es obligatoria' : (error['cedulaIncompleta'] || error['cedulaInvalida']) ? 'La cédula no es válida' : '';
-  //   }
-  //   return '';
-  // }
   get errorCedula() {
     const error = this.clienteForm.controls['cedula'].errors;
     if (error) {
-      return error['required'] ? 'La cédula es obligatoria' :
-        (error['minlength'] || error['maxlength']) ? 'La cédula debe tener 10 dígitos' :
-          (error['esVendedor']) ? 'La cédula ya está registrada como vendedor' :
-            (error['yaInscrito']) ? 'El cliente con esta cédula ya está registrado en este curso' : '';
+      return error['required'] ? 'La cédula es obligatoria' : (error['cedulaIncompleta'] || error['cedulaInvalida']) ? 'La cédula no es válida' : '';
     }
     return '';
   }
@@ -140,7 +129,6 @@ export class ModalFormClienteComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log('idVenta', this.idVenta);
 
     this.firestoreSvc.getDocs<Ciudad>('Ciudades').subscribe((resp) => {
       this.ciudades = resp;
@@ -193,10 +181,11 @@ export class ModalFormClienteComponent implements OnInit {
             certCapacitacion: '',
             curso: curso.nombre,
             fechaCurso: curso.fecha,
-            fechaCompra: venta.fecha.toString(),
+            fechaCompra: venta.fecha.toDate().toISOString().substring(0, 10),
             precio: venta.precio,
             estadoPago: venta.pagado ? 'Pagado' : 'Pendiente',
           });
+          
           this.urlCedula = this.cliente.imgCedula ? this.cliente.imgCedula : '';
           this.urlCertTrabajo = this.cliente.certTrabajo ? this.cliente.certTrabajo : '';
           this.urlCertCapacitacion = this.cliente.certCapacitacion ? this.cliente.certCapacitacion : '';
@@ -204,46 +193,6 @@ export class ModalFormClienteComponent implements OnInit {
         });
       });
     });
-    // this.firestoreSvc.getDoc('Clientes', this.idCliente).subscribe((cliente: any) => {
-    //   this.cliente = cliente;
-    //   if(!cliente) return;
-    //   if (!cliente.imgCedula)
-    //     this.clienteForm.controls['imgCedula'].setValidators([Validators.required]);
-    //   let idCiudad = this.ciudades.find((ciudad) => ciudad.id === this.cliente.idCiudad)?.id;
-    //   this.firestoreSvc.getDoc('Ventas', this.idVenta).subscribe((venta: any) => {
-
-    //   });
-    // this.firestoreSvc.getDoc('Cursos', this.idCursoVenta).subscribe((curso: any) => {
-    //   this.firestoreSvc.getDocs('Ventas').subscribe((ventas: any[]) => {
-    //     const venta = ventas.find((venta) => venta.idCliente === this.idCliente && venta.idCurso === this.idCursoVenta);
-    //     console.log('venta:', venta);
-
-    //     this.clienteForm.setValue({
-    //       cedula: this.cliente.cedula,
-    //       nombre: this.cliente.nombre,
-    //       apellido: this.cliente.apellido,
-    //       email: this.cliente.email,
-    //       telefono: this.cliente.telefono,
-    //       direccion: this.cliente.direccion,
-    //       ciudad: idCiudad ? idCiudad : '',
-    //       imgCedula: '',
-    //       certTrabajo: '',
-    //       certCapacitacion: '',
-    //       curso: curso.nombre,
-    //       fechaCurso: curso.fecha,
-    //       fechaCompra: venta.fecha.toDate(),
-    //       precio: curso.precio,
-    //       estadoPago: venta.pagado ? 'Pagado' : 'Pendiente',
-    //     });
-    //     this.urlCedula = this.cliente.imgCedula ? this.cliente.imgCedula : '';
-    //     this.urlCertTrabajo = this.cliente.certTrabajo ? this.cliente.certTrabajo : '';
-    //     this.urlCertCapacitacion = this.cliente.certCapacitacion ? this.cliente.certCapacitacion : '';
-
-    //     this.cargando = false;
-    //   });
-    // });
-
-    // });
   }
 
   marcarCursoPagado() {
@@ -254,7 +203,6 @@ export class ModalFormClienteComponent implements OnInit {
   }
 
   asignarValores() {
-    console.log(this.clienteForm.valid);
     let idCliente;
     let imgCedula;
     let certTrabajo;
@@ -298,8 +246,6 @@ export class ModalFormClienteComponent implements OnInit {
       certTrabajo: certTrabajo,
       certCapacitacion: certCapacitacion,
     }
-    console.log(this.cliente);
-    console.log(this.venta);
 
   }
 
@@ -314,25 +260,20 @@ export class ModalFormClienteComponent implements OnInit {
     }
     this.asignarValores();
     if (this.editar) {
-      console.log('actualizar');
       this.guardarCambios();
     } else {
-      console.log('guardar inscripcion');
       this.guardarInscripcion();
     }
   }
 
   private guardarCambios() {
     if (this.dataArchivos.length > 0) {
-      console.log('guardar archivos');
       this.cargando = true;
       this.dataArchivos.forEach((item, i) => {
         if (item.archivo) {
-          console.log(`Guardando: ${item.nombre}`);
           this.guardarArchivo(item.archivo, item.nombre).then((url) => {
             this.firestoreSvc.actualizarDoc('Clientes', this.cliente.id, { [item.campoDB]: url }).then(() => {
               item.finalizado = true;
-              console.log(`Finalizado: ${item.finalizado}`);
               if ((this.dataArchivos.every((item) => item.finalizado)) || ((this.dataArchivos[0].finalizado) && (this.dataArchivos[1].finalizado || this.dataArchivos[2].finalizado)) || (this.dataArchivos[0].finalizado)) {
                 const info: Info = {
                   tipo: 'exito',
@@ -348,7 +289,6 @@ export class ModalFormClienteComponent implements OnInit {
         }
       });
     } else {
-      console.log('no hay archivos, solo actualizar informacion basica');
       this.cargando = true;
       this.firestoreSvc.actualizarDoc('Clientes', this.cliente.id, this.cliente).then(() => {
         const info: Info = {
@@ -368,7 +308,6 @@ export class ModalFormClienteComponent implements OnInit {
     this.firestoreSvc.getDocs('Clientes').subscribe((clientes) => {
       const cliente = clientes.find((cliente: any) => cliente.cedula === this.cliente.cedula);
       if (cliente) {
-        console.log('Crear solo venta');
         this.firestoreSvc.crearDocumentoConId('Ventas', this.venta.id, this.venta).then(() => {
           const info: Info = {
             tipo: 'exito',
@@ -389,7 +328,6 @@ export class ModalFormClienteComponent implements OnInit {
           this.cargando = false;
         });
       } else {
-        console.log('Crear cliente y venta');
         this.firestoreSvc.crearDocumentoConId('Clientes', this.cliente.id, this.cliente).then(() => {
           this.firestoreSvc.crearDocumentoConId('Ventas', this.venta.id, this.venta).then(() => {
             const info: Info = {
@@ -422,14 +360,12 @@ export class ModalFormClienteComponent implements OnInit {
         const usuario: any = usuarios.find((usuario: any) => usuario.cedula === cedula);
         if (!usuario) return;
         this.clienteForm.controls['cedula'].setErrors({ esVendedor: true });
-        console.log(this.clienteForm.controls['cedula']);
         return;
       });
 
       this.firestoreSvc.getDocs('Clientes').subscribe((clientes) => {
         const cliente: any = clientes.find((cliente: any) => cliente.cedula === cedula);
         if (!cliente) return;
-        console.log(cliente);
         this.cliente = cliente;
         this.firestoreSvc.getDocs('Ventas').subscribe((ventas) => {
           const venta: any = ventas.find((venta: any) => (venta.idCliente === cliente.id) && (venta.idCurso === this.idCurso));
@@ -448,7 +384,6 @@ export class ModalFormClienteComponent implements OnInit {
   }
 
   cargarArchivo(event: any, tipo: string) {
-    console.log(event.target.files[0]);
     if (event.target.files.length === 0) return;
     const archivo = event.target.files[0];
     switch (tipo) {
@@ -467,7 +402,6 @@ export class ModalFormClienteComponent implements OnInit {
           this.dataArchivos.push({ archivo: archivo, nombre: 'certCapacitacion', campoDB: 'imgCertCapacitacion', finalizado: false });
         break;
     }
-    console.log(this.dataArchivos);
 
   }
 

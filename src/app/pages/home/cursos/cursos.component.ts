@@ -15,7 +15,6 @@ export class CursosComponent implements OnInit {
   constructor(private firestoreSvc: FirestoreService) { }
 
   ngOnInit(): void {
-    console.log(this.idCategoria);
     
     if (this.idCategoria) {
       this.firestoreSvc.getDoc('Categorias', this.idCategoria).subscribe((res: any) => {
@@ -30,7 +29,6 @@ export class CursosComponent implements OnInit {
       this.cursos = res;
       if (idCategoria) {
         this.cursos = this.cursos.filter((curso) => curso.idCategoria.includes(idCategoria));
-        console.log(this.cursos);
       }
     });
 

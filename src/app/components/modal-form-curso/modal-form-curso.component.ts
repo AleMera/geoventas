@@ -161,9 +161,7 @@ export class ModalFormCursoComponent implements OnInit {
     this.cargandoInicio = true;
     this.firestoreSvc.getDoc('Cursos', this.idCurso).subscribe((curso: any) => {
       const categorias = this.categorias.filter((cat: any) => curso.idCategoria.includes(cat.id));
-      console.log(categorias);
       this.categoriasSeleccionadas = categorias;
-      console.log(this.categoriasSeleccionadas);
       
       const objetivos = curso.objetivos.map((obj: any) => new FormControl(obj, Validators.required));
       this.imgsUrl = curso.imgsUrl;
@@ -240,13 +238,11 @@ export class ModalFormCursoComponent implements OnInit {
       justificacion: this.cursoForm.value.justificacion,
       objetivos: this.cursoForm.value.objetivos
     }
-    console.log(this.curso);
   }
 
   onChangeCat(event: any) {
     const idCategoria = event.target.value;
     this.categoriasSeleccionadas.push(this.categorias.find((cat: any) => cat.id === idCategoria));
-    console.log(this.categoriasSeleccionadas);
     this.cursoForm.controls['categoria'].setValue('');
   }
 

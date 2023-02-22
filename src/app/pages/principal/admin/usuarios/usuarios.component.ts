@@ -3,7 +3,6 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Subject } from 'rxjs';
 import { ModalFormUsuarioComponent } from 'src/app/components/modal-form-usuario/modal-form-usuario.component';
 import { FirestoreService } from 'src/app/services/firestore.service';
-import { DataService } from '../../../../services/data.service';
 
 @Component({
   selector: 'app-usuarios',
@@ -17,7 +16,7 @@ export class UsuariosComponent implements OnInit, AfterViewInit, OnDestroy {
   dtOptions: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject<any>();
 
-  constructor(private firestoreSvc: FirestoreService, private dataSvc: DataService, private modal: NgbModal) { }
+  constructor(private firestoreSvc: FirestoreService, private modal: NgbModal) { }
 
   ngOnInit(): void {
     this.dtOptions = {

@@ -61,7 +61,6 @@ export class VentasComponent implements OnInit {
       this.firestoreSvc.getDocs('Usuarios').subscribe((vendedores: any) => {
         this.vendedores = vendedores;
         vendedores.sort(this.ordenarAlfabeticamente);
-        console.log(this.vendedores);
         this.firestoreSvc.getDocs('Ciudades').subscribe((ciudades: any) => {
           this.ciudades = ciudades.filter((ciudad: any) => ventas.some((venta: any) => venta.idCiudad === ciudad.id));
           this.ciudades.sort(this.ordenarAlfabeticamente);
@@ -116,7 +115,6 @@ export class VentasComponent implements OnInit {
               venta.fecha = venta.fecha.toDate();
               return venta;
             });
-            console.log(this.ventas);
             this.auxVentas = this.ventas;
             this.total = this.auxVentas.reduce((total: number, venta: any) => total + venta.precio, 0);
             this.dtTrigger.next(null);
@@ -137,23 +135,17 @@ export class VentasComponent implements OnInit {
       case 'pagado':
         this.auxVentas = this.ventas.filter((venta: any) => venta.pagado);
         this.dtTrigger.next(null);
-        console.log('Lista real', this.ventas);
 
-        console.log('Auxiliar', this.auxVentas);
         break;
       case 'pendiente':
         this.auxVentas = this.ventas.filter((venta: any) => !venta.pagado);
         this.dtTrigger.next(null);
-        console.log('Lista real', this.ventas);
 
-        console.log('Auxiliar', this.auxVentas);
         break;
       default:
         this.auxVentas = [...this.ventas];
         this.dtTrigger.next(null);
-        console.log('Lista real', this.ventas);
 
-        console.log('Auxiliar', this.auxVentas);
         break;
     }
   }
@@ -166,13 +158,11 @@ export class VentasComponent implements OnInit {
     }
     this.firestoreSvc.getDoc('Usuarios', this.idVendedor).subscribe((vendedor: any) => {
       this.comisionVendedor = vendedor.comision;
-      console.log(this.comisionVendedor);
     });
 
   }
 
   guardarComision() {
-    console.log(this.idVendedor);
     
     if (!this.ventaForm.controls['comision'].value) {
       this.editarComision = false;

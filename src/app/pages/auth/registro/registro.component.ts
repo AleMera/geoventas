@@ -101,7 +101,6 @@ export class RegistroComponent implements OnInit {
     this.firestoreSvc.getDocs('Usuarios').subscribe((resp: any[]) => {
       const usuario = resp.find(usuario => usuario.email == this.registroForm.controls['correo'].value);
       if (!usuario) {
-        console.log('no existe');
         this.cargandoBuscar = false;
         const modalRef = this.modal.open(ModalInfoComponent, { centered: true, scrollable: true, backdrop: 'static', keyboard: false });
         modalRef.componentInstance.info = {
@@ -113,7 +112,6 @@ export class RegistroComponent implements OnInit {
         return;
       }
       this.usuario = usuario;
-      console.log(this.usuario);
       this.registroForm.controls['passwd'].enable();
       this.registroForm.controls['passwd2'].enable();
       const ciudad = this.ciudades.find(ciudad => ciudad.id == usuario.idCiudad);
@@ -148,7 +146,6 @@ export class RegistroComponent implements OnInit {
     }
 
     this.cargandoGuardar = true;
-    console.log(credenciales);
 
     this.authSvc.registro(credenciales).then((resp: any) => {
       if (resp.code) {
@@ -178,7 +175,6 @@ export class RegistroComponent implements OnInit {
         resp.user.updateProfile({
           displayName: `${this.usuario.nombre} ${this.usuario.apellido}`
         })
-        console.log(resp);
         this.firestoreSvc.actualizarDoc('Usuarios', this.usuario.id, { uid: resp.user.uid }).then(() => {
           const modalRef = this.modal.open(ModalInfoComponent, { centered: true, scrollable: true, backdrop: 'static', keyboard: false });
           modalRef.componentInstance.info = {

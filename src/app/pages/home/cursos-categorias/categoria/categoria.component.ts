@@ -15,8 +15,6 @@ export class CategoriaComponent implements OnInit {
 
   ngOnInit(): void {
     this.idCategoria = this.rutaActiva.snapshot.params['id'];
-    console.log(this.idCategoria);
-    
   }
 
 }

@@ -19,7 +19,6 @@ export class ModalInfoComponent implements OnInit {
   constructor(protected modal: NgbModal, private router: Router, private firestoreSvc: FirestoreService, private storageSvc: StorageService) { }
 
   ngOnInit(): void {
-    console.log(this.info);
     switch (this.info.tipo) {
       case 'exito':
         this.colorTexto = 'modal-title text-success';
